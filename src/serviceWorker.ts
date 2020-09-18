@@ -10,6 +10,16 @@
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read https://bit.ly/CRA-PWA
 
+const logInfo = (message: string): void => {
+  // eslint-disable-next-line no-console
+  console.log(message);
+};
+
+const logError = (message: string, e: Error): void => {
+  // eslint-disable-next-line no-console
+  console.error(message, e.message)
+}
+
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
     // [::1] is the IPv6 localhost address.
@@ -25,7 +35,7 @@ type Config = {
   onUpdate?: (registration: ServiceWorkerRegistration) => void;
 };
 
-export function register(config?: Config) {
+export function register(config?: Config): void {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(
@@ -49,7 +59,7 @@ export function register(config?: Config) {
         // Add some additional logging to localhost, pointing developers to the
         // service worker/PWA documentation.
         navigator.serviceWorker.ready.then(() => {
-          console.log(
+          logInfo(
             'This web app is being served cache-first by a service ' +
               'worker. To learn more, visit https://bit.ly/CRA-PWA'
           );
@@ -62,22 +72,22 @@ export function register(config?: Config) {
   }
 }
 
-function registerValidSW(swUrl: string, config?: Config) {
+function registerValidSW(swUrl: string, config?: Config): void {
   navigator.serviceWorker
     .register(swUrl)
     .then(registration => {
-      registration.onupdatefound = () => {
+      registration.onupdatefound = (): void => {
         const installingWorker = registration.installing;
         if (installingWorker == null) {
           return;
         }
-        installingWorker.onstatechange = () => {
+        installingWorker.onstatechange = (): void => {
           if (installingWorker.state === 'installed') {
             if (navigator.serviceWorker.controller) {
               // At this point, the updated precached content has been fetched,
               // but the previous service worker will still serve the older
               // content until all client tabs are closed.
-              console.log(
+              logInfo(
                 'New content is available and will be used when all ' +
                   'tabs for this page are closed. See https://bit.ly/CRA-PWA.'
               );
@@ -90,7 +100,7 @@ function registerValidSW(swUrl: string, config?: Config) {
               // At this point, everything has been precached.
               // It's the perfect time to display a
               // "Content is cached for offline use." message.
-              console.log('Content is cached for offline use.');
+              logInfo('Content is cached for offline use.');
 
               // Execute callback
               if (config && config.onSuccess) {
@@ -101,12 +111,12 @@ function registerValidSW(swUrl: string, config?: Config) {
         };
       };
     })
-    .catch(error => {
-      console.error('Error during service worker registration:', error);
+    .catch((error: Error) => {
+      logError('Error during service worker registration:', error);
     });
 }
 
-function checkValidServiceWorker(swUrl: string, config?: Config) {
+function checkValidServiceWorker(swUrl: string, config?: Config): void {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl, {
     headers: { 'Service-Worker': 'script' }
@@ -130,20 +140,18 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
       }
     })
     .catch(() => {
-      console.log(
-        'No internet connection found. App is running in offline mode.'
-      );
+      logInfo('No internet connection found. App is running in offline mode.');
     });
 }
 
-export function unregister() {
+export function unregister(): void {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready
       .then(registration => {
         registration.unregister();
       })
-      .catch(error => {
-        console.error(error.message);
+      .catch((error: Error) => {
+        logError(error.message, error);
       });
   }
 }
