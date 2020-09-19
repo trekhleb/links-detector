@@ -3,7 +3,9 @@ import React from 'react';
 function CameraStream(): React.ReactElement {
   return (
     <div>
-      Camera Stream
+      <video>
+        Your browser doesn't support embedded videos
+      </video>
     </div>
   );
 }
