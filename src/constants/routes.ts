@@ -1,8 +1,25 @@
+export const BASE_APP_PATH: string = '/';
+
+enum RouteNames {
+  home = 'home',
+  detector = 'detector',
+}
+
+type RouteType = {
+  path: string,
+};
+
 type RoutesType = {
-  [name: string]: string,
+  [routeName in RouteNames]: RouteType;
 };
 
 export const ROUTES: RoutesType = {
-  home: '/',
-  detector: '/detector',
+  [RouteNames.home]: {
+    path: '/',
+  },
+  [RouteNames.detector]: {
+    path: '/detector',
+  },
 };
+
+export const HOME_ROUTE = ROUTES.home;

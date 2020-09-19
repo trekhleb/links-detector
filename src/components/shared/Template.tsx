@@ -1,4 +1,5 @@
 import React from 'react';
+import MainNavigation from './MainNavigation';
 
 type TemplateProps = {
   children?: React.ReactNode,
@@ -7,9 +8,17 @@ type TemplateProps = {
 function Template(props: TemplateProps): React.ReactElement {
   const {children} = props;
   return (
-    <div>
-      {children}
-    </div>
+    <main>
+      <header>
+        <nav>
+          <MainNavigation />
+        </nav>
+      </header>
+      <section>
+        {children}
+      </section>
+      <footer />
+    </main>
   );
 }
 
