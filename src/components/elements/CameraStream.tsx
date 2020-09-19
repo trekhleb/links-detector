@@ -15,7 +15,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     width = 300,
     height = 300,
     frameRate = 30,
-    facingMode = 'test',
+    facingMode = 'environment',
     flipHorizontal = false,
   } = props;
 
