@@ -1,4 +1,5 @@
-import React, {CSSProperties, MutableRefObject, useEffect, useRef, useState} from 'react';
+import React, {MutableRefObject, useEffect, useRef, useState} from 'react';
+import useLogger, {Logger} from '../hooks/useLogger';
 
 type FacingMode = 'user' | 'environment' | 'left' | 'right' ;
 
@@ -7,7 +8,6 @@ type CameraStreamProps = {
   height?: number,
   facingMode?: FacingMode,
   frameRate?: number,
-  flipHorizontal?: boolean,
 };
 
 function CameraStream(props: CameraStreamProps): React.ReactElement {
@@ -16,21 +16,24 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     height = 300,
     frameRate = 30,
     facingMode = 'environment',
-    flipHorizontal = false,
   } = props;
+
+  const logger: Logger = useLogger();
 
   const videoRef: MutableRefObject<HTMLVideoElement | null> = useRef<HTMLVideoElement | null>(null);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  useEffect(() => {
+  useEffect((): () => void => {
     if (!videoRef.current) {
-      return;
+      return (): void => {};
     }
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      const msg = 'Your browser does not support camera access';
       setErrorMessage('Your browser does not support camera access');
-      return;
+      logger.logWarn(msg);
+      return (): void => {};
     }
 
     let localStream: MediaStream | null = null;
@@ -52,6 +55,16 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
           return;
         }
         videoRef.current.srcObject = stream;
+        videoRef.current.onloadedmetadata = (e: Event): any | null => {
+        };
+      })
+      .catch((e: Error) => {
+        let message = 'Video cannot be started';
+        if (e && e.message) {
+          message += `: ${e.message}`;
+        }
+        setErrorMessage(message);
+        logger.logError(message)
       })
 
     return (): void => {
@@ -60,11 +73,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
         localStream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [width, height, facingMode, frameRate]);
-
-  const videoStyle: CSSProperties = {
-    transform: flipHorizontal ? 'scaleX(-1)' : '',
-  };
+  }, [width, height, facingMode, frameRate, logger]);
 
   return (
     <div>
@@ -72,7 +81,6 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
         ref={videoRef}
         width={width}
         height={height}
-        style={videoStyle}
         playsInline
         autoPlay
         muted
