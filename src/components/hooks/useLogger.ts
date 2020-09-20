@@ -1,58 +1,43 @@
-export type LoggerContext = string | null;
-export type LoggerMessage = string;
+type LoggerMessage = string;
+type LoggerContext = string | null;
+type LoggerMeta = Error | Object | null;
 
-export type Logger = {
-  logDebug: (message: LoggerMessage, context?: LoggerContext) => void,
-  logInfo: (message: LoggerMessage, context?: LoggerContext) => void,
-  logWarn: (message: LoggerMessage, context?: LoggerContext) => void,
-  logError: (message: LoggerMessage, context?: LoggerContext, error?: Error) => void,
+type Logger = (
+  message: LoggerMessage,
+  context?: LoggerContext,
+  meta?: LoggerMeta,
+) => void;
+
+type Loggers = {
+  logDebug: Logger,
+  logInfo: Logger,
+  logWarn: Logger,
+  logError: Logger,
 };
 
 const contextSeparator = '→';
 
-function useLogger(): Logger {
+function useLogger(): Loggers {
   const logger: Console = console;
 
-  const logDebug = (message: LoggerMessage, context?: LoggerContext): void => {
-    const args: string[] = [message];
-    if (context) {
-      args.unshift(context, contextSeparator);
-    }
-    logger.log(...args);
-  };
-
-  const logInfo = (message: LoggerMessage, context?: LoggerContext): void => {
-    const args: string[] = [message];
-    if (context) {
-      args.unshift(context, contextSeparator);
-    }
-    logger.log(...args);
-  };
-
-  const logWarn = (message: LoggerMessage, context?: LoggerContext): void => {
-    const args: string[] = [message];
-    if (context) {
-      args.unshift(context, contextSeparator);
-    }
-    logger.warn(...args);
-  };
-
-  const logError = (message: LoggerMessage, context?: LoggerContext, error?: Error): void => {
-    const args: (string | Error)[] = [message];
-    if (context) {
-      args.unshift(context, contextSeparator);
-    }
-    if (error) {
-      args.push(error);
-    }
-    logger.error(...args);
+  const buildLogger = (loggerFunc: (message?: any, ...optionalParams: any[]) => void): Logger => {
+    return (message: LoggerMessage, context?: LoggerContext, meta?: LoggerMeta): void => {
+      const args: (LoggerMessage | LoggerContext| LoggerMeta)[] = [message];
+      if (context) {
+        args.unshift(context, contextSeparator);
+      }
+      if (meta) {
+        args.push(meta);
+      }
+      loggerFunc(...args);
+    };
   };
 
   return {
-    logDebug,
-    logInfo,
-    logWarn,
-    logError,
+    logDebug: buildLogger(logger.info),
+    logInfo: buildLogger(logger.info),
+    logWarn: buildLogger(logger.warn),
+    logError: buildLogger(logger.error),
   };
 }
 
