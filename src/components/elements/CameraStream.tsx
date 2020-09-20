@@ -122,7 +122,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
         });
       }
     };
-  }, [width, height, facingMode, logger]);
+  }, [width, height, facingMode, logger, frameThrottlingMs, onFrame]);
 
   return (
     <div>
