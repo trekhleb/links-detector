@@ -1,25 +1,55 @@
+export type LoggerContext = string | null;
+export type LoggerMessage = string;
+
 export type Logger = {
-  logInfo: (message: string) => void,
-  logWarn: (message: string) => void,
-  logError: (message: string) => void,
+  logDebug: (message: LoggerMessage, context?: LoggerContext) => void,
+  logInfo: (message: LoggerMessage, context?: LoggerContext) => void,
+  logWarn: (message: LoggerMessage, context?: LoggerContext) => void,
+  logError: (message: LoggerMessage, context?: LoggerContext, error?: Error) => void,
 };
+
+const contextSeparator = '→';
 
 function useLogger(): Logger {
   const logger: Console = console;
 
-  const logInfo = (message: string): void => {
-    logger.log(message);
+  const logDebug = (message: LoggerMessage, context?: LoggerContext): void => {
+    const args: string[] = [message];
+    if (context) {
+      args.unshift(context, contextSeparator);
+    }
+    logger.log(...args);
   };
 
-  const logWarn = (message: string): void => {
-    logger.warn(message);
+  const logInfo = (message: LoggerMessage, context?: LoggerContext): void => {
+    const args: string[] = [message];
+    if (context) {
+      args.unshift(context, contextSeparator);
+    }
+    logger.log(...args);
   };
 
-  const logError = (message: string): void => {
-    logger.error(message);
+  const logWarn = (message: LoggerMessage, context?: LoggerContext): void => {
+    const args: string[] = [message];
+    if (context) {
+      args.unshift(context, contextSeparator);
+    }
+    logger.warn(...args);
+  };
+
+  const logError = (message: LoggerMessage, context?: LoggerContext, error?: Error): void => {
+    const args: (string | Error)[] = [message];
+    if (context) {
+      args.unshift(context, contextSeparator);
+    }
+    if (error) {
+      args.push(error);
+    }
+    logger.error(...args);
   };
 
   return {
+    logDebug,
     logInfo,
     logWarn,
     logError,

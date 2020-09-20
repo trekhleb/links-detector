@@ -1,4 +1,4 @@
-import React, {MutableRefObject, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import useLogger, {Logger} from '../hooks/useLogger';
 
 type FacingMode = 'user' | 'environment' | 'left' | 'right' ;
@@ -8,6 +8,7 @@ type CameraStreamProps = {
   height?: number,
   facingMode?: FacingMode,
   frameRate?: number,
+  onFrame?: () => Promise<void>,
 };
 
 function CameraStream(props: CameraStreamProps): React.ReactElement {
@@ -16,11 +17,14 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     height = 300,
     frameRate = 30,
     facingMode = 'environment',
+    onFrame = (): Promise<void> => Promise.resolve(),
   } = props;
+
+  const loggerContext: string = 'CameraStream';
 
   const logger: Logger = useLogger();
 
-  const videoRef: MutableRefObject<HTMLVideoElement | null> = useRef<HTMLVideoElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -29,10 +33,12 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
       return (): void => {};
     }
 
+    logger.logDebug('useEffect', loggerContext);
+
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       const msg = 'Your browser does not support camera access';
-      setErrorMessage('Your browser does not support camera access');
-      logger.logWarn(msg);
+      setErrorMessage(msg);
+      logger.logWarn(msg, loggerContext);
       return (): void => {};
     }
 
@@ -48,6 +54,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
       },
     };
 
+    // @see: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
     navigator.mediaDevices.getUserMedia(userMediaConstraints)
       .then((stream: MediaStream) => {
         localStream = stream;
@@ -55,22 +62,26 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
           return;
         }
         videoRef.current.srcObject = stream;
-        videoRef.current.onloadedmetadata = (e: Event): any | null => {
+        videoRef.current.onloadedmetadata = (event: Event): any | null => {
+          logger.logDebug('onloadedmetadata', loggerContext)
         };
       })
-      .catch((e: Error) => {
+      .catch((error: DOMException) => {
         let message = 'Video cannot be started';
-        if (e && e.message) {
-          message += `: ${e.message}`;
+        if (error && error.message) {
+          message += `: ${error.message}`;
         }
         setErrorMessage(message);
-        logger.logError(message)
+        logger.logError(message, null, error)
       })
 
     return (): void => {
-      // Stop camera access.
+      logger.logDebug('useEffect return', loggerContext);
       if (localStream) {
-        localStream.getTracks().forEach((track) => track.stop());
+        logger.logDebug('useEffect return: Stopping the camera access', loggerContext);
+        localStream.getTracks().forEach((track: MediaStreamTrack) => {
+          track.stop();
+        });
       }
     };
   }, [width, height, facingMode, frameRate, logger]);
