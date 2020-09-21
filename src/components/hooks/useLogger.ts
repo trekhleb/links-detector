@@ -1,10 +1,13 @@
-type LoggerMessage = string;
 type LoggerContext = string | null;
+type LoggerMessage = string;
 type LoggerMeta = Error | Object | null;
+
+type UseLoggerParams = {
+  context?: LoggerContext,
+};
 
 type Logger = (
   message: LoggerMessage,
-  context?: LoggerContext,
   meta?: LoggerMeta,
 ) => void;
 
@@ -18,11 +21,13 @@ type Loggers = {
 const contextSeparator = '→';
 
 /* global Console */
-function useLogger(): Loggers {
+function useLogger(params: UseLoggerParams = {}): Loggers {
+  const {context} = params;
+
   const logger: Console = console;
 
   const buildLogger = (loggerFunc: (message?: any, ...optionalParams: any[]) => void): Logger => {
-    return (message: LoggerMessage, context?: LoggerContext, meta?: LoggerMeta): void => {
+    return (message: LoggerMessage, meta?: LoggerMeta): void => {
       const args: (LoggerMessage | LoggerContext| LoggerMeta)[] = [message];
       if (context) {
         args.unshift(context, contextSeparator);

@@ -28,9 +28,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
 
   const frameThrottlingMs = Math.floor(oneSecond / idealFrameRate);
 
-  const loggerContext: string = 'CameraStream';
-
-  const logger = useLogger();
+  const logger = useLogger({context: 'CameraStream'});
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -41,12 +39,12 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
       return (): void => {};
     }
 
-    logger.logDebug('useEffect', loggerContext);
+    logger.logDebug('useEffect');
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       const msg = 'Your browser does not support camera access';
       setErrorMessage(msg);
-      logger.logWarn(msg, loggerContext);
+      logger.logWarn(msg);
       return (): void => {
       };
     }
@@ -55,7 +53,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     let localAnimationRequestID: number | null = null;
 
     const onLocalFrame = (): void => {
-      logger.logDebug('onLocalFrame', loggerContext)
+      logger.logDebug('onLocalFrame')
       localAnimationRequestID = requestAnimationFrame(() => {
         onFrame().then(throttledOnLocalFrame);
       });
@@ -89,9 +87,9 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
         }
         videoRef.current.srcObject = stream;
         videoRef.current.onloadedmetadata = (): void => {
-          logger.logDebug('onloadedmetadata', loggerContext);
+          logger.logDebug('onloadedmetadata');
           localAnimationRequestID = requestAnimationFrame(throttledOnLocalFrame);
-          logger.logDebug('onloadedmetadata animation frame requested', loggerContext, {
+          logger.logDebug('onloadedmetadata animation frame requested', {
             localAnimationRequestID,
           });
         };
@@ -102,22 +100,22 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
           message += `: ${error.message}`;
         }
         setErrorMessage(message);
-        logger.logError(message, loggerContext, error)
+        logger.logError(message, error)
       })
 
     return (): void => {
-      logger.logDebug('useEffect return', loggerContext);
+      logger.logDebug('useEffect return');
       // Stop animation frames.
       throttledOnLocalFrame.cancel();
       if (localAnimationRequestID) {
-        logger.logDebug('useEffect return: Cancelling the animation frames', loggerContext, {
+        logger.logDebug('useEffect return: Cancelling the animation frames', {
           localAnimationRequestID,
         });
         cancelAnimationFrame(localAnimationRequestID);
       }
       // Stop camera access.
       if (localStream) {
-        logger.logDebug('useEffect return: Stopping the camera access', loggerContext);
+        logger.logDebug('useEffect return: Stopping the camera access');
         localStream.getTracks().forEach((track: MediaStreamTrack) => {
           track.stop();
         });
