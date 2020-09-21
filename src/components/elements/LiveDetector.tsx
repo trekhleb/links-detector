@@ -11,7 +11,6 @@ function LiveDetector(): React.ReactElement | null {
   }
 
   const onFrame = async (): Promise<void> => {
-    console.log('+++++++');
     return;
   };
 
