@@ -53,8 +53,10 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     let localAnimationRequestID: number | null = null;
 
     const onLocalFrame = (): void => {
-      logger.logDebug('onLocalFrame')
       localAnimationRequestID = requestAnimationFrame(() => {
+        logger.logDebug('onLocalFrame', {
+          frameId: localAnimationRequestID,
+        });
         onFrame().then(throttledOnLocalFrame);
       });
     };
@@ -89,9 +91,6 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
         videoRef.current.onloadedmetadata = (): void => {
           logger.logDebug('onloadedmetadata');
           localAnimationRequestID = requestAnimationFrame(throttledOnLocalFrame);
-          logger.logDebug('onloadedmetadata animation frame requested', {
-            localAnimationRequestID,
-          });
         };
       })
       .catch((error: DOMException) => {
