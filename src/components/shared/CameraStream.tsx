@@ -45,8 +45,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
       const msg = 'Your browser does not support camera access';
       setErrorMessage(msg);
       logger.logWarn(msg);
-      return (): void => {
-      };
+      return (): void => {};
     }
 
     let localStream: MediaStream | null = null;
