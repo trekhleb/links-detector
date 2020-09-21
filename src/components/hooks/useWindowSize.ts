@@ -32,7 +32,7 @@ function useWindowSize(): WindowSize {
       logger.logDebug('useEffect return');
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [logger]);
 
   return windowSize;
 }
