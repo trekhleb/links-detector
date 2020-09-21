@@ -17,6 +17,7 @@ type Loggers = {
 
 const contextSeparator = '→';
 
+/* global Console */
 function useLogger(): Loggers {
   const logger: Console = console;
 

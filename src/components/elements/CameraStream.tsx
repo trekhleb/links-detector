@@ -16,6 +16,7 @@ type CameraStreamProps = {
 const videoFrameRate = 30;
 const oneSecond = 1000;
 
+/* global MediaStreamConstraints */
 function CameraStream(props: CameraStreamProps): React.ReactElement {
   const {
     width = 300,
