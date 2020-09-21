@@ -9,7 +9,7 @@ function DetectorScreen(): React.ReactElement {
 
   return (
     <div>
-      <h1>Detector Screen</h1>
+      <h1 className="font-roboto text-4xl">Detector Screen</h1>
       <CameraStream onFrame={onFrame} />
     </div>
   );
