@@ -2,6 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import throttle from 'lodash/throttle';
 
 import useLogger from '../hooks/useLogger';
+import Notification from './Notification';
 
 type FacingMode = 'user' | 'environment';
 
@@ -32,7 +33,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>('Blah');
 
   const onLocalFrame = (): void => {
     requestAnimationFrame(() => {
@@ -112,22 +113,25 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     };
   }, [width, height, facingMode, logger, throttledOnLocalFrameCallback]);
 
+  if (errorMessage) {
+    return (
+      <Notification>
+        {errorMessage}
+      </Notification>
+    );
+  }
+
   return (
-    <div>
-      <video
-        ref={videoRef}
-        width={width}
-        height={height}
-        playsInline
-        autoPlay
-        muted
-      >
-        Your browser does not support embedded videos
-      </video>
-      <div>
-        Error: {errorMessage}
-      </div>
-    </div>
+    <video
+      ref={videoRef}
+      width={width}
+      height={height}
+      playsInline
+      autoPlay
+      muted
+    >
+      Your browser does not support embedded videos
+    </video>
   );
 }
 

@@ -8,7 +8,7 @@ function Modal(props: ModalProps): React.ReactElement {
   const {children} = props;
 
   return (
-    <div className="absolute left-0 top-0 w-screen h-screen overflow-hidden bg-red-500">
+    <div className="absolute left-0 top-0 w-screen h-screen overflow-hidden bg-white">
       {children}
     </div>
   );
