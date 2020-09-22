@@ -20,27 +20,27 @@ type NotificationProps = {
 function Notification(props: NotificationProps): React.ReactElement {
   const {
     children,
-    position = NotificationPosition.INLINE,
+    // position = NotificationPosition.INLINE,
     level = NotificationLevel.INFO,
   } = props;
 
   let bgColor;
 
   switch (level) {
-    case NotificationLevel.DANGER:
-      bgColor = 'bg-red-100';
-      break;
+  case NotificationLevel.DANGER:
+    bgColor = 'bg-red-100';
+    break;
 
-    case NotificationLevel.WARNING:
-      bgColor = 'bg-yellow-100';
-      break;
+  case NotificationLevel.WARNING:
+    bgColor = 'bg-yellow-100';
+    break;
 
-    case NotificationLevel.INFO:
-      bgColor = 'bg-blue-100';
-      break;
+  case NotificationLevel.INFO:
+    bgColor = 'bg-blue-100';
+    break;
 
-    default:
-      bgColor = 'bg-white';
+  default:
+    bgColor = 'bg-white';
   }
 
   const notificationBody: React.ReactElement = (

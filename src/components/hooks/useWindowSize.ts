@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import throttle from 'lodash/throttle';
 
 import useLogger from './useLogger';
@@ -11,7 +11,7 @@ type WindowSize = {
 const resizeThrottleMs = 200;
 
 function useWindowSize(): WindowSize {
-  const logger = useLogger({context: 'useWindowSize'});
+  const logger = useLogger({ context: 'useWindowSize' });
 
   const [windowSize, setWindowSize] = useState<WindowSize>({
     width: undefined,
@@ -21,12 +21,12 @@ function useWindowSize(): WindowSize {
   useEffect((): () => void => {
     logger.logDebug('useEffect');
 
-    const handleResize= (): void => {
+    const handleResize = (): void => {
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
       });
-    }
+    };
 
     const handleResizeThrottled = throttle(
       handleResize,
@@ -34,7 +34,7 @@ function useWindowSize(): WindowSize {
       {
         leading: false,
         trailing: true,
-      }
+      },
     );
 
     window.addEventListener('resize', handleResizeThrottled);

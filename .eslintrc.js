@@ -7,6 +7,9 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
+    'airbnb',
+    'airbnb/hooks',
+    'plugin:import/typescript'
   ],
   parser: '@typescript-eslint/parser',
   plugins: [
@@ -28,5 +31,13 @@ module.exports = {
     ],
     '@typescript-eslint/explicit-function-return-type': 'warn', // Consider using explicit annotations for object literals and function return types even when they can be inferred.
     'no-empty': 'warn',
+    'react/jsx-filename-extension': [1, { 'extensions': ['.js', '.jsx', '.tsx'] }],
+    'import/extensions': [1, { 'extensions': ['.js', '.jsx', '.tsx'] }],
+    'no-use-before-define': 'off',
+    '@typescript-eslint/no-use-before-define': 'error',
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 'error',
+    'react/require-default-props': 'off',
+    'no-useless-return': 'off',
   },
 };

@@ -1,4 +1,4 @@
-import {useRef} from 'react';
+import { useRef } from 'react';
 
 type LoggerContext = string | null;
 type LoggerMessage = string;
@@ -24,25 +24,23 @@ const contextSeparator = '→';
 
 const buildLogger = (
   loggerFunc: (message?: any, ...optionalParams: any[]) => void,
-  context?: LoggerContext
-): Logger => {
-  return (message: LoggerMessage, meta?: LoggerMeta): void => {
-    const args: (LoggerMessage | LoggerContext| LoggerMeta)[] = [message];
-    if (context) {
-      args.unshift(context, contextSeparator);
-    }
-    if (meta) {
-      args.push(meta);
-    }
-    loggerFunc(...args);
-  };
+  context?: LoggerContext,
+): Logger => (message: LoggerMessage, meta?: LoggerMeta): void => {
+  const args: (LoggerMessage | LoggerContext| LoggerMeta)[] = [message];
+  if (context) {
+    args.unshift(context, contextSeparator);
+  }
+  if (meta) {
+    args.push(meta);
+  }
+  loggerFunc(...args);
 };
 
 const logger: Console = console;
 
 /* global Console */
 function useLogger(params: UseLoggerParams = {}): Loggers {
-  const {context} = params;
+  const { context } = params;
 
   const loggers = useRef<Loggers>({
     logDebug: buildLogger(logger.info, context),

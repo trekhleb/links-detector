@@ -1,6 +1,6 @@
 import React from 'react';
-import {ROUTES} from '../../constants/routes';
-import {NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { ROUTES } from '../../constants/routes';
 
 function MainNavigation(): React.ReactElement {
   return (

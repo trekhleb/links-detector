@@ -6,7 +6,7 @@ type TemplateProps = {
 }
 
 function Template(props: TemplateProps): React.ReactElement {
-  const {children} = props;
+  const { children } = props;
   return (
     <main>
       <header>

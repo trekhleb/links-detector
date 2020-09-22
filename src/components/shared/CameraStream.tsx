@@ -1,4 +1,6 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 import throttle from 'lodash/throttle';
 
 import useLogger from '../hooks/useLogger';
@@ -29,7 +31,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
 
   const frameThrottlingMs = Math.floor(oneSecond / idealFrameRate);
 
-  const logger = useLogger({context: 'CameraStream'});
+  const logger = useLogger({ context: 'CameraStream' });
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -38,6 +40,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
   const onLocalFrame = (): void => {
     requestAnimationFrame(() => {
       logger.logDebug('onLocalFrame');
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       onFrame().then(throttledOnLocalFrame);
     });
   };
@@ -51,6 +54,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     },
   );
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const throttledOnLocalFrameCallback = useCallback(throttledOnLocalFrame, []);
 
   useEffect((): () => void => {
@@ -72,10 +76,10 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     const userMediaConstraints: MediaStreamConstraints = {
       audio: false,
       video: {
-        width: {ideal: width},
-        height: {ideal: height},
-        facingMode: {ideal: facingMode},
-        frameRate: {ideal: videoFrameRate},
+        width: { ideal: width },
+        height: { ideal: height },
+        facingMode: { ideal: facingMode },
+        frameRate: { ideal: videoFrameRate },
       },
     };
 
@@ -98,8 +102,8 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
           message += `: ${error.message}`;
         }
         setErrorMessage(message);
-        logger.logError(message, error)
-      })
+        logger.logError(message, error);
+      });
 
     return (): void => {
       logger.logDebug('useEffect return');
