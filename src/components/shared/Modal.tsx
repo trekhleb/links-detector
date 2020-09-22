@@ -7,8 +7,11 @@ type ModalProps = {
 function Modal(props: ModalProps): React.ReactElement {
   const { children } = props;
 
+  const bgColor: string = 'bg-black';
+  const modalContainerClasses = `${bgColor} absolute left-0 top-0 w-full h-full overflow-hidden flex items-center justify-center flex-col`;
+
   return (
-    <div className="absolute left-0 top-0 w-screen h-screen overflow-hidden bg-red-600">
+    <div className={modalContainerClasses}>
       {children}
     </div>
   );

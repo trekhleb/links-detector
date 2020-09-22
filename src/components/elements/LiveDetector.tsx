@@ -10,14 +10,16 @@ function LiveDetector(): React.ReactElement | null {
     return null;
   }
 
+  const videoSize: number = Math.min(windowSize.width, windowSize.height);
+
   const onFrame = async (): Promise<void> => undefined;
 
   return (
     <div>
       <CameraStream
         onFrame={onFrame}
-        width={windowSize.width}
-        height={windowSize.height}
+        width={videoSize}
+        height={videoSize}
       />
     </div>
   );

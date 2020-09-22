@@ -129,7 +129,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
   }
 
   const videoStyle: CSSProperties = {
-    objectFit: 'contain',
+    objectFit: 'cover',
     width: `${width}px`,
     height: `${height}px`,
   };
@@ -142,7 +142,6 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
       playsInline
       autoPlay
       muted
-      className="bg-blue-500"
       style={videoStyle}
     >
       Your browser does not support embedded videos
