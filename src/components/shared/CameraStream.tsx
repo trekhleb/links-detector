@@ -4,7 +4,7 @@ import React, {
 import throttle from 'lodash/throttle';
 
 import useLogger from '../hooks/useLogger';
-import Notification from './Notification';
+import Notification, { NotificationLevel } from './Notification';
 
 type FacingMode = 'user' | 'environment';
 
@@ -35,7 +35,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  const [errorMessage, setErrorMessage] = useState<string | null>('Blah');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const onLocalFrame = (): void => {
     requestAnimationFrame(() => {
@@ -59,7 +59,8 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
 
   useEffect((): () => void => {
     if (!videoRef.current) {
-      return (): void => {};
+      return (): void => {
+      };
     }
 
     logger.logDebug('useEffect');
@@ -68,7 +69,8 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
       const msg = 'Your browser does not support camera access';
       setErrorMessage(msg);
       logger.logWarn(msg);
-      return (): void => {};
+      return (): void => {
+      };
     }
 
     let localStream: MediaStream | null = null;
@@ -119,7 +121,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
 
   if (errorMessage) {
     return (
-      <Notification>
+      <Notification level={NotificationLevel.DANGER}>
         {errorMessage}
       </Notification>
     );
