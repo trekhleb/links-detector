@@ -1,4 +1,5 @@
 import React, {
+  CSSProperties,
   useCallback, useEffect, useRef, useState,
 } from 'react';
 import throttle from 'lodash/throttle';
@@ -127,6 +128,12 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     );
   }
 
+  const videoStyle: CSSProperties = {
+    objectFit: 'contain',
+    width: `${width}px`,
+    height: `${height}px`,
+  };
+
   return (
     <video
       ref={videoRef}
@@ -135,6 +142,8 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
       playsInline
       autoPlay
       muted
+      className="bg-blue-500"
+      style={videoStyle}
     >
       Your browser does not support embedded videos
     </video>
