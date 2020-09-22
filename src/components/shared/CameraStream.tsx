@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import throttle from 'lodash/throttle';
 
 import useLogger from '../hooks/useLogger';
@@ -34,6 +34,24 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const onLocalFrame = (): void => {
+    requestAnimationFrame(() => {
+      logger.logDebug('onLocalFrame');
+      onFrame().then(throttledOnLocalFrame);
+    });
+  };
+
+  const throttledOnLocalFrame = throttle(
+    onLocalFrame,
+    frameThrottlingMs,
+    {
+      leading: false,
+      trailing: true,
+    },
+  );
+
+  const throttledOnLocalFrameCallback = useCallback(throttledOnLocalFrame, []);
+
   useEffect((): () => void => {
     if (!videoRef.current) {
       return (): void => {};
@@ -49,25 +67,6 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     }
 
     let localStream: MediaStream | null = null;
-    let localAnimationRequestID: number | null = null;
-
-    const onLocalFrame = (): void => {
-      localAnimationRequestID = requestAnimationFrame(() => {
-        logger.logDebug('onLocalFrame', {
-          frameId: localAnimationRequestID,
-        });
-        onFrame().then(throttledOnLocalFrame);
-      });
-    };
-
-    const throttledOnLocalFrame = throttle(
-      onLocalFrame,
-      frameThrottlingMs,
-      {
-        leading: false,
-        trailing: true,
-      },
-    );
 
     const userMediaConstraints: MediaStreamConstraints = {
       audio: false,
@@ -89,7 +88,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
         videoRef.current.srcObject = stream;
         videoRef.current.onloadedmetadata = (): void => {
           logger.logDebug('onloadedmetadata');
-          localAnimationRequestID = requestAnimationFrame(throttledOnLocalFrame);
+          requestAnimationFrame(throttledOnLocalFrameCallback);
         };
       })
       .catch((error: DOMException) => {
@@ -103,14 +102,6 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
 
     return (): void => {
       logger.logDebug('useEffect return');
-      // Stop animation frames.
-      throttledOnLocalFrame.cancel();
-      if (localAnimationRequestID) {
-        logger.logDebug('useEffect return: Cancelling the animation frames', {
-          localAnimationRequestID,
-        });
-        cancelAnimationFrame(localAnimationRequestID);
-      }
       // Stop camera access.
       if (localStream) {
         logger.logDebug('useEffect return: Stopping the camera access');
@@ -119,7 +110,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
         });
       }
     };
-  }, [width, height, facingMode, logger, frameThrottlingMs, onFrame]);
+  }, [width, height, facingMode, logger, throttledOnLocalFrameCallback]);
 
   return (
     <div>
