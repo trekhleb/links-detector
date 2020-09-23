@@ -1,10 +1,10 @@
 // @see: https://tailwindcss.com/docs/configuration/
 // @see: https://github.com/tailwindcss/tailwindcss/blob/master/stubs/defaultConfig.stub.js
 
-const defaultTheme = require('tailwindcss/defaultTheme')
+const defaultTheme = require('tailwindcss/defaultTheme');
 
-const fontFamily = defaultTheme.fontFamily;
-fontFamily['sans'] = [
+const fontFamily = { ...defaultTheme.fontFamily };
+fontFamily.sans = [
   'Roboto',
   'system-ui',
   '-apple-system',
@@ -23,11 +23,12 @@ fontFamily['sans'] = [
 module.exports = {
   purge: [],
   theme: {
-    fontFamily: fontFamily,
+    fontFamily,
     extend: {},
   },
   variants: {
     margin: ['responsive', 'last'],
+    animation: ['responsive', 'hover'],
   },
   plugins: [],
 };

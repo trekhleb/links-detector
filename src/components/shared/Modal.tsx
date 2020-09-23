@@ -34,7 +34,7 @@ function Modal(props: ModalProps): React.ReactElement {
       <div className={modalContainerClasses}>
         <div className="absolute left-0 top-0 m-3 bg-black rounded-full overflow-hidden">
           <button type="button" onClick={onClose} className="bg-transparent cursor-pointer border-0 p-0 m-0 focus:outline-none">
-            <Icon iconKey={ICON_KEYS.X} className={`${textClass} w-8 h-8`} />
+            <Icon iconKey={ICON_KEYS.X} className={`${textClass} w-8 h-8 hover:animate-pulse`} />
           </button>
         </div>
         <div>
