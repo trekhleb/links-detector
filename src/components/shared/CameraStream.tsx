@@ -4,7 +4,7 @@ import React, {
 } from 'react';
 import throttle from 'lodash/throttle';
 
-import useLogger from '../hooks/useLogger';
+import useLogger from '../../hooks/useLogger';
 import Notification, { NotificationLevel } from './Notification';
 
 type FacingMode = 'user' | 'environment';

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import CameraStream from '../shared/CameraStream';
-import useWindowSize from '../hooks/useWindowSize';
+import useWindowSize from '../../hooks/useWindowSize';
 
 function LiveDetector(): React.ReactElement | null {
   const windowSize = useWindowSize();
