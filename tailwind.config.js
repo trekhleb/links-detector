@@ -28,7 +28,6 @@ module.exports = {
   },
   variants: {
     margin: ['responsive', 'last'],
-    animation: ['responsive', 'hover'],
   },
   plugins: [],
 };
