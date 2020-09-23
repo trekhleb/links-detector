@@ -6,9 +6,6 @@ function MainNavigation(): React.ReactElement {
   return (
     <ul>
       <li>
-        <NavLink to={ROUTES.home.path}>Home</NavLink>
-      </li>
-      <li>
         <NavLink to={ROUTES.detector.path}>Detector</NavLink>
       </li>
     </ul>

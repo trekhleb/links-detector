@@ -19,7 +19,7 @@ function Modal(props: ModalProps): React.ReactElement {
     onClose = (): void => {},
   } = props;
 
-  let modalContainerClasses = 'absolute left-0 top-0 w-full h-full overflow-hidden flex items-center justify-center flex-col';
+  let modalContainerClasses = 'absolute left-0 top-0 z-10 w-full h-full overflow-hidden flex items-center justify-center flex-col';
   if (bgClass) {
     modalContainerClasses += ` ${bgClass}`;
   }
@@ -28,13 +28,25 @@ function Modal(props: ModalProps): React.ReactElement {
     <Helmet bodyAttributes={{ class: `${bgClass}` }} />
   ) : null;
 
+  const closeButtonWidthClass = 'w-8';
+  const closeButtonHeightClass = 'h-8';
+
   return (
     <>
       {helmet}
       <div className={modalContainerClasses}>
-        <div className="absolute left-0 top-0 m-3 bg-black rounded-full overflow-hidden">
-          <button type="button" onClick={onClose} className="bg-transparent cursor-pointer border-0 p-0 m-0 focus:outline-none">
-            <Icon iconKey={ICON_KEYS.X} className={`${textClass} w-8 h-8 hover:animate-pulse`} />
+        <div
+          className={`${closeButtonWidthClass} ${closeButtonHeightClass} absolute right-0 top-0 m-3 bg-black rounded-full overflow-hidden z-20`}
+        >
+          <button
+            type="button"
+            onClick={onClose}
+            className={`${closeButtonWidthClass} ${closeButtonHeightClass} bg-transparent cursor-pointer border-0 p-0 m-0 focus:outline-none`}
+          >
+            <Icon
+              iconKey={ICON_KEYS.X}
+              className={`${textClass} ${closeButtonWidthClass} ${closeButtonHeightClass} hover:animate-pulse`}
+            />
           </button>
         </div>
         <div>
