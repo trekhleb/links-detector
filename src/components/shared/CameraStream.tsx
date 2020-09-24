@@ -110,6 +110,8 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
 
     return (): void => {
       logger.logDebug('useEffect return');
+      // Stop animation frames.
+      throttledOnLocalFrameCallback.cancel();
       // Stop camera access.
       if (localStream) {
         logger.logDebug('useEffect return: Stopping the camera access');
