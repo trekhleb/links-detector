@@ -22,7 +22,6 @@ function LiveDetector(): React.ReactElement | null {
         </Notification>
       );
     }
-
     return (
       <Loader text="Loading the model..." />
     );
