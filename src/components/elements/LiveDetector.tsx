@@ -9,7 +9,7 @@ function LiveDetector(): React.ReactElement | null {
   const windowSize = useWindowSize();
   const { model, error: modelError } = useGraphModel({
     modelURL: LINKS_DETECTOR_MODEL_URL,
-    warmup: true,
+    warmup: false,
   });
 
   if (!model || modelError) {
