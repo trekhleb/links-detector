@@ -6,7 +6,7 @@ type LoaderProps = {
 };
 
 function Loader(props: LoaderProps): React.ReactElement {
-  const { text = 'Loading...' } = props;
+  const { text } = props;
 
   const loaderText = text ? (
     <div className="text-white mt-10 animate-pulse">

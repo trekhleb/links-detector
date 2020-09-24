@@ -28,12 +28,8 @@ function LiveDetector(): React.ReactElement | null {
     );
   }
 
-  if (!model || modelError) {
-    return null;
-  }
-
   if (!windowSize || !windowSize.width || !windowSize.height) {
-    return null;
+    return <Loader />;
   }
 
   const videoSize: number = Math.min(windowSize.width, windowSize.height);
