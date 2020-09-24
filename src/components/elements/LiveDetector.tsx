@@ -4,6 +4,8 @@ import CameraStream from '../shared/CameraStream';
 import useWindowSize from '../../hooks/useWindowSize';
 import useGraphModel from '../../hooks/useGraphModel';
 import { LINKS_DETECTOR_MODEL_URL } from '../../constants/models';
+import Loader from '../shared/Loader';
+import Notification, { NotificationLevel } from '../shared/Notification';
 
 function LiveDetector(): React.ReactElement | null {
   const windowSize = useWindowSize();
@@ -11,6 +13,20 @@ function LiveDetector(): React.ReactElement | null {
     modelURL: LINKS_DETECTOR_MODEL_URL,
     warmup: false,
   });
+
+  if (!model) {
+    if (modelError) {
+      return (
+        <Notification level={NotificationLevel.DANGER}>
+          {modelError}
+        </Notification>
+      );
+    }
+
+    return (
+      <Loader />
+    );
+  }
 
   if (!model || modelError) {
     return null;
