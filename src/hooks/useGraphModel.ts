@@ -40,6 +40,9 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
     });
     const dataType: DataType = 'int32';
     const fakeInput = tf.zeros(inputShape, dataType);
+
+    logger.logDebug('warmupModel', { inputShape, fakeInput });
+
     await model.executeAsync(fakeInput);
     logger.logDebug('Model is wormed up');
   };
@@ -52,7 +55,7 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
     tf.loadGraphModel(modelURL)
       .then((graphModel: GraphModel) => {
         setModel(graphModel);
-        logger.logDebug('Model is loaded');
+        logger.logDebug('Model is loaded', { model: graphModel });
       })
       .catch((e: Error) => {
         setError(e.message);
