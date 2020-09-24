@@ -11,7 +11,7 @@ function LiveDetector(): React.ReactElement | null {
   const windowSize = useWindowSize();
   const { model, error: modelError } = useGraphModel({
     modelURL: LINKS_DETECTOR_MODEL_URL,
-    warmup: true,
+    warmup: false,
   });
 
   if (!model) {
@@ -33,7 +33,8 @@ function LiveDetector(): React.ReactElement | null {
 
   const videoSize: number = Math.min(windowSize.width, windowSize.height);
 
-  const onFrame = async (): Promise<void> => undefined;
+  const onFrame = async (video: HTMLVideoElement): Promise<void> => {
+  };
 
   return (
     <div>

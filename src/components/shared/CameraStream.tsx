@@ -14,7 +14,7 @@ type CameraStreamProps = {
   height?: number,
   facingMode?: FacingMode,
   idealFrameRate?: number,
-  onFrame?: () => Promise<void>,
+  onFrame?: (video: HTMLVideoElement) => Promise<void>,
 };
 
 const videoFrameRate = 30;
@@ -41,8 +41,10 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
   const onLocalFrame = (): void => {
     requestAnimationFrame(() => {
       logger.logDebug('onLocalFrame');
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      onFrame().then(throttledOnLocalFrame);
+      if (videoRef.current) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        onFrame(videoRef.current).then(throttledOnLocalFrame);
+      }
     });
   };
 
