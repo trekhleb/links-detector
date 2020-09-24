@@ -2,6 +2,7 @@
   "name": "links-detector",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://localhost:3000/",
   "scripts": {
     "build:style": "tailwind build src/styles/index.css -o src/styles/tailwind.css",
     "prestart": "yarn build:style",
