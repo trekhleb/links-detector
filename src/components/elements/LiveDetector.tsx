@@ -24,7 +24,7 @@ function LiveDetector(): React.ReactElement | null {
     }
 
     return (
-      <Loader />
+      <Loader text="Loading the model..." />
     );
   }
 
