@@ -10,7 +10,7 @@ type ModalCloseButtonProps = {
 function ModalCloseButton(props: ModalCloseButtonProps): React.ReactElement {
   const { onClick } = props;
 
-  const commonClasses = 'transition duration-300 ease-in-out w-8 h-8';
+  const commonClasses = 'transition duration-300 ease-in-out w-full h-full';
   const iconButtonClass = `${commonClasses} cursor-pointer border-0 p-0 m-0 rounded-full focus:outline-none bg-black hover:bg-white`;
   const iconClass = `${commonClasses} text-white hover:text-black`;
 
