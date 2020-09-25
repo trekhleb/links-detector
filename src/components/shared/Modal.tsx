@@ -16,7 +16,7 @@ function Modal(props: ModalProps): React.ReactElement {
 
   const bgClass = 'bg-black';
 
-  let modalContainerClasses = 'absolute left-0 top-0 z-10 w-full h-full overflow-hidden flex items-center justify-center flex-col';
+  let modalContainerClasses = 'absolute left-0 top-0 z-10 w-full h-full overflow-hidden flex items-center justify-center flex-col fade-in';
   if (bgClass) {
     modalContainerClasses += ` ${bgClass}`;
   }
