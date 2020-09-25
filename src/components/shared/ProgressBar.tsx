@@ -13,7 +13,7 @@ function ProgressBar(props: ProgressBarProps): React.ReactElement {
     : undefined;
 
   const progressLine = progressPercentage !== undefined ? (
-    <div className="w-full h-1 bg-gray-800 mb-4">
+    <div className="w-11/12 h-1 bg-gray-800 mb-4">
       <div
         className="h-full bg-white transition duration-300 ease-in-out rounded"
         style={{ width: `${progressPercentage}%` }}
