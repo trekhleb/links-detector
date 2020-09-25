@@ -15,14 +15,14 @@ function ProgressBar(props: ProgressBarProps): React.ReactElement {
   const progressLine = progressPercentage !== undefined ? (
     <div className="w-full h-1 bg-gray-800 mb-4">
       <div
-        className="h-full bg-white transition duration-300 ease-in-out"
+        className="h-full bg-white transition duration-300 ease-in-out rounded"
         style={{ width: `${progressPercentage}%` }}
       />
     </div>
   ) : null;
 
   const progressText = text ? (
-    <div className="text-white animate-pulse text-xs">
+    <div className="text-white animate-pulse text-xs rounded">
       {text}
     </div>
   ) : null;
