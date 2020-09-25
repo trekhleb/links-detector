@@ -147,6 +147,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
       autoPlay
       muted
       style={videoStyle}
+      className="fade-in-1"
     >
       Your browser does not support embedded videos
     </video>

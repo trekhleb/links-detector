@@ -23,6 +23,8 @@ function Modal(props: ModalProps): React.ReactElement {
 
   const iconContainerClass = 'w-8 h-8 absolute right-0 top-0 m-3 z-20';
 
+  const modalContentClass = 'w-full flex items-center justify-center flex-col';
+
   const helmet = bgClass ? (
     <Helmet bodyAttributes={{ class: `${bgClass}` }} />
   ) : null;
@@ -34,7 +36,7 @@ function Modal(props: ModalProps): React.ReactElement {
         <div className={iconContainerClass}>
           <ModalCloseButton onClick={onClose} />
         </div>
-        <div className="w-full">
+        <div className={modalContentClass}>
           {children}
         </div>
       </div>

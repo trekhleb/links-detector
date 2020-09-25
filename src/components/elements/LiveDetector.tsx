@@ -31,7 +31,7 @@ function LiveDetector(): React.ReactElement | null {
         </Notification>
       );
     }
-    const loadingText = modelLoadingProgress === 1 ? 'Preparing link detector' : 'Loading link detector';
+    const loadingText = modelLoadingProgress === 1 ? 'Warming up link detector' : 'Loading link detector';
     return (
       <ProgressBar progress={modelLoadingProgress * 100} text={loadingText} />
     );

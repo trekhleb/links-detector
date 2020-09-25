@@ -6,6 +6,14 @@
   -ms-animation: fadeIn ease-in-out .5s;
 }
 
+.fade-in-1 {
+  animation: fadeIn ease-in-out 1s;
+  -webkit-animation: fadeIn ease-in-out 1s;
+  -moz-animation: fadeIn ease-in-out 1s;
+  -o-animation: fadeIn ease-in-out 1s;
+  -ms-animation: fadeIn ease-in-out 1s;
+}
+
 @keyframes fadeIn {
   0% {
     opacity: 0;
