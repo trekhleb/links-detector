@@ -12,6 +12,7 @@ type UseGraphModelProps = {
 type UseGraphModelOutput = {
   model: GraphModel | null,
   error: string | null,
+  loadingProgress: number,
 };
 
 const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
@@ -22,6 +23,7 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
   const [model, setModel] = useState<GraphModel | null>(null);
   const [isWarm, setIsWarm] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loadingProgress, setLoadingProgress] = useState<number>(0);
 
   const warmupModel = async (): Promise<void> => {
     if (!warmup || !model || isWarm) {
@@ -47,12 +49,19 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
     logger.logDebug('Model is wormed up');
   };
 
-  const warmupCallback = useCallback(warmupModel, [model, isWarm]);
+  const warmupCallback = useCallback(warmupModel, [warmup, logger, model, isWarm]);
+
+  const onLoadingProgress = (progress: number): void => {
+    logger.logDebug('onLoadingProgress', {progress});
+    setLoadingProgress(progress);
+  };
+
+  const onLoadingProgressCallback = useCallback(onLoadingProgress, [logger]);
 
   // Effect for loading a model.
   useEffect(() => {
     logger.logDebug('useEffect: loading the model');
-    tf.loadGraphModel(modelURL)
+    tf.loadGraphModel(modelURL, { onProgress: onLoadingProgressCallback })
       .then((graphModel: GraphModel) => {
         setModel(graphModel);
         logger.logDebug('Model is loaded', { model: graphModel });
@@ -61,7 +70,7 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
         setError(e.message);
         logger.logError(`Cannot load the model: ${e.message}`);
       });
-  }, [modelURL, setError, setModel, logger]);
+  }, [modelURL, setError, setModel, logger, onLoadingProgressCallback]);
 
   // Effect for warming up a model.
   useEffect(() => {
@@ -88,6 +97,7 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
 
   return {
     model: finalModel,
+    loadingProgress,
     error,
   };
 };

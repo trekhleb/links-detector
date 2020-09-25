@@ -34,7 +34,7 @@ function Modal(props: ModalProps): React.ReactElement {
         <div className={iconContainerClass}>
           <ModalCloseButton onClick={onClose} />
         </div>
-        <div>
+        <div className="w-full">
           {children}
         </div>
       </div>
