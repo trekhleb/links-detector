@@ -60,9 +60,12 @@ function LiveDetector(): React.ReactElement | null {
     let results: tf.Tensor | tf.Tensor[] | null = null;
 
     try {
+      const t0 = tf.util.now();
       results = await model.executeAsync(inputTensor);
+      const inferenceTimeMs = tf.util.now() - t0;
       logger.logDebug('executeModel: executing', {
         inputTensorShape: inputTensor.shape,
+        inferenceTimeS: (inferenceTimeMs / 1000).toFixed(2),
         results,
       });
     } catch (e) {
