@@ -52,7 +52,7 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
   const warmupCallback = useCallback(warmupModel, [warmup, logger, model, isWarm]);
 
   const onLoadingProgress = (progress: number): void => {
-    logger.logDebug('onLoadingProgress', {progress});
+    logger.logDebug('onLoadingProgress', { progress });
     setLoadingProgress(progress);
   };
 
@@ -64,7 +64,13 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
     tf.loadGraphModel(modelURL, { onProgress: onLoadingProgressCallback })
       .then((graphModel: GraphModel) => {
         setModel(graphModel);
-        logger.logDebug('Model is loaded', { model: graphModel });
+        logger.logDebug('Model is loaded', {
+          backendName: tf.engine().backendName,
+          platformName: tf.env().platformName,
+          model: graphModel,
+          backend: tf.engine().backend,
+          features: tf.env().features,
+        });
       })
       .catch((e: Error) => {
         setError(e.message);
