@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as tf from '@tensorflow/tfjs';
-import { GraphModel } from '@tensorflow/tfjs';
-import { DataType } from '@tensorflow/tfjs-core/src/types';
+
 import useLogger from './useLogger';
+import { warmupModel, loadModel } from '../utils/graphModelUtils';
 
 type UseGraphModelProps = {
   modelURL: string,
@@ -10,7 +10,7 @@ type UseGraphModelProps = {
 };
 
 type UseGraphModelOutput = {
-  model: GraphModel | null,
+  model: tf.GraphModel | null,
   error: string | null,
   loadingProgress: number,
 };
@@ -20,36 +20,22 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
 
   const logger = useLogger({ context: 'useGraphModel' });
 
-  const [model, setModel] = useState<GraphModel | null>(null);
+  const [model, setModel] = useState<tf.GraphModel | null>(null);
   const [isWarm, setIsWarm] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loadingProgress, setLoadingProgress] = useState<number>(0);
 
-  const warmupModel = async (): Promise<void> => {
+  const warmupGraphModel = async (): Promise<void> => {
     if (!warmup || !model || isWarm) {
       return;
     }
-    const inputShapeWithNulls = model.inputs[0].shape;
-    if (!inputShapeWithNulls) {
-      logger.logWarn('Cannot warmup the model: unknown input shape');
-      return;
-    }
-    const inputShape = inputShapeWithNulls.map((dimension: number) => {
-      if (dimension === null || dimension === -1) {
-        return 1;
-      }
-      return dimension;
-    });
-    const dataType: DataType = 'int32';
-    const fakeInput = tf.zeros(inputShape, dataType);
-
-    logger.logDebug('warmupModel', { inputShape, fakeInput });
-
-    await model.executeAsync(fakeInput);
-    logger.logDebug('Model is wormed up');
+    await warmupModel(model, logger);
   };
 
-  const warmupCallback = useCallback(warmupModel, [warmup, logger, model, isWarm]);
+  const warmupCallback = useCallback(
+    warmupGraphModel,
+    [warmup, logger, model, isWarm],
+  );
 
   const onLoadingProgress = (progress: number): void => {
     logger.logDebug('onLoadingProgress', { progress });
@@ -61,16 +47,9 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
   // Effect for loading a model.
   useEffect(() => {
     logger.logDebug('useEffect: loading the model');
-    tf.loadGraphModel(modelURL, { onProgress: onLoadingProgressCallback })
-      .then((graphModel: GraphModel) => {
+    loadModel(modelURL, onLoadingProgressCallback, logger)
+      .then((graphModel: tf.GraphModel) => {
         setModel(graphModel);
-        logger.logDebug('Model is loaded', {
-          backendName: tf.engine().backendName,
-          platformName: tf.env().platformName,
-          model: graphModel,
-          backend: tf.engine().backend,
-          features: tf.env().features,
-        });
       })
       .catch((e: Error) => {
         setError(e.message);
@@ -96,7 +75,7 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
     logger,
   ]);
 
-  let finalModel: GraphModel | null = model;
+  let finalModel: tf.GraphModel | null = model;
   if (warmup) {
     finalModel = isWarm ? model : null;
   }

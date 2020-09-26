@@ -13,7 +13,7 @@ type Logger = (
   meta?: LoggerMeta,
 ) => void;
 
-type Loggers = {
+export type Loggers = {
   logDebug: Logger,
   logInfo: Logger,
   logWarn: Logger,
