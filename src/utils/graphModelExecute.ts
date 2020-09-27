@@ -8,7 +8,7 @@ type ModelPredictions = {
   detectionBoxes: number[][],
 };
 
-type Box = {
+export type Box = {
   x1: number,
   y1: number,
   x2: number,
