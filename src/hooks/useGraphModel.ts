@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import * as tf from '@tensorflow/tfjs';
 
 import useLogger from './useLogger';
-import { warmupModel, loadModel } from '../utils/graphModelUtils';
+import { graphModelWarmup } from '../utils/graphModelWarmup';
+import { graphModelLoad } from '../utils/graphModelLoad';
 
 type UseGraphModelProps = {
   modelURL: string,
@@ -29,12 +30,12 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
     if (!warmup || !model || isWarm) {
       return;
     }
-    await warmupModel(model, logger);
+    await graphModelWarmup(model);
   };
 
   const warmupCallback = useCallback(
     warmupGraphModel,
-    [warmup, logger, model, isWarm],
+    [warmup, model, isWarm],
   );
 
   const onLoadingProgress = (progress: number): void => {
@@ -47,7 +48,7 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
   // Effect for loading a model.
   useEffect(() => {
     logger.logDebug('useEffect: loading the model');
-    loadModel(modelURL, onLoadingProgressCallback, logger)
+    graphModelLoad(modelURL, onLoadingProgressCallback)
       .then((graphModel: tf.GraphModel) => {
         setModel(graphModel);
       })

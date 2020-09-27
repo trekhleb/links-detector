@@ -1,7 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { DataType } from '@tensorflow/tfjs-core/src/types';
-
-import { Loggers } from '../hooks/useLogger';
+import { buildLoggers } from './logger';
 
 type ModelPredictions = {
   detectionsNum: number,
@@ -10,64 +8,12 @@ type ModelPredictions = {
   detectionBoxes: number[][],
 };
 
-// Loading the Graph model.
-export const loadModel = async (
-  modelURL: string,
-  onProgress: (progress: number) => void,
-  logger: Loggers,
-): Promise<tf.GraphModel> => {
-  const model: tf.GraphModel = await tf.loadGraphModel(modelURL, { onProgress })
-
-  logger.logDebug('Model is loaded', {
-    backendName: tf.engine().backendName,
-    platformName: tf.env().platformName,
-    model,
-    backend: tf.engine().backend,
-    features: tf.env().features,
-  });
-
-  return model;
-};
-
-// Warming up the graph model.
-export const warmupModel = async (
-  model: tf.GraphModel,
-  logger: Loggers,
-): Promise<void> => {
-  if (!model) {
-    return;
-  }
-
-  const inputShapeWithNulls = model.inputs[0].shape;
-
-  if (!inputShapeWithNulls) {
-    logger.logWarn('Cannot warmup the model: unknown input shape');
-    return;
-  }
-
-  const inputShape = inputShapeWithNulls.map((dimension: number) => {
-    if (dimension === null || dimension === -1) {
-      return 1;
-    }
-    return dimension;
-  });
-
-  const dataType: DataType = 'int32';
-  const fakeInput = tf.zeros(inputShape, dataType);
-
-  logger.logDebug('warmupModel', { inputShape, fakeInput });
-
-  await model.executeAsync(fakeInput);
-
-  logger.logDebug('Model is wormed up');
-};
-
-// Do the inference with graph model.
-export const executeModel = async (
+export const graphModelExecute = async (
   model: tf.GraphModel,
   video: HTMLVideoElement,
-  logger: Loggers,
 ): Promise<ModelPredictions | null> => {
+  const logger = buildLoggers({ context: 'graphModelExecute' });
+
   if (!model || !video) {
     logger.logError('executeModel: model or video is undefined');
     return null;

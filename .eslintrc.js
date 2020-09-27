@@ -39,5 +39,6 @@ module.exports = {
     '@typescript-eslint/no-shadow': 'error',
     'react/require-default-props': 'off',
     'no-useless-return': 'off',
+    'import/prefer-default-export': 'off',
   },
 };

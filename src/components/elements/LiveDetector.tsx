@@ -7,7 +7,7 @@ import { LINKS_DETECTOR_MODEL_URL } from '../../constants/models';
 import Notification, { NotificationLevel } from '../shared/Notification';
 import useLogger from '../../hooks/useLogger';
 import ProgressBar from '../shared/ProgressBar';
-import { executeModel } from '../../utils/graphModelUtils';
+import { graphModelExecute } from '../../utils/graphModelExecute';
 
 function LiveDetector(): React.ReactElement | null {
   const logger = useLogger({ context: 'LiveDetector' });
@@ -42,7 +42,7 @@ function LiveDetector(): React.ReactElement | null {
   const videoSize: number = Math.min(windowSize.width, windowSize.height);
 
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
-    const predictions = await executeModel(model, video, logger);
+    const predictions = await graphModelExecute(model, video);
   };
 
   return (
