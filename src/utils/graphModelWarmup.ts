@@ -2,7 +2,9 @@ import * as tf from '@tensorflow/tfjs';
 import { DataType } from '@tensorflow/tfjs-core/src/types';
 import { buildLoggers } from './logger';
 
-export const graphModelWarmup = async (model: tf.GraphModel): Promise<void> => {
+export const graphModelWarmup = async (
+  model: tf.GraphModel,
+): Promise<void> => {
   if (!model) {
     return;
   }

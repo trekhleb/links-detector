@@ -8,10 +8,39 @@ type ModelPredictions = {
   detectionBoxes: number[][],
 };
 
-export const graphModelExecute = async (
+type Box = {
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  score: number,
+  class: number,
+};
+
+// @see: https://js.tensorflow.org/api/latest/#image.nonMaxSuppressionAsync
+const DEFAULT_MAX_BOXES_NUM = 10;
+const DEFAULT_IOU_THRESHOLD = 0.5;
+const DEFAULT_SCORE_THRESHOLD = -Infinity;
+
+type GraphModelExecuteProps = {
   model: tf.GraphModel,
   video: HTMLVideoElement,
-): Promise<ModelPredictions | null> => {
+  maxBoxesNum?: number,
+  iouThreshold?: number,
+  scoreThreshold?: number,
+};
+
+export const graphModelExecute = async (
+  props: GraphModelExecuteProps,
+): Promise<Box[] | null> => {
+  const {
+    model,
+    video,
+    maxBoxesNum = DEFAULT_MAX_BOXES_NUM,
+    iouThreshold = DEFAULT_IOU_THRESHOLD,
+    scoreThreshold = DEFAULT_SCORE_THRESHOLD,
+  } = props;
+
   const logger = buildLoggers({ context: 'graphModelExecute' });
 
   if (!model || !video) {
@@ -68,10 +97,34 @@ export const graphModelExecute = async (
     [detectionsNum],
   ).array();
 
+  // Each entry is [y1, x1, y2, x2], where (y1, x1) and (y2, x2) are
+  // the corners of the bounding box.
   const detectionBoxes: number[][] = await tf.broadcastTo<tf.Rank.R2>(
     tf.squeeze(results[DETECTIONS_BOXES_INDEX]),
     [detectionsNum, 4],
   ).array();
+
+  const importantBoxesIndicesTensor: tf.Tensor1D = await tf.image.nonMaxSuppressionAsync(
+    detectionBoxes,
+    detectionScores,
+    maxBoxesNum,
+    iouThreshold,
+    scoreThreshold,
+  );
+
+  const importantBoxesIndices: Int32Array = await importantBoxesIndicesTensor.data<'int32'>();
+
+  const boxes: Box[] = importantBoxesIndices.reduce<Box[]>((tmpBoxes: Box[], boxIndex: number) => {
+    tmpBoxes.push({
+      x1: detectionBoxes[boxIndex][1],
+      y1: detectionBoxes[boxIndex][0],
+      x2: detectionBoxes[boxIndex][3],
+      y2: detectionBoxes[boxIndex][2],
+      score: detectionScores[boxIndex],
+      class: detectionClasses[boxIndex],
+    });
+    return tmpBoxes;
+  }, []);
 
   const modelPredictions: ModelPredictions = {
     detectionsNum,
@@ -80,7 +133,11 @@ export const graphModelExecute = async (
     detectionScores,
   };
 
-  logger.logDebug('executeModel: parsed results', modelPredictions);
+  logger.logDebug('executeModel: parsed results', {
+    modelPredictions,
+    importantBoxesIndices,
+    boxes,
+  });
 
-  return modelPredictions;
+  return boxes;
 };

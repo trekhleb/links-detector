@@ -42,7 +42,7 @@ function LiveDetector(): React.ReactElement | null {
   const videoSize: number = Math.min(windowSize.width, windowSize.height);
 
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
-    const predictions = await graphModelExecute(model, video);
+    const predictions = await graphModelExecute({ model, video });
   };
 
   return (
