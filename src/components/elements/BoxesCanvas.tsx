@@ -4,8 +4,8 @@ import useLogger from '../../hooks/useLogger';
 
 type BoxesCanvasProps = {
   boxes: DetectionBox[],
-  canvasWidth: number,
-  canvasHeight: number,
+  width: number,
+  height: number,
   normalized?: boolean,
 };
 
@@ -18,8 +18,8 @@ const boxLabelPadding = 4;
 const BoxesCanvas = (props: BoxesCanvasProps): React.ReactElement => {
   const {
     boxes,
-    canvasWidth,
-    canvasHeight,
+    width,
+    height,
     normalized = true,
   } = props;
 
@@ -55,8 +55,8 @@ const BoxesCanvas = (props: BoxesCanvasProps): React.ReactElement => {
           score,
         } = box;
 
-        const normalizeByWidth = (w: number): number => Math.floor(canvasWidth * w);
-        const normalizeByHeight = (h: number): number => Math.floor(canvasHeight * h);
+        const normalizeByWidth = (w: number): number => Math.floor(width * w);
+        const normalizeByHeight = (h: number): number => Math.floor(height * h);
 
         return {
           x1: normalizeByWidth(x1),
@@ -115,8 +115,8 @@ const BoxesCanvas = (props: BoxesCanvasProps): React.ReactElement => {
   const drawDetectionsCallback = useCallback(drawDetections, [
     boxes,
     normalized,
-    canvasHeight,
-    canvasWidth,
+    width,
+    height,
     logger,
   ]);
 
@@ -127,8 +127,8 @@ const BoxesCanvas = (props: BoxesCanvasProps): React.ReactElement => {
   return (
     <canvas
       ref={canvasRef}
-      width={canvasWidth}
-      height={canvasHeight}
+      width={width}
+      height={height}
     />
   );
 };

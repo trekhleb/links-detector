@@ -69,8 +69,8 @@ function LiveDetector(): React.ReactElement | null {
       <div style={{ marginTop: `-${videoSize}px` }}>
         <BoxesCanvas
           boxes={boxes}
-          canvasWidth={videoSize}
-          canvasHeight={videoSize}
+          width={videoSize}
+          height={videoSize}
         />
       </div>
     </ErrorBoundary>
