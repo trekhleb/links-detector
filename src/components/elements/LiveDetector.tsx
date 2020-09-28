@@ -11,11 +11,12 @@ import { DetectionBox, graphModelExecute } from '../../utils/graphModelExecute';
 import BoxesCanvas from './BoxesCanvas';
 import { isDebugMode } from '../../constants/debugging';
 import ErrorBoundary from '../shared/ErrorBoundary';
-import ImageCanvas from './ImageCanvas';
+import ImageCanvas, { CanvasImageSource } from './ImageCanvas';
 
 const SCORE_THRESHOLD = 0.1;
 
 function LiveDetector(): React.ReactElement | null {
+  const [imageSrc, setImageSrc] = useState<CanvasImageSource | null>(null);
   const logger = useLogger({ context: 'LiveDetector' });
   const [boxes, setBoxes] = useState<DetectionBox[] | null>(null);
   const windowSize = useWindowSize();
@@ -49,6 +50,8 @@ function LiveDetector(): React.ReactElement | null {
   const videoSize: number = Math.min(windowSize.width, windowSize.height);
 
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
+    setImageSrc(video);
+
     const t0 = Date.now();
 
     const predictions: DetectionBox[] | null = await graphModelExecute({
@@ -84,7 +87,11 @@ function LiveDetector(): React.ReactElement | null {
   const imageCanvas = isDebugMode() ? (
     <ErrorBoundary>
       <div style={canvasContainerStyles}>
-        <ImageCanvas width={videoSize} height={videoSize} />
+        <ImageCanvas
+          imageSrc={imageSrc}
+          width={videoSize}
+          height={videoSize}
+        />
       </div>
     </ErrorBoundary>
   ) : null;
