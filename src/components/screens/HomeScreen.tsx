@@ -4,7 +4,7 @@ import ErrorBoundary from '../shared/ErrorBoundary';
 function HomeScreen(): React.ReactElement {
   return (
     <ErrorBoundary>
-      <h1>Home</h1>
+      <div />
     </ErrorBoundary>
   );
 }

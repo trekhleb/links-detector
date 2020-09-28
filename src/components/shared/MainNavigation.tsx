@@ -8,6 +8,9 @@ function MainNavigation(): React.ReactElement {
       <li>
         <NavLink to={ROUTES.detector.path}>Detector</NavLink>
       </li>
+      <li>
+        <NavLink to={ROUTES.debug.path}>Debug</NavLink>
+      </li>
     </ul>
   );
 }
