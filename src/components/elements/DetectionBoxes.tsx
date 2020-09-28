@@ -28,7 +28,7 @@ const DetectionBoxes = (props: DetectionBoxesProps): React.ReactElement => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const drawDetections = (): void => {
-    if (!canvasRef.current || !boxes || !boxes.length) {
+    if (!canvasRef.current || !boxes) {
       return;
     }
 
