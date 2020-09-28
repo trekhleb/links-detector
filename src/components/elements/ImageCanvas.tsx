@@ -4,9 +4,9 @@ import useLogger from '../../hooks/useLogger';
 export type CanvasImageSource = HTMLImageElement | HTMLVideoElement | HTMLCanvasElement;
 
 type ImageCanvasProps = {
+  imageSrc: CanvasImageSource | null,
   width: number,
   height: number,
-  imageSrc: CanvasImageSource | null,
 };
 
 function ImageCanvas(props: ImageCanvasProps): React.ReactElement {
