@@ -8,13 +8,13 @@ type ModelPredictions = {
   detectionBoxes: number[][],
 };
 
-export type Box = {
+export type DetectionBox = {
   x1: number,
   y1: number,
   x2: number,
   y2: number,
   score: number,
-  class: number,
+  categoryId: number,
 };
 
 // @see: https://js.tensorflow.org/api/latest/#image.nonMaxSuppressionAsync
@@ -32,7 +32,7 @@ type GraphModelExecuteProps = {
 
 export const graphModelExecute = async (
   props: GraphModelExecuteProps,
-): Promise<Box[] | null> => {
+): Promise<DetectionBox[] | null> => {
   const {
     model,
     video,
@@ -114,17 +114,20 @@ export const graphModelExecute = async (
 
   const importantBoxesIndices: Int32Array = await importantBoxesIndicesTensor.data<'int32'>();
 
-  const boxes: Box[] = importantBoxesIndices.reduce<Box[]>((tmpBoxes: Box[], boxIndex: number) => {
-    tmpBoxes.push({
-      x1: detectionBoxes[boxIndex][1],
-      y1: detectionBoxes[boxIndex][0],
-      x2: detectionBoxes[boxIndex][3],
-      y2: detectionBoxes[boxIndex][2],
-      score: detectionScores[boxIndex],
-      class: detectionClasses[boxIndex],
-    });
-    return tmpBoxes;
-  }, []);
+  const boxes: DetectionBox[] = importantBoxesIndices.reduce<DetectionBox[]>(
+    (tmpBoxes: DetectionBox[], boxIndex: number) => {
+      tmpBoxes.push({
+        x1: detectionBoxes[boxIndex][1],
+        y1: detectionBoxes[boxIndex][0],
+        x2: detectionBoxes[boxIndex][3],
+        y2: detectionBoxes[boxIndex][2],
+        score: detectionScores[boxIndex],
+        categoryId: detectionClasses[boxIndex],
+      });
+      return tmpBoxes;
+    },
+    [],
+  );
 
   const modelPredictions: ModelPredictions = {
     detectionsNum,
