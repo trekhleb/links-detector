@@ -10,6 +10,7 @@ import ProgressBar from '../shared/ProgressBar';
 import { DetectionBox, graphModelExecute } from '../../utils/graphModelExecute';
 import DetectionBoxes from './DetectionBoxes';
 import { isDebugMode } from '../../constants/debugging';
+import ErrorBoundary from '../shared/ErrorBoundary';
 
 function LiveDetector(): React.ReactElement | null {
   const logger = useLogger({ context: 'LiveDetector' });
@@ -58,22 +59,26 @@ function LiveDetector(): React.ReactElement | null {
   };
 
   const canvasBoxes = boxes && isDebugMode() ? (
-    <div style={{ marginTop: `-${videoSize}px` }}>
-      <DetectionBoxes
-        boxes={boxes}
-        canvasWidth={videoSize}
-        canvasHeight={videoSize}
-      />
-    </div>
+    <ErrorBoundary>
+      <div style={{ marginTop: `-${videoSize}px` }}>
+        <DetectionBoxes
+          boxes={boxes}
+          canvasWidth={videoSize}
+          canvasHeight={videoSize}
+        />
+      </div>
+    </ErrorBoundary>
   ) : null;
 
   return (
     <div>
-      <CameraStream
-        onFrame={onFrame}
-        width={videoSize}
-        height={videoSize}
-      />
+      <ErrorBoundary>
+        <CameraStream
+          onFrame={onFrame}
+          width={videoSize}
+          height={videoSize}
+        />
+      </ErrorBoundary>
       { canvasBoxes }
     </div>
   );
