@@ -41,5 +41,6 @@ module.exports = {
     'no-useless-return': 'off',
     'import/prefer-default-export': 'off',
     'arrow-body-style': 'off',
+    'react/jsx-one-expression-per-line': 'off',
   },
 };

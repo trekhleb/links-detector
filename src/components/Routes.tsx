@@ -5,6 +5,7 @@ import { ROUTES } from '../constants/routes';
 import HomeScreen from './screens/HomeScreen';
 import DetectorScreen from './screens/DetectorScreen';
 import NoteFoundScreen from './screens/NotFoundScreen';
+import DebugInfo from './elements/DebugInfo';
 
 function Routes(): React.ReactElement {
   return (
@@ -14,6 +15,9 @@ function Routes(): React.ReactElement {
       </Route>
       <Route path={ROUTES.detector.path} exact>
         <DetectorScreen />
+      </Route>
+      <Route path={ROUTES.debug.path} exact>
+        <DebugInfo />
       </Route>
       <Route>
         <NoteFoundScreen />

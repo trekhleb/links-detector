@@ -3,6 +3,7 @@ export const BASE_APP_PATH: string = '/';
 export enum RouteNames {
   home = 'home',
   detector = 'detector',
+  debug = 'debug',
 }
 
 type RouteType = {
@@ -19,6 +20,9 @@ export const ROUTES: RoutesType = {
   },
   [RouteNames.detector]: {
     path: '/detector',
+  },
+  [RouteNames.debug]: {
+    path: '/debug',
   },
 };
 
