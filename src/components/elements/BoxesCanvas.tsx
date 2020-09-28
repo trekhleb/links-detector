@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useCallback } from 'react';
 import { DetectionBox } from '../../utils/graphModelExecute';
 import useLogger from '../../hooks/useLogger';
 
-type DetectionBoxesProps = {
+type BoxesCanvasProps = {
   boxes: DetectionBox[],
   canvasWidth: number,
   canvasHeight: number,
@@ -15,7 +15,7 @@ const boxLabelFont = '10px helvetica';
 const boxLabelColor = '#000000';
 const boxLabelPadding = 4;
 
-const DetectionBoxes = (props: DetectionBoxesProps): React.ReactElement => {
+const BoxesCanvas = (props: BoxesCanvasProps): React.ReactElement => {
   const {
     boxes,
     canvasWidth,
@@ -133,4 +133,4 @@ const DetectionBoxes = (props: DetectionBoxesProps): React.ReactElement => {
   );
 };
 
-export default DetectionBoxes;
+export default BoxesCanvas;

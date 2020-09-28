@@ -8,7 +8,7 @@ import Notification, { NotificationLevel } from '../shared/Notification';
 import useLogger from '../../hooks/useLogger';
 import ProgressBar from '../shared/ProgressBar';
 import { DetectionBox, graphModelExecute } from '../../utils/graphModelExecute';
-import DetectionBoxes from './DetectionBoxes';
+import BoxesCanvas from './BoxesCanvas';
 import { isDebugMode } from '../../constants/debugging';
 import ErrorBoundary from '../shared/ErrorBoundary';
 
@@ -64,10 +64,10 @@ function LiveDetector(): React.ReactElement | null {
     logger.logDebug('onFrame', { executionTimeS });
   };
 
-  const canvasBoxes = boxes && isDebugMode() ? (
+  const boxesCanvas = boxes && isDebugMode() ? (
     <ErrorBoundary>
       <div style={{ marginTop: `-${videoSize}px` }}>
-        <DetectionBoxes
+        <BoxesCanvas
           boxes={boxes}
           canvasWidth={videoSize}
           canvasHeight={videoSize}
@@ -85,7 +85,7 @@ function LiveDetector(): React.ReactElement | null {
           height={videoSize}
         />
       </ErrorBoundary>
-      { canvasBoxes }
+      { boxesCanvas }
     </div>
   );
 }
