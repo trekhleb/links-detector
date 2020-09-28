@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import CameraStream from '../shared/CameraStream';
 import useWindowSize from '../../hooks/useWindowSize';
@@ -7,10 +7,13 @@ import { LINKS_DETECTOR_MODEL_URL } from '../../constants/models';
 import Notification, { NotificationLevel } from '../shared/Notification';
 import useLogger from '../../hooks/useLogger';
 import ProgressBar from '../shared/ProgressBar';
-import { graphModelExecute } from '../../utils/graphModelExecute';
+import { DetectionBox, graphModelExecute } from '../../utils/graphModelExecute';
+import DetectionBoxes from './DetectionBoxes';
+import { isDebugMode } from '../../constants/debugging';
 
 function LiveDetector(): React.ReactElement | null {
   const logger = useLogger({ context: 'LiveDetector' });
+  const [boxes, setBoxes] = useState<DetectionBox[] | null>(null);
   const windowSize = useWindowSize();
   const {
     model,
@@ -42,8 +45,27 @@ function LiveDetector(): React.ReactElement | null {
   const videoSize: number = Math.min(windowSize.width, windowSize.height);
 
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
-    const predictions = await graphModelExecute({ model, video });
+    const t0 = Date.now();
+
+    const predictions: DetectionBox[] | null = await graphModelExecute({ model, video });
+
+    const executionTimeMs = Date.now() - t0;
+    const executionTimeS = (executionTimeMs / 1000).toFixed(2);
+
+    setBoxes(predictions);
+
+    logger.logDebug('onFrame', { executionTimeS });
   };
+
+  const canvasBoxes = boxes && isDebugMode() ? (
+    <div style={{ marginTop: `-${videoSize}px` }}>
+      <DetectionBoxes
+        boxes={boxes}
+        canvasWidth={videoSize}
+        canvasHeight={videoSize}
+      />
+    </div>
+  ) : null;
 
   return (
     <div>
@@ -52,6 +74,7 @@ function LiveDetector(): React.ReactElement | null {
         width={videoSize}
         height={videoSize}
       />
+      { canvasBoxes }
     </div>
   );
 }
