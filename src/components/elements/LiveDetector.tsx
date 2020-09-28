@@ -11,6 +11,7 @@ import { DetectionBox, graphModelExecute } from '../../utils/graphModelExecute';
 import BoxesCanvas from './BoxesCanvas';
 import { isDebugMode } from '../../constants/debugging';
 import ErrorBoundary from '../shared/ErrorBoundary';
+import ImageCanvas from './ImageCanvas';
 
 const SCORE_THRESHOLD = 0.1;
 
@@ -64,14 +65,26 @@ function LiveDetector(): React.ReactElement | null {
     logger.logDebug('onFrame', { executionTimeS });
   };
 
+  const canvasContainerStyles = {
+    marginTop: `-${videoSize}px`,
+  };
+
   const boxesCanvas = boxes && isDebugMode() ? (
     <ErrorBoundary>
-      <div style={{ marginTop: `-${videoSize}px` }}>
+      <div style={canvasContainerStyles}>
         <BoxesCanvas
           boxes={boxes}
           width={videoSize}
           height={videoSize}
         />
+      </div>
+    </ErrorBoundary>
+  ) : null;
+
+  const imageCanvas = isDebugMode() ? (
+    <ErrorBoundary>
+      <div style={canvasContainerStyles}>
+        <ImageCanvas width={videoSize} height={videoSize} />
       </div>
     </ErrorBoundary>
   ) : null;
@@ -85,6 +98,7 @@ function LiveDetector(): React.ReactElement | null {
           height={videoSize}
         />
       </ErrorBoundary>
+      { imageCanvas }
       { boxesCanvas }
     </div>
   );
