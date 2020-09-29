@@ -11,13 +11,14 @@ import { DetectionBox, graphModelExecute } from '../../utils/graphModelExecute';
 import BoxesCanvas from './BoxesCanvas';
 import { isDebugMode } from '../../constants/debugging';
 import ErrorBoundary from '../shared/ErrorBoundary';
-import ImageCanvas, { CanvasImageSource } from './ImageCanvas';
+import PixelsCanvas from './PixelsCanvas';
 import { msToSs } from '../../utils/time';
+import { Pixels, preprocessPixels } from '../../utils/image';
 
 const SCORE_THRESHOLD = 0.1;
 
 function LiveDetector(): React.ReactElement | null {
-  const [imageSrc, setImageSrc] = useState<CanvasImageSource | null>(null);
+  const [pixels, setPixels] = useState<Pixels | null>(null);
   const logger = useLogger({ context: 'LiveDetector' });
   const [boxes, setBoxes] = useState<DetectionBox[] | null>(null);
   const windowSize = useWindowSize();
@@ -53,15 +54,15 @@ function LiveDetector(): React.ReactElement | null {
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
     // Image preprocessing.
     const imageProcessingTimeStart = Date.now();
-    const processedCanvas = video;
-    setImageSrc(processedCanvas);
+    const processedPixels = preprocessPixels(video);
+    setPixels(processedPixels);
     const imageProcessingTime = msToSs(Date.now() - imageProcessingTimeStart);
 
     // Model execution.
     const modelExecutionTimeStart = Date.now();
     const predictions: DetectionBox[] | null = await graphModelExecute({
       model,
-      pixels: processedCanvas,
+      pixels: processedPixels,
       scoreThreshold: SCORE_THRESHOLD,
     });
     const modelExecutionTime = msToSs(Date.now() - modelExecutionTimeStart);
@@ -92,8 +93,8 @@ function LiveDetector(): React.ReactElement | null {
   const imageCanvas = isDebugMode() ? (
     <ErrorBoundary>
       <div style={canvasContainerStyles}>
-        <ImageCanvas
-          imageSrc={imageSrc}
+        <PixelsCanvas
+          pixels={pixels}
           width={videoSize}
           height={videoSize}
         />

@@ -1,7 +1,7 @@
 /// <reference types="react-scripts" />
 
 /*
-declare module 'banana-js';
+declare module 'glfx';
 
 or
 
@@ -10,4 +10,4 @@ declare namespace bananaJs {
     function addBanana(n: number) void;
     function removeBanana(n: number) void;
 }
- */
+*/

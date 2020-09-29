@@ -1,8 +1,8 @@
 import * as tf from '@tensorflow/tfjs';
-import { PixelData } from '@tensorflow/tfjs-core/src/types';
 
 import { buildLoggers } from './logger';
 import { msToSs } from './time';
+import { Pixels } from './image';
 
 type ModelPredictions = {
   detectionsNum: number,
@@ -27,7 +27,7 @@ const DEFAULT_SCORE_THRESHOLD = -Infinity;
 
 type GraphModelExecuteProps = {
   model: tf.GraphModel,
-  pixels: PixelData | ImageData| HTMLImageElement | HTMLCanvasElement| HTMLVideoElement,
+  pixels: Pixels,
   maxBoxesNum?: number,
   iouThreshold?: number,
   scoreThreshold?: number,
