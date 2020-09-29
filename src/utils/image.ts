@@ -1,5 +1,5 @@
 type Pixels = ImageData| HTMLImageElement | HTMLCanvasElement| HTMLVideoElement;
 
-export const preprocessImage = (pixels: Pixels): Pixels => {
+export const preprocessPixels = (pixels: Pixels): Pixels => {
   return pixels;
 };
