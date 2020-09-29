@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import { getTFInfo, TFInfo } from '../../utils/debug';
+import {
+  getTFInfo,
+  isCanvasFilterSupported,
+  isWebGLSupported,
+  TFInfo,
+} from '../../utils/debug';
 import useLogger from '../../hooks/useLogger';
 import { LINKS_DETECTOR_MODEL_URL } from '../../constants/models';
 
@@ -20,13 +25,22 @@ function DebugInfo(): React.ReactElement {
     return <div>Loading...</div>;
   }
 
+  const supported = 'YES';
+  const notSupported = 'NO';
+
   return (
     <ul>
       <li>
-        <small>Platform name:</small> <code>{tfInfo.platformName}</code>
+        Platform name: <code>{tfInfo.platformName}</code>
       </li>
       <li>
-        <small>Backend name:</small> <code>{tfInfo.backendName}</code>
+        Backend name: <code>{tfInfo.backendName}</code>
+      </li>
+      <li>
+        WebGL: <code>{isWebGLSupported() ? supported : notSupported}</code>
+      </li>
+      <li>
+        Canvas Filters: <code>{isCanvasFilterSupported() ? supported : notSupported}</code>
       </li>
     </ul>
   );
