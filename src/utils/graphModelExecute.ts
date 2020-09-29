@@ -1,5 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import { buildLoggers } from './logger';
+import { msToSs } from './time';
 
 type ModelPredictions = {
   detectionsNum: number,
@@ -58,7 +59,7 @@ export const graphModelExecute = async (
     const inferenceTimeMs = tf.util.now() - t0;
     logger.logDebug('executeModel: executing', {
       inputTensorShape: inputTensor.shape,
-      inferenceTimeS: (inferenceTimeMs / 1000).toFixed(2),
+      inferenceTime: msToSs(inferenceTimeMs),
       results,
     });
   } catch (e) {

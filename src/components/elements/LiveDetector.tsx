@@ -12,6 +12,7 @@ import BoxesCanvas from './BoxesCanvas';
 import { isDebugMode } from '../../constants/debugging';
 import ErrorBoundary from '../shared/ErrorBoundary';
 import ImageCanvas, { CanvasImageSource } from './ImageCanvas';
+import { msToSs } from '../../utils/time';
 
 const SCORE_THRESHOLD = 0.1;
 
@@ -52,7 +53,7 @@ function LiveDetector(): React.ReactElement | null {
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
     setImageSrc(video);
 
-    const t0 = Date.now();
+    const executionTimeStart = Date.now();
 
     const predictions: DetectionBox[] | null = await graphModelExecute({
       model,
@@ -60,12 +61,11 @@ function LiveDetector(): React.ReactElement | null {
       scoreThreshold: SCORE_THRESHOLD,
     });
 
-    const executionTimeMs = Date.now() - t0;
-    const executionTimeS = (executionTimeMs / 1000).toFixed(2);
+    const executionTime = msToSs(Date.now() - executionTimeStart);
 
     setBoxes(predictions);
 
-    logger.logDebug('onFrame', { executionTimeS });
+    logger.logDebug('onFrame', { executionTime });
   };
 
   const canvasContainerStyles = {
