@@ -1,4 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
+import { PixelData } from '@tensorflow/tfjs-core/src/types';
+
 import { buildLoggers } from './logger';
 import { msToSs } from './time';
 
@@ -25,7 +27,7 @@ const DEFAULT_SCORE_THRESHOLD = -Infinity;
 
 type GraphModelExecuteProps = {
   model: tf.GraphModel,
-  video: HTMLVideoElement,
+  pixels: PixelData | ImageData| HTMLImageElement | HTMLCanvasElement| HTMLVideoElement,
   maxBoxesNum?: number,
   iouThreshold?: number,
   scoreThreshold?: number,
@@ -36,7 +38,7 @@ export const graphModelExecute = async (
 ): Promise<DetectionBox[] | null> => {
   const {
     model,
-    video,
+    pixels,
     maxBoxesNum = DEFAULT_MAX_BOXES_NUM,
     iouThreshold = DEFAULT_IOU_THRESHOLD,
     scoreThreshold = DEFAULT_SCORE_THRESHOLD,
@@ -44,12 +46,12 @@ export const graphModelExecute = async (
 
   const logger = buildLoggers({ context: 'graphModelExecute' });
 
-  if (!model || !video) {
+  if (!model || !pixels) {
     logger.logError('executeModel: model or video is undefined');
     return null;
   }
 
-  const inputTensor: tf.Tensor3D = tf.browser.fromPixels(video).expandDims(0);
+  const inputTensor: tf.Tensor3D = tf.browser.fromPixels(pixels).expandDims(0);
 
   let results: tf.Tensor | tf.Tensor[] | null = null;
 
