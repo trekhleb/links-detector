@@ -51,18 +51,17 @@ function LiveDetector(): React.ReactElement | null {
   const videoSize: number = Math.min(windowSize.width, windowSize.height);
 
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
+    // Image preprocessing.
     setImageSrc(video);
 
+    // Model execution.
     const executionTimeStart = Date.now();
-
     const predictions: DetectionBox[] | null = await graphModelExecute({
       model,
       video,
       scoreThreshold: SCORE_THRESHOLD,
     });
-
     const executionTime = msToSs(Date.now() - executionTimeStart);
-
     setBoxes(predictions);
 
     logger.logDebug('onFrame', { executionTime });
