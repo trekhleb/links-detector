@@ -58,7 +58,7 @@ function LiveDetector(): React.ReactElement | null {
     const executionTimeStart = Date.now();
     const predictions: DetectionBox[] | null = await graphModelExecute({
       model,
-      video,
+      pixels: video,
       scoreThreshold: SCORE_THRESHOLD,
     });
     const executionTime = msToSs(Date.now() - executionTimeStart);
