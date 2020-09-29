@@ -52,19 +52,25 @@ function LiveDetector(): React.ReactElement | null {
 
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
     // Image preprocessing.
-    setImageSrc(video);
+    const imageProcessingTimeStart = Date.now();
+    const processedCanvas = video;
+    setImageSrc(processedCanvas);
+    const imageProcessingTime = msToSs(Date.now() - imageProcessingTimeStart);
 
     // Model execution.
-    const executionTimeStart = Date.now();
+    const modelExecutionTimeStart = Date.now();
     const predictions: DetectionBox[] | null = await graphModelExecute({
       model,
-      pixels: video,
+      pixels: processedCanvas,
       scoreThreshold: SCORE_THRESHOLD,
     });
-    const executionTime = msToSs(Date.now() - executionTimeStart);
+    const modelExecutionTime = msToSs(Date.now() - modelExecutionTimeStart);
     setBoxes(predictions);
 
-    logger.logDebug('onFrame', { executionTime });
+    logger.logDebug('onFrame', {
+      imageProcessingTime,
+      modelExecutionTime,
+    });
   };
 
   const canvasContainerStyles = {
