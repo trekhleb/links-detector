@@ -22,7 +22,7 @@ import {
   contrastFilter,
 } from '../../utils/image';
 
-const SCORE_THRESHOLD = 0.1;
+const SCORE_THRESHOLD = 0.3;
 
 function LiveDetector(): React.ReactElement | null {
   const [pixels, setPixels] = useState<Pixels | null>(null);
