@@ -1,4 +1,4 @@
-import { isDebugMode } from '../constants/debugging';
+import { isDebugMode } from '../constants/debug';
 
 export type LoggerContext = string | null;
 export type LoggerMessage = string;

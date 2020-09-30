@@ -9,7 +9,7 @@ import useLogger from '../../hooks/useLogger';
 import ProgressBar from '../shared/ProgressBar';
 import { DetectionBox, graphModelExecute } from '../../utils/graphModelExecute';
 import BoxesCanvas from './BoxesCanvas';
-import { isDebugMode } from '../../constants/debugging';
+import { isDebugMode } from '../../constants/debug';
 import ErrorBoundary from '../shared/ErrorBoundary';
 import PixelsCanvas from './PixelsCanvas';
 import { msToSs } from '../../utils/time';

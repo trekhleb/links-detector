@@ -136,6 +136,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     objectFit: 'cover',
     width: `${width}px`,
     height: `${height}px`,
+    filter: 'grayscale(100%)',
   };
 
   return (

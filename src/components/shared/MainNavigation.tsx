@@ -9,6 +9,9 @@ function MainNavigation(): React.ReactElement {
         <NavLink to={ROUTES.detector.path}>Detector</NavLink>
       </li>
       <li>
+        <NavLink to={`${ROUTES.detector.path}?debug=true`}>Detector Debug</NavLink>
+      </li>
+      <li>
         <NavLink to={ROUTES.debug.path}>Debug</NavLink>
       </li>
     </ul>

@@ -1,5 +1,7 @@
 export const BASE_APP_PATH: string = '/';
 
+export const DEBUG_GET_PARAM = 'debug';
+
 export enum RouteNames {
   home = 'home',
   detector = 'detector',
