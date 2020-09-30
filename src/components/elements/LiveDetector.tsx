@@ -19,6 +19,7 @@ import {
   greyscaleFilter,
   Pixels,
   preprocessPixels,
+  contrastFilter,
 } from '../../utils/image';
 
 const SCORE_THRESHOLD = 0.1;
@@ -62,6 +63,7 @@ function LiveDetector(): React.ReactElement | null {
     const filters: FilterFunc[] = [
       greyscaleFilter(),
       brightnessFilter(0.2),
+      contrastFilter(0.2),
     ];
     const imageProcessingTimeStart = Date.now();
     const processedPixels = preprocessPixels(video, filters);
