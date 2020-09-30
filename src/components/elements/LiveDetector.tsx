@@ -13,7 +13,13 @@ import { isDebugMode } from '../../constants/debugging';
 import ErrorBoundary from '../shared/ErrorBoundary';
 import PixelsCanvas from './PixelsCanvas';
 import { msToSs } from '../../utils/time';
-import { Pixels, preprocessPixels } from '../../utils/image';
+import {
+  brightnessFilter,
+  FilterFunc,
+  greyscaleFilter,
+  Pixels,
+  preprocessPixels,
+} from '../../utils/image';
 
 const SCORE_THRESHOLD = 0.1;
 
@@ -53,8 +59,12 @@ function LiveDetector(): React.ReactElement | null {
 
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
     // Image preprocessing.
+    const filters: FilterFunc[] = [
+      greyscaleFilter(),
+      brightnessFilter(0.2),
+    ];
     const imageProcessingTimeStart = Date.now();
-    const processedPixels = preprocessPixels(video);
+    const processedPixels = preprocessPixels(video, filters);
     setPixels(processedPixels);
     const imageProcessingTime = msToSs(Date.now() - imageProcessingTimeStart);
 
