@@ -134,26 +134,39 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     );
   }
 
-  const videoStyle: CSSProperties = {
-    objectFit: 'cover',
+  const videoWrapperStyle: CSSProperties = {
     width: `${width}px`,
     height: `${height}px`,
+    overflow: 'hidden',
+  };
+
+  // On iOS Safari filters add weird 1px left and bottom white borders to the video.
+  // To hide that border the -1px shift is introduced in the styles below.
+  const FILTER_BORDERS_SHIFT = 2;
+
+  const videoStyle: CSSProperties = {
+    objectFit: 'cover',
+    width: `${width + FILTER_BORDERS_SHIFT}px`,
+    height: `${height + FILTER_BORDERS_SHIFT}px`,
+    marginLeft: `-${FILTER_BORDERS_SHIFT}px`,
     ...videoStyleOverrides,
   };
 
   return (
-    <video
-      ref={videoRef}
-      width={width}
-      height={height}
-      style={videoStyle}
-      className="fade-in-1"
-      playsInline
-      autoPlay
-      muted
-    >
-      Your browser does not support embedded videos
-    </video>
+    <div style={videoWrapperStyle}>
+      <video
+        ref={videoRef}
+        width={width}
+        height={height}
+        style={videoStyle}
+        className="fade-in-1"
+        playsInline
+        autoPlay
+        muted
+      >
+        Your browser does not support embedded videos
+      </video>
+    </div>
   );
 }
 
