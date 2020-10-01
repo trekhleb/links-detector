@@ -133,6 +133,7 @@ function LiveDetector(): React.ReactElement | null {
           width={videoSize}
           height={videoSize}
           videoStyle={videoStyle}
+          idealFrameRate={DATA_PIPELINE.streaming.idealFPS}
         />
       </ErrorBoundary>
       { imageCanvas }

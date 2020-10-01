@@ -10,11 +10,11 @@ import Notification, { NotificationLevel } from './Notification';
 type FacingMode = 'user' | 'environment';
 
 type CameraStreamProps = {
-  width?: number,
-  height?: number,
+  width: number,
+  height: number,
+  idealFrameRate: number,
+  onFrame: (video: HTMLVideoElement) => Promise<void>,
   facingMode?: FacingMode,
-  idealFrameRate?: number,
-  onFrame?: (video: HTMLVideoElement) => Promise<void>,
   videoStyle?: CSSProperties,
 };
 
@@ -24,12 +24,12 @@ const oneSecond = 1000;
 /* global MediaStreamConstraints */
 function CameraStream(props: CameraStreamProps): React.ReactElement {
   const {
-    width = 300,
-    height = 300,
-    idealFrameRate = 0.5,
+    width,
+    height,
+    onFrame,
+    idealFrameRate,
     facingMode = 'environment',
-    onFrame = (): Promise<void> => Promise.resolve(),
-    videoStyle: customVideoStyle = {},
+    videoStyle: videoStyleOverrides = {},
   } = props;
 
   const frameThrottlingMs = Math.floor(oneSecond / idealFrameRate);
@@ -138,7 +138,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     objectFit: 'cover',
     width: `${width}px`,
     height: `${height}px`,
-    ...customVideoStyle,
+    ...videoStyleOverrides,
   };
 
   return (

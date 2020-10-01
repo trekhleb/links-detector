@@ -16,6 +16,9 @@ export type DataPipeline = {
       contrast: number, // [-1, 1]
     },
   },
+  streaming: {
+    idealFPS: number,
+  },
   httpsDetection: {
     maxBoxesNum: number,
     IOUThreshold: number, // [0, 1]
@@ -35,13 +38,16 @@ export const DATA_PIPELINE: DataPipeline = {
     },
     modelPixels: {
       enabled: true,
-      brightness: 0.15,
-      contrast: 0.5,
+      brightness: 0.2,
+      contrast: 0.2,
     },
+  },
+  streaming: {
+    idealFPS: 0.5,
   },
   httpsDetection: {
     maxBoxesNum: 10,
     IOUThreshold: 0.5,
-    scoreThreshold: 0.3,
+    scoreThreshold: 0.1,
   },
 };
