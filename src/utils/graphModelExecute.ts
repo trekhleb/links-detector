@@ -20,17 +20,12 @@ export type DetectionBox = {
   categoryId: number,
 };
 
-// @see: https://js.tensorflow.org/api/latest/#image.nonMaxSuppressionAsync
-const DEFAULT_MAX_BOXES_NUM = 10;
-const DEFAULT_IOU_THRESHOLD = 0.5;
-const DEFAULT_SCORE_THRESHOLD = -Infinity;
-
 type GraphModelExecuteProps = {
   model: tf.GraphModel,
   pixels: Pixels,
-  maxBoxesNum?: number,
-  iouThreshold?: number,
-  scoreThreshold?: number,
+  maxBoxesNum: number,
+  iouThreshold: number,
+  scoreThreshold: number,
 };
 
 export const graphModelExecute = async (
@@ -39,9 +34,9 @@ export const graphModelExecute = async (
   const {
     model,
     pixels,
-    maxBoxesNum = DEFAULT_MAX_BOXES_NUM,
-    iouThreshold = DEFAULT_IOU_THRESHOLD,
-    scoreThreshold = DEFAULT_SCORE_THRESHOLD,
+    maxBoxesNum,
+    iouThreshold,
+    scoreThreshold,
   } = props;
 
   const logger = buildLoggers({ context: 'graphModelExecute' });

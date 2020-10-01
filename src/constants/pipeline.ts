@@ -46,6 +46,7 @@ export const DATA_PIPELINE: DataPipeline = {
     idealFPS: 0.5,
   },
   httpsDetection: {
+    // @see: https://js.tensorflow.org/api/latest/#image.nonMaxSuppressionAsync
     maxBoxesNum: 10,
     IOUThreshold: 0.5,
     scoreThreshold: 0.1,
