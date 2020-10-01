@@ -3,12 +3,7 @@ import React, { CSSProperties, useState } from 'react';
 import CameraStream from '../shared/CameraStream';
 import useWindowSize from '../../hooks/useWindowSize';
 import useGraphModel from '../../hooks/useGraphModel';
-import {
-  LINKS_DETECTOR_MAX_BOXES_NUM,
-  LINKS_DETECTOR_MODEL_IOU_THRESHOLD,
-  LINKS_DETECTOR_MODEL_SCORE_THRESHOLD,
-  LINKS_DETECTOR_MODEL_URL,
-} from '../../constants/models';
+import { DATA_PIPELINE } from '../../constants/pipeline';
 import Notification, { NotificationLevel } from '../shared/Notification';
 import useLogger from '../../hooks/useLogger';
 import ProgressBar from '../shared/ProgressBar';
@@ -26,11 +21,16 @@ import {
   preprocessPixels,
   contrastFilter,
 } from '../../utils/image';
-import { VIDEO_BRIGHTNESS, VIDEO_CONTRAST } from '../../constants/video';
 
-const videoStyle: CSSProperties = {
-  filter: `brightness(${1 + VIDEO_BRIGHTNESS}) contrast(${1 + VIDEO_CONTRAST}) grayscale(1)`,
-};
+const userVideoBrightness = 1 + DATA_PIPELINE.preprocessing.userPixels.brightness;
+const userVideoContrast = 1 + DATA_PIPELINE.preprocessing.userPixels.contrast;
+
+const modelVideoBrightness = DATA_PIPELINE.preprocessing.modelPixels.brightness;
+const modelVideoContrast = DATA_PIPELINE.preprocessing.modelPixels.contrast;
+
+const videoStyle: CSSProperties = DATA_PIPELINE.preprocessing.userPixels.enabled ? {
+  filter: `brightness(${userVideoBrightness}) contrast(${userVideoContrast}) grayscale(1)`,
+} : {};
 
 function LiveDetector(): React.ReactElement | null {
   const [pixels, setPixels] = useState<Pixels | null>(null);
@@ -42,7 +42,7 @@ function LiveDetector(): React.ReactElement | null {
     error: modelError,
     loadingProgress: modelLoadingProgress,
   } = useGraphModel({
-    modelURL: LINKS_DETECTOR_MODEL_URL,
+    modelURL: DATA_PIPELINE.loading.linksDetectorModelURL,
     warmup: true,
   });
 
@@ -68,11 +68,11 @@ function LiveDetector(): React.ReactElement | null {
 
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
     // Image preprocessing.
-    const filters: FilterFunc[] = [
-      brightnessFilter(VIDEO_BRIGHTNESS),
-      contrastFilter(VIDEO_CONTRAST),
+    const filters: FilterFunc[] = DATA_PIPELINE.preprocessing.modelPixels.enabled ? [
+      brightnessFilter(modelVideoBrightness),
+      contrastFilter(modelVideoContrast),
       greyscaleFilter(),
-    ];
+    ] : [];
     const imageProcessingTimeStart = Date.now();
     const processedPixels = preprocessPixels(video, filters);
     setPixels(processedPixels);
@@ -83,9 +83,9 @@ function LiveDetector(): React.ReactElement | null {
     const predictions: DetectionBox[] | null = await graphModelExecute({
       model,
       pixels: processedPixels,
-      maxBoxesNum: LINKS_DETECTOR_MAX_BOXES_NUM,
-      scoreThreshold: LINKS_DETECTOR_MODEL_SCORE_THRESHOLD,
-      iouThreshold: LINKS_DETECTOR_MODEL_IOU_THRESHOLD,
+      maxBoxesNum: DATA_PIPELINE.httpsDetection.maxBoxesNum,
+      scoreThreshold: DATA_PIPELINE.httpsDetection.scoreThreshold,
+      iouThreshold: DATA_PIPELINE.httpsDetection.IOUThreshold,
     });
     const modelExecutionTime = msToSs(Date.now() - modelExecutionTimeStart);
     setBoxes(predictions);
