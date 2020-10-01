@@ -15,6 +15,7 @@ type CameraStreamProps = {
   facingMode?: FacingMode,
   idealFrameRate?: number,
   onFrame?: (video: HTMLVideoElement) => Promise<void>,
+  videoStyle?: CSSProperties,
 };
 
 const videoFrameRate = 30;
@@ -28,6 +29,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     idealFrameRate = 0.5,
     facingMode = 'environment',
     onFrame = (): Promise<void> => Promise.resolve(),
+    videoStyle: customVideoStyle = {},
   } = props;
 
   const frameThrottlingMs = Math.floor(oneSecond / idealFrameRate);
@@ -136,7 +138,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     objectFit: 'cover',
     width: `${width}px`,
     height: `${height}px`,
-    // filter: 'grayscale(100%)',
+    ...customVideoStyle,
   };
 
   return (
@@ -144,11 +146,11 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
       ref={videoRef}
       width={width}
       height={height}
+      style={videoStyle}
+      className="fade-in-1"
       playsInline
       autoPlay
       muted
-      style={videoStyle}
-      className="fade-in-1"
     >
       Your browser does not support embedded videos
     </video>
