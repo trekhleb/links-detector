@@ -1,8 +1,8 @@
 import * as tf from '@tensorflow/tfjs';
 
 import { buildLoggers } from './logger';
-import { msToSs } from './time';
 import { Pixels } from './image';
+import { newProfiler, Profiler } from './profiler';
 
 type ModelPredictions = {
   detectionsNum: number,
@@ -39,6 +39,8 @@ export const graphModelExecute = async (
     scoreThreshold,
   } = props;
 
+  const profiler: Profiler = newProfiler();
+
   const logger = buildLoggers({ context: 'graphModelExecute' });
 
   if (!model || !pixels) {
@@ -51,12 +53,12 @@ export const graphModelExecute = async (
   let results: tf.Tensor | tf.Tensor[] | null = null;
 
   try {
-    const t0 = tf.util.now();
+    profiler.start();
     results = await model.executeAsync(inputTensor);
-    const inferenceTimeMs = tf.util.now() - t0;
+    const inferenceTime = profiler.stop();
     logger.logDebug('executeModel: executing', {
       inputTensorShape: inputTensor.shape,
-      inferenceTime: msToSs(inferenceTimeMs),
+      inferenceTime,
       results,
     });
   } catch (e) {

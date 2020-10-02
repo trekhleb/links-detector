@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState } from 'react';
+import React, { CSSProperties, useRef, useState } from 'react';
 
 import CameraStream from '../shared/CameraStream';
 import useWindowSize from '../../hooks/useWindowSize';
@@ -12,7 +12,6 @@ import BoxesCanvas from './BoxesCanvas';
 import { isDebugMode } from '../../constants/debug';
 import ErrorBoundary from '../shared/ErrorBoundary';
 import PixelsCanvas from './PixelsCanvas';
-import { msToSs } from '../../utils/time';
 import {
   brightnessFilter,
   FilterFunc,
@@ -21,6 +20,7 @@ import {
   preprocessPixels,
   contrastFilter,
 } from '../../utils/image';
+import { newProfiler, Profiler } from '../../utils/profiler';
 
 const userVideoBrightness = 1 + DATA_PIPELINE.preprocessing.userPixels.brightness;
 const userVideoContrast = 1 + DATA_PIPELINE.preprocessing.userPixels.contrast;
@@ -33,6 +33,8 @@ const videoStyle: CSSProperties = DATA_PIPELINE.preprocessing.userPixels.enabled
 } : {};
 
 function LiveDetector(): React.ReactElement | null {
+  const preprocessingProfiler = useRef<Profiler>(newProfiler());
+  const inferenceProfiler = useRef<Profiler>(newProfiler());
   const [pixels, setPixels] = useState<Pixels | null>(null);
   const logger = useLogger({ context: 'LiveDetector' });
   const [boxes, setBoxes] = useState<DetectionBox[] | null>(null);
@@ -73,13 +75,13 @@ function LiveDetector(): React.ReactElement | null {
       contrastFilter(modelVideoContrast),
       greyscaleFilter(),
     ] : [];
-    const imageProcessingTimeStart = Date.now();
+    preprocessingProfiler.current.start();
     const processedPixels = preprocessPixels(video, filters);
     setPixels(processedPixels);
-    const imageProcessingTime = msToSs(Date.now() - imageProcessingTimeStart);
+    const imageProcessingTime = preprocessingProfiler.current.stop();
 
     // Model execution.
-    const modelExecutionTimeStart = Date.now();
+    inferenceProfiler.current.start();
     const predictions: DetectionBox[] | null = await graphModelExecute({
       model,
       pixels: processedPixels,
@@ -87,7 +89,7 @@ function LiveDetector(): React.ReactElement | null {
       scoreThreshold: DATA_PIPELINE.httpsDetection.scoreThreshold,
       iouThreshold: DATA_PIPELINE.httpsDetection.IOUThreshold,
     });
-    const modelExecutionTime = msToSs(Date.now() - modelExecutionTimeStart);
+    const modelExecutionTime = inferenceProfiler.current.stop();
     setBoxes(predictions);
 
     logger.logDebug('onFrame', {
