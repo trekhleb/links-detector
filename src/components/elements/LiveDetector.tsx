@@ -35,7 +35,7 @@ const videoStyle: CSSProperties = DATA_PIPELINE.preprocessing.userPixels.enabled
 function LiveDetector(): React.ReactElement | null {
   const preprocessingProfiler = useRef<Profiler>(newProfiler());
   const inferenceProfiler = useRef<Profiler>(newProfiler());
-  const generalProfiler = useRef<Profiler>(newProfiler());
+  const onFrameProfiler = useRef<Profiler>(newProfiler());
 
   const [pixels, setPixels] = useState<Pixels | null>(null);
   const logger = useLogger({ context: 'LiveDetector' });
@@ -71,7 +71,7 @@ function LiveDetector(): React.ReactElement | null {
   const videoSize: number = Math.min(windowSize.width, windowSize.height);
 
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
-    generalProfiler.current.start();
+    onFrameProfiler.current.start();
 
     // Image preprocessing.
     const filters: FilterFunc[] = DATA_PIPELINE.preprocessing.modelPixels.enabled ? [
@@ -96,13 +96,15 @@ function LiveDetector(): React.ReactElement | null {
     const modelExecutionTime = inferenceProfiler.current.stop();
     setBoxes(predictions);
 
-    const overallTime = generalProfiler.current.stop();
+    const onFrameTime = onFrameProfiler.current.stop();
 
     logger.logDebug('onFrame', {
-      imageProcessingTime,
-      modelExecutionTime,
-      overallTime,
-      fps: generalProfiler.current.fps(),
+      procT: imageProcessingTime,
+      avgProcT: preprocessingProfiler.current.avg(),
+      execT: modelExecutionTime,
+      avgExecT: inferenceProfiler.current.avg(),
+      onFrameT: onFrameTime,
+      avgFps: onFrameProfiler.current.fps(),
     });
   };
 
