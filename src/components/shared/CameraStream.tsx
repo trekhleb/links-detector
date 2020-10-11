@@ -40,6 +40,13 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // On iOS Safari filters add weird 1px left and bottom white borders to the video.
+  // To hide that border the -1px shift is introduced in the styles below.
+  const VIDEO_PADDING = 2;
+
+  const videoWidth = width + 2 * VIDEO_PADDING;
+  const videoHeight = height + 2 * VIDEO_PADDING;
+
   const onLocalFrame = (): void => {
     requestAnimationFrame(() => {
       logger.logDebug('onLocalFrame');
@@ -83,8 +90,8 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     const userMediaConstraints: MediaStreamConstraints = {
       audio: false,
       video: {
-        width: { ideal: width },
-        height: { ideal: height },
+        width: { ideal: videoWidth },
+        height: { ideal: videoHeight },
         facingMode: { ideal: facingMode },
         frameRate: { ideal: videoFrameRate },
       },
@@ -124,7 +131,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
         });
       }
     };
-  }, [width, height, facingMode, logger, throttledOnLocalFrameCallback]);
+  }, [videoWidth, videoHeight, facingMode, logger, throttledOnLocalFrameCallback]);
 
   if (errorMessage) {
     return (
@@ -140,15 +147,13 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     overflow: 'hidden',
   };
 
-  // On iOS Safari filters add weird 1px left and bottom white borders to the video.
-  // To hide that border the -1px shift is introduced in the styles below.
-  const FILTER_BORDERS_SHIFT = 2;
-
   const videoStyle: CSSProperties = {
     objectFit: 'cover',
-    width: `${width + FILTER_BORDERS_SHIFT}px`,
-    height: `${height + FILTER_BORDERS_SHIFT}px`,
-    marginLeft: `-${FILTER_BORDERS_SHIFT}px`,
+    width: `${videoWidth}px`,
+    minWidth: `${videoWidth}px`,
+    height: `${videoHeight}px`,
+    minHeight: `${videoHeight}px`,
+    marginLeft: `-${VIDEO_PADDING}px`,
     ...videoStyleOverrides,
   };
 
@@ -156,8 +161,8 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     <div style={videoWrapperStyle}>
       <video
         ref={videoRef}
-        width={width}
-        height={height}
+        width={videoWidth}
+        height={videoHeight}
         style={videoStyle}
         className="fade-in-1"
         playsInline
