@@ -1,7 +1,7 @@
 import React from 'react';
 
 type ProgressBarProps = {
-  progress?: number,
+  progress?: number, // [0, 100]
   text?: string,
 };
 
@@ -10,13 +10,13 @@ function ProgressBar(props: ProgressBarProps): React.ReactElement {
 
   const progressPercentage = progress !== undefined
     ? Math.max(Math.min(Math.floor(progress), 100), 0)
-    : undefined;
+    : 0;
 
   const progressLine = progressPercentage !== undefined ? (
     <div className="w-full h-1 bg-gray-800 mb-4">
       <div
-        className="h-full bg-white transition duration-300 ease-in-out rounded"
-        style={{ width: `${progressPercentage}%` }}
+        className="h-full bg-white transition duration-500 ease-in-out rounded"
+        style={{ width: `${progressPercentage}%`, transition: 'width .5s' }}
       />
     </div>
   ) : null;
