@@ -1,4 +1,6 @@
 import React from 'react';
+import { ICON_KEYS } from '../../icons';
+import Icon from './Icon';
 
 export enum NotificationLevel {
   INFO,
@@ -30,21 +32,21 @@ function Notification(props: NotificationProps): React.ReactElement {
 
   switch (level) {
   case NotificationLevel.DANGER:
-    bgColor = 'bg-red-100';
-    textColor = 'text-red-800';
-    borderColor = 'border-red-300';
+    bgColor = 'bg-red-600';
+    textColor = 'text-white';
+    borderColor = bgColor;
     break;
 
   case NotificationLevel.WARNING:
-    bgColor = 'bg-orange-100';
-    textColor = 'text-orange-800';
-    borderColor = 'border-orange-300';
+    bgColor = 'bg-yellow-600';
+    textColor = 'text-white';
+    borderColor = bgColor;
     break;
 
   case NotificationLevel.INFO:
-    bgColor = 'bg-blue-100';
-    textColor = 'text-blue-800';
-    borderColor = 'border-blue-300';
+    bgColor = 'bg-blue-600';
+    textColor = 'text-white';
+    borderColor = bgColor;
     break;
 
   default:
@@ -54,8 +56,13 @@ function Notification(props: NotificationProps): React.ReactElement {
   }
 
   const notificationBody: React.ReactElement = (
-    <div className={`${bgColor} ${textColor} ${borderColor} border-solid p-3 m-3 rounded`}>
-      {children}
+    <div className={`${bgColor} ${textColor} ${borderColor} border-solid p-3 m-3 rounded text-xs flex flex-row justify-center items-center`}>
+      <div className="mr-3">
+        <Icon iconKey={ICON_KEYS.ALERT_CIRCLE} className="w-6 h-6" />
+      </div>
+      <div>
+        {children}
+      </div>
     </div>
   );
 
