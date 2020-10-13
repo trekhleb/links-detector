@@ -1,6 +1,6 @@
 export const MODELS_BASE_URL = '';
 
-export type DataPipeline = {
+export type DetectionPipeline = {
   loading: {
     linksDetectorModelURL: string,
   },
@@ -24,9 +24,13 @@ export type DataPipeline = {
     IOUThreshold: number, // [0, 1]
     scoreThreshold: number, // [0, 1]
   },
+  ocr: {
+    workersNum: number,
+    language: string,
+  },
 };
 
-export const DATA_PIPELINE: DataPipeline = {
+export const DETECTION_PIPELINE: DetectionPipeline = {
   loading: {
     linksDetectorModelURL: `${MODELS_BASE_URL}/models/links_detector/model.json`,
   },
@@ -47,8 +51,13 @@ export const DATA_PIPELINE: DataPipeline = {
   },
   httpsDetection: {
     // @see: https://js.tensorflow.org/api/latest/#image.nonMaxSuppressionAsync
-    maxBoxesNum: 10,
+    maxBoxesNum: 5,
     IOUThreshold: 0.5,
     scoreThreshold: 0.1,
+  },
+  ocr: {
+    // @see: https://github.com/naptha/tesseract.js/blob/master/docs/examples.md
+    workersNum: 5,
+    language: 'eng',
   },
 };
