@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import LiveDetector from '../elements/LiveDetector';
+import LinksDetector from '../elements/LinksDetector';
 import Modal from '../shared/Modal';
 import { RouteNames, ROUTES } from '../../constants/routes';
 import ErrorBoundary from '../shared/ErrorBoundary';
@@ -16,7 +16,7 @@ function DetectorScreen(): React.ReactElement {
   return (
     <ErrorBoundary>
       <Modal onClose={onModalClose}>
-        <LiveDetector />
+        <LinksDetector />
       </Modal>
     </ErrorBoundary>
   );

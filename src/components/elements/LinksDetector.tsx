@@ -32,7 +32,7 @@ const videoStyle: CSSProperties = DETECTION_PIPELINE.imagePreprocessing.ui.enabl
   filter: `brightness(${userVideoBrightness}) contrast(${userVideoContrast}) grayscale(1)`,
 } : {};
 
-function LiveDetector(): React.ReactElement | null {
+function LinksDetector(): React.ReactElement | null {
   const preprocessingProfiler = useRef<Profiler>(newProfiler());
   const inferenceProfiler = useRef<Profiler>(newProfiler());
   const onFrameProfiler = useRef<Profiler>(newProfiler());
@@ -154,4 +154,4 @@ function LiveDetector(): React.ReactElement | null {
   );
 }
 
-export default LiveDetector;
+export default LinksDetector;
