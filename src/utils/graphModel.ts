@@ -1,8 +1,61 @@
 import * as tf from '@tensorflow/tfjs';
+import { DataType } from '@tensorflow/tfjs-core/src/types';
 
 import { buildLoggers } from './logger';
 import { Pixels } from './image';
 import { newProfiler, Profiler } from './profiler';
+
+export const graphModelLoad = async (
+  modelURL: string,
+  onProgress: (progress: number) => void,
+): Promise<tf.GraphModel> => {
+  const logger = buildLoggers({ context: 'graphModelLoad' });
+
+  const model: tf.GraphModel = await tf.loadGraphModel(modelURL, { onProgress });
+
+  logger.logDebug('Model is loaded', {
+    backendName: tf.engine().backendName,
+    platformName: tf.env().platformName,
+    model,
+    backend: tf.engine().backend,
+    features: tf.env().features,
+  });
+
+  return model;
+};
+
+export const graphModelWarmup = async (
+  model: tf.GraphModel,
+): Promise<void> => {
+  if (!model) {
+    return;
+  }
+
+  const logger = buildLoggers({ context: 'graphModelWarmup' });
+
+  const inputShapeWithNulls = model.inputs[0].shape;
+
+  if (!inputShapeWithNulls) {
+    logger.logWarn('Cannot warmup the model: unknown input shape');
+    return;
+  }
+
+  const inputShape = inputShapeWithNulls.map((dimension: number) => {
+    if (dimension === null || dimension === -1) {
+      return 1;
+    }
+    return dimension;
+  });
+
+  const dataType: DataType = 'int32';
+  const fakeInput = tf.zeros(inputShape, dataType);
+
+  logger.logDebug('warmupModel', { inputShape, fakeInput });
+
+  await model.executeAsync(fakeInput);
+
+  logger.logDebug('Model is wormed up');
+};
 
 type ModelPredictions = {
   detectionsNum: number,

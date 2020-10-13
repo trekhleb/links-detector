@@ -2,8 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import * as tf from '@tensorflow/tfjs';
 
 import useLogger from './useLogger';
-import { graphModelWarmup } from '../utils/graphModelWarmup';
-import { graphModelLoad } from '../utils/graphModelLoad';
+import { graphModelLoad, graphModelWarmup } from '../utils/graphModel';
 
 type UseGraphModelProps = {
   modelURL: string,

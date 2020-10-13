@@ -7,7 +7,7 @@ import { DATA_PIPELINE } from '../../constants/pipeline';
 import Notification, { NotificationLevel } from '../shared/Notification';
 import useLogger from '../../hooks/useLogger';
 import ProgressBar from '../shared/ProgressBar';
-import { DetectionBox, graphModelExecute } from '../../utils/graphModelExecute';
+import { DetectionBox, graphModelExecute } from '../../utils/graphModel';
 import BoxesCanvas from './BoxesCanvas';
 import { isDebugMode } from '../../constants/debug';
 import ErrorBoundary from '../shared/ErrorBoundary';

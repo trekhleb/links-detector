@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useCallback } from 'react';
-import { DetectionBox } from '../../utils/graphModelExecute';
+import { DetectionBox } from '../../utils/graphModel';
 import useLogger from '../../hooks/useLogger';
 
 type BoxesCanvasProps = {
