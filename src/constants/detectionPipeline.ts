@@ -1,22 +1,22 @@
 export const MODELS_BASE_URL = '';
 
 export type DetectionPipeline = {
-  loading: {
+  modelLoading: {
     linksDetectorModelURL: string,
   },
-  preprocessing: {
-    userPixels: {
+  imagePreprocessing: {
+    ui: {
       enabled: boolean,
       brightness: number, // [-1, 1]
       contrast: number, // [-1, 1]
     },
-    modelPixels: {
+    model: {
       enabled: boolean,
       brightness: number, // [-1, 1]
       contrast: number, // [-1, 1]
     },
   },
-  streaming: {
+  videoStreaming: {
     idealFPS: number,
   },
   httpsDetection: {
@@ -31,22 +31,22 @@ export type DetectionPipeline = {
 };
 
 export const DETECTION_PIPELINE: DetectionPipeline = {
-  loading: {
+  modelLoading: {
     linksDetectorModelURL: `${MODELS_BASE_URL}/models/links_detector/model.json`,
   },
-  preprocessing: {
-    userPixels: {
+  imagePreprocessing: {
+    ui: {
       enabled: true,
       brightness: 0.2,
       contrast: 0.2,
     },
-    modelPixels: {
+    model: {
       enabled: true,
       brightness: 0.2,
       contrast: 0.2,
     },
   },
-  streaming: {
+  videoStreaming: {
     idealFPS: 0.5,
   },
   httpsDetection: {

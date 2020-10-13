@@ -22,13 +22,13 @@ import {
 } from '../../utils/image';
 import { newProfiler, Profiler } from '../../utils/profiler';
 
-const userVideoBrightness = 1 + DETECTION_PIPELINE.preprocessing.userPixels.brightness;
-const userVideoContrast = 1 + DETECTION_PIPELINE.preprocessing.userPixels.contrast;
+const userVideoBrightness = 1 + DETECTION_PIPELINE.imagePreprocessing.ui.brightness;
+const userVideoContrast = 1 + DETECTION_PIPELINE.imagePreprocessing.ui.contrast;
 
-const modelVideoBrightness = DETECTION_PIPELINE.preprocessing.modelPixels.brightness;
-const modelVideoContrast = DETECTION_PIPELINE.preprocessing.modelPixels.contrast;
+const modelVideoBrightness = DETECTION_PIPELINE.imagePreprocessing.model.brightness;
+const modelVideoContrast = DETECTION_PIPELINE.imagePreprocessing.model.contrast;
 
-const videoStyle: CSSProperties = DETECTION_PIPELINE.preprocessing.userPixels.enabled ? {
+const videoStyle: CSSProperties = DETECTION_PIPELINE.imagePreprocessing.ui.enabled ? {
   filter: `brightness(${userVideoBrightness}) contrast(${userVideoContrast}) grayscale(1)`,
 } : {};
 
@@ -46,7 +46,7 @@ function LiveDetector(): React.ReactElement | null {
     error: modelError,
     loadingProgress: modelLoadingProgress,
   } = useGraphModel({
-    modelURL: DETECTION_PIPELINE.loading.linksDetectorModelURL,
+    modelURL: DETECTION_PIPELINE.modelLoading.linksDetectorModelURL,
     warmup: true,
   });
 
@@ -74,7 +74,7 @@ function LiveDetector(): React.ReactElement | null {
     onFrameProfiler.current.start();
 
     // Image preprocessing.
-    const filters: FilterFunc[] = DETECTION_PIPELINE.preprocessing.modelPixels.enabled ? [
+    const filters: FilterFunc[] = DETECTION_PIPELINE.imagePreprocessing.model.enabled ? [
       brightnessFilter(modelVideoBrightness),
       contrastFilter(modelVideoContrast),
       greyscaleFilter(),
@@ -145,7 +145,7 @@ function LiveDetector(): React.ReactElement | null {
           width={videoSize}
           height={videoSize}
           videoStyle={videoStyle}
-          idealFrameRate={DETECTION_PIPELINE.streaming.idealFPS}
+          idealFrameRate={DETECTION_PIPELINE.videoStreaming.idealFPS}
         />
       </ErrorBoundary>
       { imageCanvas }

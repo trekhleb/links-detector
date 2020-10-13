@@ -15,7 +15,9 @@ function DebugInfo(): React.ReactElement {
 
   useEffect(() => {
     logger.logDebug('useEffect');
-    getTFInfo({ modelURL: DETECTION_PIPELINE.loading.linksDetectorModelURL }).then((info: TFInfo) => {
+    getTFInfo({
+      modelURL: DETECTION_PIPELINE.modelLoading.linksDetectorModelURL,
+    }).then((info: TFInfo) => {
       setTfInfo(info);
       logger.logDebug('useEffect: then', { info });
     });
