@@ -1,6 +1,6 @@
 export const MODELS_BASE_URL = '';
 
-export type DetectionPipeline = {
+export type DetectionConfig = {
   modelLoading: {
     linksDetectorModelURL: string,
   },
@@ -30,7 +30,7 @@ export type DetectionPipeline = {
   },
 };
 
-export const DETECTION_PIPELINE: DetectionPipeline = {
+export const DETECTION_CONFIG: DetectionConfig = {
   modelLoading: {
     linksDetectorModelURL: `${MODELS_BASE_URL}/models/links_detector/model.json`,
   },
@@ -57,7 +57,7 @@ export const DETECTION_PIPELINE: DetectionPipeline = {
   },
   ocr: {
     // @see: https://github.com/naptha/tesseract.js/blob/master/docs/examples.md
-    workersNum: 5,
+    workersNum: 3,
     language: 'eng',
   },
 };
