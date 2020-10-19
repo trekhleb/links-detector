@@ -7,7 +7,7 @@ import {
   TFInfo,
 } from '../../utils/debug';
 import useLogger from '../../hooks/useLogger';
-import { DETECTION_PIPELINE } from '../../constants/detectionPipeline';
+import { DETECTION_CONFIG } from '../../configs/detectionConfig';
 
 function DebugInfo(): React.ReactElement {
   const [tfInfo, setTfInfo] = useState<TFInfo | null>(null);
@@ -16,7 +16,7 @@ function DebugInfo(): React.ReactElement {
   useEffect(() => {
     logger.logDebug('useEffect');
     getTFInfo({
-      modelURL: DETECTION_PIPELINE.modelLoading.linksDetectorModelURL,
+      modelURL: DETECTION_CONFIG.modelLoading.linksDetectorModelURL,
     }).then((info: TFInfo) => {
       setTfInfo(info);
       logger.logDebug('useEffect: then', { info });

@@ -3,7 +3,7 @@ import React, { CSSProperties, useRef, useState } from 'react';
 import CameraStream from '../shared/CameraStream';
 import useWindowSize from '../../hooks/useWindowSize';
 import useGraphModel from '../../hooks/useGraphModel';
-import { DETECTION_PIPELINE } from '../../constants/detectionPipeline';
+import { DETECTION_CONFIG } from '../../configs/detectionConfig';
 import Notification, { NotificationLevel } from '../shared/Notification';
 import useLogger from '../../hooks/useLogger';
 import ProgressBar from '../shared/ProgressBar';
@@ -22,13 +22,13 @@ import {
 } from '../../utils/image';
 import { newProfiler, Profiler } from '../../utils/profiler';
 
-const userVideoBrightness = 1 + DETECTION_PIPELINE.imagePreprocessing.ui.brightness;
-const userVideoContrast = 1 + DETECTION_PIPELINE.imagePreprocessing.ui.contrast;
+const userVideoBrightness = 1 + DETECTION_CONFIG.imagePreprocessing.ui.brightness;
+const userVideoContrast = 1 + DETECTION_CONFIG.imagePreprocessing.ui.contrast;
 
-const modelVideoBrightness = DETECTION_PIPELINE.imagePreprocessing.model.brightness;
-const modelVideoContrast = DETECTION_PIPELINE.imagePreprocessing.model.contrast;
+const modelVideoBrightness = DETECTION_CONFIG.imagePreprocessing.model.brightness;
+const modelVideoContrast = DETECTION_CONFIG.imagePreprocessing.model.contrast;
 
-const videoStyle: CSSProperties = DETECTION_PIPELINE.imagePreprocessing.ui.enabled ? {
+const videoStyle: CSSProperties = DETECTION_CONFIG.imagePreprocessing.ui.enabled ? {
   filter: `brightness(${userVideoBrightness}) contrast(${userVideoContrast}) grayscale(1)`,
 } : {};
 
@@ -46,7 +46,7 @@ function LinksDetector(): React.ReactElement | null {
     error: modelError,
     loadingProgress: modelLoadingProgress,
   } = useGraphModel({
-    modelURL: DETECTION_PIPELINE.modelLoading.linksDetectorModelURL,
+    modelURL: DETECTION_CONFIG.modelLoading.linksDetectorModelURL,
     warmup: true,
   });
 
@@ -74,7 +74,7 @@ function LinksDetector(): React.ReactElement | null {
     onFrameProfiler.current.start();
 
     // Image preprocessing.
-    const filters: FilterFunc[] = DETECTION_PIPELINE.imagePreprocessing.model.enabled ? [
+    const filters: FilterFunc[] = DETECTION_CONFIG.imagePreprocessing.model.enabled ? [
       brightnessFilter(modelVideoBrightness),
       contrastFilter(modelVideoContrast),
       greyscaleFilter(),
@@ -89,9 +89,9 @@ function LinksDetector(): React.ReactElement | null {
     const predictions: DetectionBox[] | null = await graphModelExecute({
       model,
       pixels: processedPixels,
-      maxBoxesNum: DETECTION_PIPELINE.httpsDetection.maxBoxesNum,
-      scoreThreshold: DETECTION_PIPELINE.httpsDetection.scoreThreshold,
-      iouThreshold: DETECTION_PIPELINE.httpsDetection.IOUThreshold,
+      maxBoxesNum: DETECTION_CONFIG.httpsDetection.maxBoxesNum,
+      scoreThreshold: DETECTION_CONFIG.httpsDetection.scoreThreshold,
+      iouThreshold: DETECTION_CONFIG.httpsDetection.IOUThreshold,
     });
     const modelExecutionTime = inferenceProfiler.current.stop();
     setBoxes(predictions);
@@ -145,7 +145,7 @@ function LinksDetector(): React.ReactElement | null {
           width={videoSize}
           height={videoSize}
           videoStyle={videoStyle}
-          idealFrameRate={DETECTION_PIPELINE.videoStreaming.idealFPS}
+          idealFrameRate={DETECTION_CONFIG.videoStreaming.idealFPS}
         />
       </ErrorBoundary>
       { imageCanvas }
