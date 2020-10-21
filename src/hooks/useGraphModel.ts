@@ -39,12 +39,16 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
   );
 
   const calculateLoadingProgress = (progress: ZeroOneRange): ZeroOneRange => {
+    const toFixed = (num: ZeroOneRange): ZeroOneRange => {
+      return Math.round(num * 100) / 100;
+    };
+
     if (!warmup) {
-      return progress;
+      return toFixed(progress);
     }
     // In case of model warm up we need to reserve some percentage of loader for warming up.
     const warmupLoadingRatio = 0.05;
-    return (1 - warmupLoadingRatio) * progress;
+    return toFixed((1 - warmupLoadingRatio) * progress);
   };
 
   const onLoadingProgress = (progress: ZeroOneRange): void => {
