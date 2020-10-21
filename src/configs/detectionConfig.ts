@@ -1,3 +1,5 @@
+import { ZeroOneRange } from '../utils/types';
+
 export const MODELS_BASE_URL = '';
 
 export type DetectionConfig = {
@@ -7,13 +9,13 @@ export type DetectionConfig = {
   imagePreprocessing: {
     ui: {
       enabled: boolean,
-      brightness: number, // [-1, 1]
-      contrast: number, // [-1, 1]
+      brightness: ZeroOneRange,
+      contrast: ZeroOneRange,
     },
     model: {
       enabled: boolean,
-      brightness: number, // [-1, 1]
-      contrast: number, // [-1, 1]
+      brightness: ZeroOneRange,
+      contrast: ZeroOneRange,
     },
   },
   videoStreaming: {
@@ -21,8 +23,8 @@ export type DetectionConfig = {
   },
   httpsDetection: {
     maxBoxesNum: number,
-    IOUThreshold: number, // [0, 1]
-    scoreThreshold: number, // [0, 1]
+    IOUThreshold: ZeroOneRange,
+    scoreThreshold: ZeroOneRange,
   },
   ocr: {
     workersNum: number,
@@ -37,13 +39,13 @@ export const DETECTION_CONFIG: DetectionConfig = {
   imagePreprocessing: {
     ui: {
       enabled: true,
-      brightness: 0.2,
-      contrast: 0.2,
+      brightness: 0.7,
+      contrast: 0.7,
     },
     model: {
       enabled: true,
-      brightness: 0.2,
-      contrast: 0.2,
+      brightness: 0.65,
+      contrast: 0.85,
     },
   },
   videoStreaming: {
