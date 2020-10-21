@@ -39,8 +39,8 @@ export const DETECTION_CONFIG: DetectionConfig = {
   imagePreprocessing: {
     ui: {
       enabled: true,
-      brightness: 0.7,
-      contrast: 0.7,
+      brightness: 0.2,
+      contrast: 0.2,
     },
     model: {
       enabled: true,
