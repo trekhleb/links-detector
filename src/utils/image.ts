@@ -1,5 +1,7 @@
 /* eslint-disable no-param-reassign */
 
+import { SignedZeroOneRange, ZeroOneRange } from './types';
+
 export type Pixels = HTMLImageElement | HTMLCanvasElement| HTMLVideoElement;
 
 export type FilterFunc = (colors: Uint8ClampedArray, shift: number) => void;
@@ -8,27 +10,35 @@ const cutColor = (color: number): number => {
   return Math.min(Math.floor(color), 255);
 };
 
-// contrast --> [-1, 1]
+// Converts [0, 1] range to [-1, 1] range.
+const normalizeFilterParam = (zeroOneRange: ZeroOneRange): SignedZeroOneRange => {
+  return zeroOneRange * 2 - 1;
+};
+
+// @see: https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function
+export const normalizeCSSFilterParam = (zeroOneRange: ZeroOneRange): number => {
+  return 1 + zeroOneRange;
+};
+
 // @see: http://thecryptmag.com/Online/56/imgproc_5.html
 // @see: https://css-tricks.com/manipulating-pixels-using-canvas/
-export const contrastFilter = (normalizedContrast: number): FilterFunc => (
+export const contrastFilter = (contrastRange: ZeroOneRange): FilterFunc => (
   colors: Uint8ClampedArray,
   shift: number,
 ): void => {
-  const contrast = normalizedContrast * 100;
+  const contrast = normalizeFilterParam(contrastRange) * 100;
   const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
   for (let channel = 0; channel < 3; channel += 1) {
     colors[shift + channel] = cutColor(factor * (colors[shift + channel] - 128) + 128);
   }
 };
 
-// brightness --> [-1, 1]
 // @see: https://css-tricks.com/manipulating-pixels-using-canvas/
-export const brightnessFilter = (brightness: number): FilterFunc => (
+export const brightnessFilter = (brightness: ZeroOneRange): FilterFunc => (
   colors: Uint8ClampedArray,
   shift: number,
 ): void => {
-  const brightnessDelta = 255 * brightness;
+  const brightnessDelta = 255 * normalizeFilterParam(brightness);
   for (let channel = 0; channel < 3; channel += 1) {
     colors[shift + channel] = cutColor(colors[shift + channel] + brightnessDelta);
   }
