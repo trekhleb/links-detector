@@ -1,22 +1,25 @@
 import React from 'react';
+import { ZeroOneRange } from '../../utils/types';
 
 type ProgressBarProps = {
-  progress?: number, // [0, 100]
-  text?: string,
+  progress?: ZeroOneRange | null,
+  text?: string | null,
 };
+
+const progressAnimationTimeS = 0.5;
 
 function ProgressBar(props: ProgressBarProps): React.ReactElement {
   const { progress, text } = props;
 
-  const progressPercentage = progress !== undefined
-    ? Math.max(Math.min(Math.floor(progress), 100), 0)
+  const progressPercentage = progress !== undefined && progress !== null
+    ? Math.max(Math.min(Math.floor(progress * 100), 100), 0)
     : 0;
 
-  const progressLine = progressPercentage !== undefined ? (
+  const progressLine = progressPercentage !== undefined && progressPercentage !== null ? (
     <div className="w-full h-1 bg-gray-800 mb-4">
       <div
         className="h-full bg-white transition duration-500 ease-in-out rounded"
-        style={{ width: `${progressPercentage}%`, transition: 'width .5s' }}
+        style={{ width: `${progressPercentage}%`, transition: `width ${progressAnimationTimeS}s` }}
       />
     </div>
   ) : null;
