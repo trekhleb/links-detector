@@ -1,5 +1,10 @@
 import * as tf from '@tensorflow/tfjs';
-import { Scheduler } from 'tesseract.js';
+import {
+  ConfigResult,
+  DetectResult,
+  RecognizeResult,
+  Scheduler,
+} from 'tesseract.js';
 import {
   useCallback,
   useEffect,
@@ -46,6 +51,8 @@ export type UseLinkDetectorOutput = {
   pixels: Pixels | null,
 };
 
+export type TesseractDetection = ConfigResult | RecognizeResult | DetectResult;
+
 const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput => {
   const {
     modelURL,
@@ -68,6 +75,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
   const logger = useLogger({ context: 'useLinksDetector' });
 
   const [pixels, setPixels] = useState<Pixels | null>(null);
+  const [detectionError, setDetectionError] = useState<string | null>(null);
   const [httpsBoxes, setHttpsBoxes] = useState<DetectionBox[] | null>(null);
   const [loadingProgress, setLoadingProgress] = useState<ZeroOneRange | null>(null);
   const [loadingStage, setLoadingStage] = useState<string | null>(null);
@@ -101,15 +109,21 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     logger.logDebug('detectLinks', detectProps);
 
     if (!modelRef.current) {
-      logger.logError('Model is not ready yet');
+      const errMsg = 'Model is not ready for detection yet';
+      logger.logError(errMsg);
+      setDetectionError(errMsg);
       return;
     }
 
     if (!tesseractSchedulerRef.current) {
-      logger.logError('Tesseract is not loaded yet');
+      const errMsg = 'Tesseract is not loaded yet';
+      logger.logError(errMsg);
+      setDetectionError(errMsg);
       return;
     } else if (tesseractSchedulerRef.current.getNumWorkers() !== workersNum) {
-      logger.logError('Tesseract workers are not loaded yet');
+      const errMsg = 'Tesseract workers are not loaded yet';
+      logger.logError(errMsg);
+      setDetectionError(errMsg);
       return;
     }
 
@@ -145,6 +159,12 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     logger.logDebug('detectLinks: tesseract is ready', {
       numWorkers: tesseractSchedulerRef.current.getNumWorkers(),
     });
+
+    const texts: TesseractDetection = await tesseractSchedulerRef.current.addJob(
+      'recognize',
+      processedPixels,
+    );
+    logger.logDebug('recognized text', { texts });
 
     const ocrExecutionTime = ocrProfiler.current.stop();
 
@@ -199,7 +219,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     loadingStage,
     pixels,
     httpsBoxes,
-    error: modelError,
+    error: modelError || detectionError,
   };
 };
 

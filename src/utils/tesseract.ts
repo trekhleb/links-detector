@@ -19,6 +19,7 @@ export enum WorkerLoadingStatuses {
   LoadedLanguageTrainData = 'loaded language traineddata',
   InitializingAPI = 'initializing api',
   InitializedAPI = 'initialized api',
+  RecognizingText = 'recognizing text',
 }
 
 export type LoadingStages = WorkerLoadingStatuses[][];
