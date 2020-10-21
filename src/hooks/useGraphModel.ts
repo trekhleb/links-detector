@@ -43,7 +43,7 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
       return progress;
     }
     // In case of model warm up we need to reserve some percentage of loader for warming up.
-    const warmupLoadingRatio = 0.02;
+    const warmupLoadingRatio = 0.05;
     return (1 - warmupLoadingRatio) * progress;
   };
 
