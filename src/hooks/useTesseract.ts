@@ -14,16 +14,17 @@ type UseSchedulerProps = InitSchedulerProps;
 
 type UseSchedulerOutput = {
   scheduler: Scheduler | null,
+  loaded: boolean,
   loadingProgress: ZeroOneRange,
 };
 
-const useScheduler = (props: UseSchedulerProps): UseSchedulerOutput => {
+const useTesseract = (props: UseSchedulerProps): UseSchedulerOutput => {
   const { workersNum, language } = props;
-  const [schedulerLoaded, setSchedulerLoaded] = useState(false);
+  const [loaded, setLoaded] = useState<boolean>(false);
 
   const scheduler = useRef<Scheduler | null>(null);
 
-  const logger = useLogger({ context: 'useScheduler' });
+  const logger = useLogger({ context: 'useTesseract' });
 
   const onSchedulerLoading = (progress: number): void => {
     logger.logDebug('onSchedulerLoading', {
@@ -38,10 +39,11 @@ const useScheduler = (props: UseSchedulerProps): UseSchedulerOutput => {
   const onSchedulerErrorCallback = useCallback(onSchedulerError, []);
 
   useEffect(() => {
+    logger.logDebug('useEffect');
     if (scheduler && scheduler.current) {
+      logger.logDebug('useEffect: skip');
       return;
     }
-    logger.logDebug('useEffect');
     initScheduler({
       workersNum,
       language,
@@ -49,14 +51,21 @@ const useScheduler = (props: UseSchedulerProps): UseSchedulerOutput => {
       onError: onSchedulerErrorCallback,
     })
       .then((ocrScheduler: Scheduler) => {
+        logger.logDebug('useEffect: init finished', {
+          ocrScheduler,
+          workersNum: ocrScheduler.getNumWorkers(),
+          queueLen: ocrScheduler.getQueueLen(),
+        });
         scheduler.current = ocrScheduler;
+        setLoaded(true);
       });
   }, [workersNum, language, logger, onSchedulerErrorCallback, onSchedulerLoadingCallback]);
 
   return {
     scheduler: scheduler.current,
     loadingProgress: 0,
+    loaded,
   };
 };
 
-export default useScheduler;
+export default useTesseract;

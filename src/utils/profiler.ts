@@ -3,6 +3,7 @@ export type Profiler = {
   stop: (inSeconds?: boolean) => number,
   avg: (inSeconds?: boolean) => number,
   fps: () => number,
+  avgFps: () => number,
 };
 
 const msToSs = (timeMs: number, fractionDigits: number = 2): number => {
@@ -12,6 +13,7 @@ const msToSs = (timeMs: number, fractionDigits: number = 2): number => {
 export const newProfiler = (): Profiler => {
   let timeRangesSum: number = 0;
   let timeRangesNum: number = 0;
+  let lastTimeRange: number = 0;
 
   let startTimeMs: number = 0;
 
@@ -21,6 +23,7 @@ export const newProfiler = (): Profiler => {
 
   const stop = (inSeconds: boolean = true): number => {
     const timeRange = Date.now() - startTimeMs;
+    lastTimeRange = timeRange;
     timeRangesNum += 1;
     timeRangesSum += timeRange;
     if (inSeconds) {
@@ -38,6 +41,10 @@ export const newProfiler = (): Profiler => {
   };
 
   const fps = (): number => {
+    return parseFloat((1 / msToSs(lastTimeRange)).toFixed(2));
+  };
+
+  const avgFps = (): number => {
     return parseFloat((1 / avg()).toFixed(2));
   };
 
@@ -46,5 +53,6 @@ export const newProfiler = (): Profiler => {
     stop,
     avg,
     fps,
+    avgFps,
   };
 };

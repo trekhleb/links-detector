@@ -41,6 +41,8 @@ function LinksDetector(): React.ReactElement | null {
     maxBoxesNum: DETECTION_CONFIG.httpsDetection.maxBoxesNum,
     scoreThreshold: DETECTION_CONFIG.httpsDetection.scoreThreshold,
     iouThreshold: DETECTION_CONFIG.httpsDetection.IOUThreshold,
+    workersNum: DETECTION_CONFIG.ocr.workersNum,
+    language: DETECTION_CONFIG.ocr.language,
   });
 
   if (error) {

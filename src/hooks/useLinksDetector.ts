@@ -1,14 +1,18 @@
+import * as tf from '@tensorflow/tfjs';
+import { Scheduler } from 'tesseract.js';
 import {
   useCallback,
   useEffect,
   useRef,
   useState,
 } from 'react';
-import * as tf from '@tensorflow/tfjs';
 
-import { ZeroOneRange } from '../utils/types';
 import useGraphModel from './useGraphModel';
+import useLogger from './useLogger';
+import useTesseract from './useTesseract';
+import { ZeroOneRange } from '../utils/types';
 import { newProfiler, Profiler } from '../utils/profiler';
+import { DetectionBox, graphModelExecute } from '../utils/graphModel';
 import {
   brightnessFilter,
   contrastFilter,
@@ -16,14 +20,14 @@ import {
   greyscaleFilter, Pixels,
   preprocessPixels,
 } from '../utils/image';
-import { DetectionBox, graphModelExecute } from '../utils/graphModel';
-import useLogger from './useLogger';
 
 export type UseLinkDetectorProps = {
   modelURL: string,
   maxBoxesNum: number,
   scoreThreshold: number,
   iouThreshold: number,
+  workersNum: number,
+  language: string,
 };
 
 export type DetectProps = {
@@ -48,14 +52,18 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     iouThreshold,
     maxBoxesNum,
     scoreThreshold,
+    workersNum,
+    language,
   } = props;
 
   const preprocessingProfiler = useRef<Profiler>(newProfiler());
   const inferenceProfiler = useRef<Profiler>(newProfiler());
+  const ocrProfiler = useRef<Profiler>(newProfiler());
   const onFrameProfiler = useRef<Profiler>(newProfiler());
 
   // @TODO: Use model instead of modelRef if possible (issue with detectLinksCallback).
   const modelRef = useRef<tf.GraphModel | null>(null);
+  const tesseractSchedulerRef = useRef<Scheduler | null>(null);
 
   const logger = useLogger({ context: 'useLinksDetector' });
 
@@ -73,6 +81,15 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     warmup: true,
   });
 
+  const {
+    scheduler: tesseractScheduler,
+    loaded: tesseractSchedulerLoaded,
+    loadingProgress: tesseractLoadingProgress,
+  } = useTesseract({
+    workersNum,
+    language,
+  });
+
   const detectLinks = async (detectProps: DetectProps): Promise<void> => {
     const {
       video,
@@ -80,12 +97,19 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
       videoContrast,
       applyFilters,
     } = detectProps;
+
     logger.logDebug('detectLinks', detectProps);
 
-    // console.log('++++++', { model });
-
     if (!modelRef.current) {
-      logger.logError('Model is not ready for detection yet');
+      logger.logError('Model is not ready yet');
+      return;
+    }
+
+    if (!tesseractSchedulerRef.current) {
+      logger.logError('Tesseract is not loaded yet');
+      return;
+    } else if (tesseractSchedulerRef.current.getNumWorkers() !== workersNum) {
+      logger.logError('Tesseract workers are not loaded yet');
       return;
     }
 
@@ -103,7 +127,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     setPixels(processedPixels);
     const imageProcessingTime = preprocessingProfiler.current.stop();
 
-    // Model execution.
+    // HTTPS prefixes detection model execution.
     inferenceProfiler.current.start();
     const httpsPredictions: DetectionBox[] | null = await graphModelExecute({
       model: modelRef.current,
@@ -115,20 +139,33 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     const modelExecutionTime = inferenceProfiler.current.stop();
     setHttpsBoxes(httpsPredictions);
 
+    // OCR execution.
+    ocrProfiler.current.start();
+
+    logger.logDebug('detectLinks: tesseract is ready', {
+      numWorkers: tesseractSchedulerRef.current.getNumWorkers(),
+    });
+
+    const ocrExecutionTime = ocrProfiler.current.stop();
+
     const onFrameTime = onFrameProfiler.current.stop();
 
-    logger.logDebug('onFrame', {
-      procT: imageProcessingTime,
-      avgProcT: preprocessingProfiler.current.avg(),
-      execT: modelExecutionTime,
-      avgExecT: inferenceProfiler.current.avg(),
-      onFrameT: onFrameTime,
-      avgFps: onFrameProfiler.current.fps(),
+    // Performance summary.
+    logger.logDebugTable('onFrame', {
+      processing: imageProcessingTime,
+      avgProcessing: preprocessingProfiler.current.avg(),
+      inference: modelExecutionTime,
+      avgInference: inferenceProfiler.current.avg(),
+      ocr: ocrExecutionTime,
+      avgOcr: ocrProfiler.current.avg(),
+      total: onFrameTime,
+      avgFps: onFrameProfiler.current.avgFps(),
+      fps: onFrameProfiler.current.fps(),
     });
   };
 
   const detectLinksCallback = useCallback(detectLinks, [
-    modelRef, iouThreshold, logger, maxBoxesNum, scoreThreshold,
+    modelRef, iouThreshold, logger, maxBoxesNum, scoreThreshold, workersNum, tesseractSchedulerRef,
   ]);
 
   // Calculate the loading progress.
@@ -138,7 +175,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
       return;
     }
     setLoadingProgress(modelLoadingProgress);
-    setLoadingStage('Loading the model');
+    setLoadingStage('Loading links detector');
   }, [loadingProgress, modelLoadingProgress, logger]);
 
   // Update model references.
@@ -146,6 +183,15 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     logger.logDebug('useEffect: Model');
     modelRef.current = model;
   }, [model, logger]);
+
+  // Update tesseract scheduler references.
+  useEffect(() => {
+    logger.logDebug('useEffect: Tesseract Scheduler');
+    if (!tesseractScheduler || !tesseractSchedulerLoaded) {
+      return;
+    }
+    tesseractSchedulerRef.current = tesseractScheduler;
+  }, [tesseractScheduler, logger, tesseractSchedulerLoaded]);
 
   return {
     detectLinks: detectLinksCallback,
