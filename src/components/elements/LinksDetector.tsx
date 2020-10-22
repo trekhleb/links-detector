@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useState } from 'react';
 
 import CameraStream from '../shared/CameraStream';
 import useWindowSize from '../../hooks/useWindowSize';
@@ -10,8 +10,9 @@ import BoxesCanvas from './BoxesCanvas';
 import { isDebugMode } from '../../constants/debug';
 import ErrorBoundary from '../shared/ErrorBoundary';
 import PixelsCanvas from './PixelsCanvas';
-import useLinksDetector from '../../hooks/useLinksDetector';
+import useLinksDetector, { DetectionPerformance } from '../../hooks/useLinksDetector';
 import { normalizeCSSFilterParam } from '../../utils/image';
+import PerformanceMonitor from './PerformanceMonitor';
 
 const uiVideoBrightness = normalizeCSSFilterParam(
   DETECTION_CONFIG.imagePreprocessing.ui.brightness,
@@ -29,6 +30,11 @@ function LinksDetector(): React.ReactElement | null {
   const logger = useLogger({ context: 'LiveDetector' });
   const windowSize = useWindowSize();
 
+  const [
+    detectionPerformance,
+    setDetectionPerformance,
+  ] = useState<DetectionPerformance | null>(null);
+
   const {
     detectLinks,
     error,
@@ -44,6 +50,8 @@ function LinksDetector(): React.ReactElement | null {
     workersNum: DETECTION_CONFIG.ocr.workersNum,
     language: DETECTION_CONFIG.ocr.language,
   });
+
+  const isDebug: boolean = isDebugMode();
 
   if (error) {
     return (
@@ -63,22 +71,32 @@ function LinksDetector(): React.ReactElement | null {
 
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
     logger.logDebug('onFrame start');
-    await detectLinks({
+    const currentDetectionPerformance: DetectionPerformance | null = await detectLinks({
       video,
       applyFilters: DETECTION_CONFIG.imagePreprocessing.model.enabled,
       videoBrightness: DETECTION_CONFIG.imagePreprocessing.model.brightness,
       videoContrast: DETECTION_CONFIG.imagePreprocessing.model.contrast,
     });
+    if (isDebug) {
+      setDetectionPerformance(currentDetectionPerformance);
+    }
     logger.logDebug('onFrame end');
   };
 
   const videoSize: number = Math.min(windowSize.width, windowSize.height);
+
   const canvasContainerStyles: CSSProperties = {
     marginTop: `-${videoSize}px`,
     position: 'relative',
   };
 
-  const httpsBoxesCanvas = httpsBoxes && isDebugMode() ? (
+  const performanceMonitorStyles: CSSProperties = {
+    position: 'absolute',
+    left: 0,
+    bottom: 0,
+  };
+
+  const httpsBoxesCanvas = httpsBoxes && isDebug ? (
     <ErrorBoundary>
       <div style={canvasContainerStyles}>
         <BoxesCanvas
@@ -90,7 +108,7 @@ function LinksDetector(): React.ReactElement | null {
     </ErrorBoundary>
   ) : null;
 
-  const imageCanvas = isDebugMode() ? (
+  const imageCanvas = isDebug ? (
     <ErrorBoundary>
       <div style={canvasContainerStyles}>
         <PixelsCanvas
@@ -98,6 +116,14 @@ function LinksDetector(): React.ReactElement | null {
           width={videoSize}
           height={videoSize}
         />
+      </div>
+    </ErrorBoundary>
+  ) : null;
+
+  const performanceMonitor = isDebug ? (
+    <ErrorBoundary>
+      <div style={performanceMonitorStyles}>
+        <PerformanceMonitor metrics={detectionPerformance} />
       </div>
     </ErrorBoundary>
   ) : null;
@@ -115,6 +141,7 @@ function LinksDetector(): React.ReactElement | null {
       </ErrorBoundary>
       { imageCanvas }
       { httpsBoxesCanvas }
+      { performanceMonitor }
     </div>
   );
 }

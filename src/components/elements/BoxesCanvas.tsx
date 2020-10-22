@@ -7,12 +7,14 @@ type BoxesCanvasProps = {
   width: number,
   height: number,
   normalized?: boolean,
+  boxColor?: string,
+  boxLabelColor?: string,
 };
 
-const boxColor = '#2fff00';
+const boxColorDefault = '#2fff00';
 const boxFrameWidth = 1;
 const boxLabelFont = '10px helvetica';
-const boxLabelColor = '#000000';
+const boxLabelColorDefault = '#000000';
 const boxLabelPadding = 4;
 
 const BoxesCanvas = (props: BoxesCanvasProps): React.ReactElement => {
@@ -21,6 +23,8 @@ const BoxesCanvas = (props: BoxesCanvasProps): React.ReactElement => {
     width,
     height,
     normalized = true,
+    boxColor = boxColorDefault,
+    boxLabelColor = boxLabelColorDefault,
   } = props;
 
   const logger = useLogger({ context: 'DetectionBoxes' });

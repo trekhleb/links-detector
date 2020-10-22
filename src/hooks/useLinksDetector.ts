@@ -27,6 +27,18 @@ import {
 } from '../utils/image';
 import { JobTypes } from '../utils/tesseract';
 
+export type DetectionPerformance = {
+  processing: number,
+  avgProcessing: number,
+  inference: number,
+  avgInference: number,
+  ocr: number,
+  avgOcr: number,
+  total: number,
+  avgFps: number,
+  fps: number,
+};
+
 export type UseLinkDetectorProps = {
   modelURL: string,
   maxBoxesNum: number,
@@ -44,7 +56,7 @@ export type DetectProps = {
 };
 
 export type UseLinkDetectorOutput = {
-  detectLinks: (props: DetectProps) => Promise<void>,
+  detectLinks: (props: DetectProps) => Promise<DetectionPerformance | null>,
   error: string | null,
   loadingProgress: ZeroOneRange | null,
   loadingStage: string | null,
@@ -69,7 +81,6 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
   const ocrProfiler = useRef<Profiler>(newProfiler());
   const onFrameProfiler = useRef<Profiler>(newProfiler());
 
-  // @TODO: Use model instead of modelRef if possible (issue with detectLinksCallback).
   const modelRef = useRef<tf.GraphModel | null>(null);
   const tesseractSchedulerRef = useRef<Scheduler | null>(null);
 
@@ -99,7 +110,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     language,
   });
 
-  const detectLinks = async (detectProps: DetectProps): Promise<void> => {
+  const detectLinks = async (detectProps: DetectProps): Promise<DetectionPerformance | null> => {
     const {
       video,
       videoBrightness,
@@ -113,19 +124,20 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
       const errMsg = 'Model is not ready for detection yet';
       logger.logError(errMsg);
       setDetectionError(errMsg);
-      return;
+      return null;
     }
 
+    /* eslint-disable no-else-return */
     if (!tesseractSchedulerRef.current) {
       const errMsg = 'Tesseract is not loaded yet';
       logger.logError(errMsg);
       setDetectionError(errMsg);
-      return;
+      return null;
     } else if (tesseractSchedulerRef.current.getNumWorkers() !== workersNum) {
       const errMsg = 'Tesseract workers are not loaded yet';
       logger.logError(errMsg);
       setDetectionError(errMsg);
-      return;
+      return null;
     }
 
     onFrameProfiler.current.start();
@@ -172,7 +184,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     const onFrameTime = onFrameProfiler.current.stop();
 
     // Performance summary.
-    logger.logDebugTable('onFrame', {
+    const detectionPerformance: DetectionPerformance = {
       processing: imageProcessingTime,
       avgProcessing: preprocessingProfiler.current.avg(),
       inference: modelExecutionTime,
@@ -182,7 +194,10 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
       total: onFrameTime,
       avgFps: onFrameProfiler.current.avgFps(),
       fps: onFrameProfiler.current.fps(),
-    });
+    };
+    logger.logDebugTable('onFrame', detectionPerformance);
+
+    return detectionPerformance;
   };
 
   const detectLinksCallback = useCallback(detectLinks, [
