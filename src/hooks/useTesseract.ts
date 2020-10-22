@@ -16,11 +16,13 @@ type UseSchedulerOutput = {
   scheduler: Scheduler | null,
   loaded: boolean,
   loadingProgress: ZeroOneRange,
+  error: string | null,
 };
 
 const useTesseract = (props: UseSchedulerProps): UseSchedulerOutput => {
   const { workersNum, language } = props;
   const [loaded, setLoaded] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const scheduler = useRef<Scheduler | null>(null);
 
@@ -34,7 +36,15 @@ const useTesseract = (props: UseSchedulerProps): UseSchedulerOutput => {
 
   const onSchedulerLoadingCallback = useCallback(onSchedulerLoading, [logger]);
 
-  const onSchedulerError = (error: any): void => {};
+  const onSchedulerError = (schedulerError: any): void => {
+    let errMessage = 'Scheduler error';
+    if (typeof schedulerError === 'string') {
+      errMessage = schedulerError;
+    } else if (schedulerError && schedulerError.message && typeof schedulerError.message === 'string') {
+      errMessage = schedulerError.message;
+    }
+    setError(errMessage);
+  };
 
   const onSchedulerErrorCallback = useCallback(onSchedulerError, []);
 
@@ -65,6 +75,7 @@ const useTesseract = (props: UseSchedulerProps): UseSchedulerOutput => {
     scheduler: scheduler.current,
     loadingProgress: 0,
     loaded,
+    error,
   };
 };
 

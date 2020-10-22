@@ -104,6 +104,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
   const {
     scheduler: tesseractScheduler,
     loaded: tesseractSchedulerLoaded,
+    error: tesseractSchedulerError,
     loadingProgress: tesseractLoadingProgress,
   } = useTesseract({
     workersNum,
@@ -235,7 +236,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     loadingStage,
     pixels,
     httpsBoxes,
-    error: modelError || detectionError,
+    error: modelError || detectionError || tesseractSchedulerError,
   };
 };
 
