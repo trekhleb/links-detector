@@ -2,6 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import {
   ConfigResult,
   DetectResult,
+  RecognizeOptions,
   RecognizeResult,
   Scheduler,
 } from 'tesseract.js';
@@ -174,9 +175,18 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
       numWorkers: tesseractSchedulerRef.current.getNumWorkers(),
     });
 
+    const recognizeOptions: Partial<RecognizeOptions> = {
+      rectangle: {
+        left: 0,
+        top: 0,
+        width: processedPixels.width,
+        height: processedPixels.height,
+      },
+    };
     const texts: TesseractDetection = await tesseractSchedulerRef.current.addJob(
       JobTypes.Recognize,
       processedPixels,
+      recognizeOptions,
     );
     logger.logDebug('recognized text', { texts });
 
