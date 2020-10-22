@@ -4,6 +4,7 @@ import {
   DetectResult,
   RecognizeOptions,
   RecognizeResult,
+  Rectangle,
   Scheduler,
 } from 'tesseract.js';
 import {
@@ -175,20 +176,30 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
       numWorkers: tesseractSchedulerRef.current.getNumWorkers(),
     });
 
-    const recognizeOptions: Partial<RecognizeOptions> = {
-      rectangle: {
+    const rectangles: Rectangle[] = [
+      {
         left: 0,
         top: 0,
         width: processedPixels.width,
         height: processedPixels.height,
       },
-    };
-    const texts: TesseractDetection = await tesseractSchedulerRef.current.addJob(
-      JobTypes.Recognize,
-      processedPixels,
-      recognizeOptions,
+    ];
+
+    const texts: Array<TesseractDetection | null> = await Promise.all(
+      rectangles.map((rectangle: Rectangle): Promise<TesseractDetection | null> => {
+        const recognizeOptions: Partial<RecognizeOptions> = { rectangle };
+        if (!tesseractSchedulerRef.current) {
+          return Promise.resolve(null);
+        }
+        return tesseractSchedulerRef.current.addJob(
+          JobTypes.Recognize,
+          processedPixels,
+          recognizeOptions,
+        );
+      }),
     );
-    logger.logDebug('recognized text', { texts });
+
+    logger.logDebug('recognized texts', { texts });
 
     const ocrExecutionTime = ocrProfiler.current.stop();
 
