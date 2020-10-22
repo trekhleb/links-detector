@@ -44,8 +44,8 @@ export const DETECTION_CONFIG: DetectionConfig = {
     },
     model: {
       enabled: true,
-      brightness: 0.65,
-      contrast: 0.85,
+      brightness: 0.6,
+      contrast: 0.7,
     },
   },
   videoStreaming: {
