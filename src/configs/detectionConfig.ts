@@ -53,7 +53,7 @@ export const DETECTION_CONFIG: DetectionConfig = {
   },
   httpsDetection: {
     // @see: https://js.tensorflow.org/api/latest/#image.nonMaxSuppressionAsync
-    maxBoxesNum: 5,
+    maxBoxesNum: 3,
     IOUThreshold: 0.5,
     scoreThreshold: 0.1,
   },
