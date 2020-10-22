@@ -25,6 +25,7 @@ import {
   greyscaleFilter, Pixels,
   preprocessPixels,
 } from '../utils/image';
+import { JobTypes } from '../utils/tesseract';
 
 export type UseLinkDetectorProps = {
   modelURL: string,
@@ -161,7 +162,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     });
 
     const texts: TesseractDetection = await tesseractSchedulerRef.current.addJob(
-      'recognize',
+      JobTypes.Recognize,
       processedPixels,
     );
     logger.logDebug('recognized text', { texts });

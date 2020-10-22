@@ -10,6 +10,11 @@ export type InitSchedulerProps = {
   onLoading?: (progress: number) => void, // [0, 1]
 };
 
+export enum JobTypes {
+  Recognize = 'recognize',
+  Detect = 'detect',
+}
+
 export enum WorkerLoadingStatuses {
   LoadingCore = 'loading tesseract core',
   Initializing = 'initializing tesseract',
