@@ -22,13 +22,19 @@ function PerformanceMonitor(props: DetectionPerformanceProps): React.ReactElemen
   return (
     <div style={monitorStyles}>
       <div>
-        <b>{metrics.total}</b>s <b>{metrics.fps}</b>fps
+        proc: <b>{metrics.processing}</b>s
       </div>
       <div>
         https: <b>{metrics.inference}</b>s
       </div>
       <div>
         ocr: <b>{metrics.ocr}</b>s
+      </div>
+      <div>
+        total: <b>{metrics.total}</b>s
+      </div>
+      <div>
+        <b>{metrics.fps}</b>fps
       </div>
     </div>
   );

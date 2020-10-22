@@ -48,11 +48,11 @@ const useTesseract = (props: UseSchedulerProps): UseSchedulerOutput => {
 
   const onSchedulerErrorCallback = useCallback(onSchedulerError, []);
 
-  useEffect(() => {
+  useEffect((): () => void => {
     logger.logDebug('useEffect');
     if (scheduler && scheduler.current) {
       logger.logDebug('useEffect: skip');
-      return;
+      return (): void => {};
     }
     initScheduler({
       workersNum,
@@ -69,6 +69,15 @@ const useTesseract = (props: UseSchedulerProps): UseSchedulerOutput => {
         scheduler.current = ocrScheduler;
         setLoaded(true);
       });
+
+    return (): void => {
+      if (scheduler.current) {
+        logger.logDebug('useEffect: deactivate');
+        scheduler.current.terminate().then(() => {
+          logger.logDebug('useEffect: scheduler terminated');
+        });
+      }
+    };
   }, [workersNum, language, logger, onSchedulerErrorCallback, onSchedulerLoadingCallback]);
 
   return {
