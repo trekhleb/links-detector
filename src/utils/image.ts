@@ -57,25 +57,56 @@ export const greyscaleFilter = (): FilterFunc => (
   }
 };
 
-export const preprocessPixels = (pixels: Pixels, filters: FilterFunc[]): Pixels => {
+export const canvasFromPixels = (
+  pixels: Pixels,
+  size?: number | null,
+): HTMLCanvasElement | null => {
   const canvas: HTMLCanvasElement = document.createElement<'canvas'>('canvas');
-  canvas.width = pixels.width;
-  canvas.height = pixels.height;
+  canvas.width = size || pixels.width;
+  canvas.height = size || pixels.height;
 
   const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
-  if (context) {
-    context.drawImage(pixels, 0, 0);
-    const imageData: ImageData = context.getImageData(0, 0, canvas.width, canvas.height);
 
-    const COLORS_IN_PIXEL = 4; // RGBA
-    for (let shift = 0; shift < imageData.data.length; shift += COLORS_IN_PIXEL) {
-      filters.forEach((filter: FilterFunc) => {
-        filter(imageData.data, shift);
-      });
-    }
-
-    context.putImageData(imageData, 0, 0);
-    return canvas;
+  if (!context) {
+    return null;
   }
-  return pixels;
+
+  context.drawImage(pixels, 0, 0, canvas.width, canvas.height);
+
+  return canvas;
+};
+
+export type PreprocessPixelsProps = {
+  pixels: Pixels,
+  filters: FilterFunc[],
+  resizeToSize?: number | null,
+};
+
+export const preprocessPixels = (props: PreprocessPixelsProps): Pixels => {
+  const { pixels, filters, resizeToSize } = props;
+
+  const canvas: HTMLCanvasElement | null = canvasFromPixels(pixels, resizeToSize);
+
+  if (!canvas) {
+    return pixels;
+  }
+
+  const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
+
+  if (!context) {
+    return pixels;
+  }
+
+  const imageData: ImageData = context.getImageData(0, 0, canvas.width, canvas.height);
+
+  const COLORS_IN_PIXEL = 4; // RGBA
+  for (let shift = 0; shift < imageData.data.length; shift += COLORS_IN_PIXEL) {
+    filters.forEach((filter: FilterFunc) => {
+      filter(imageData.data, shift);
+    });
+  }
+
+  context.putImageData(imageData, 0, 0);
+
+  return canvas;
 };

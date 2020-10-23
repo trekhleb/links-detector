@@ -76,6 +76,7 @@ function LinksDetector(): React.ReactElement | null {
       applyFilters: DETECTION_CONFIG.imagePreprocessing.model.enabled,
       videoBrightness: DETECTION_CONFIG.imagePreprocessing.model.brightness,
       videoContrast: DETECTION_CONFIG.imagePreprocessing.model.contrast,
+      resizeToSize: DETECTION_CONFIG.imagePreprocessing.model.size,
     });
     if (isDebug) {
       setDetectionPerformance(currentDetectionPerformance);

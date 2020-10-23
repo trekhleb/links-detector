@@ -16,6 +16,7 @@ export type DetectionConfig = {
       enabled: boolean,
       brightness: ZeroOneRange,
       contrast: ZeroOneRange,
+      size: number, // Size in pixels (0 means do not resize).
     },
   },
   videoStreaming: {
@@ -46,6 +47,7 @@ export const DETECTION_CONFIG: DetectionConfig = {
       enabled: true,
       brightness: 0.6,
       contrast: 0.7,
+      size: 100,
     },
   },
   videoStreaming: {

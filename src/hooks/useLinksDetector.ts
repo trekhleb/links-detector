@@ -24,7 +24,8 @@ import {
   brightnessFilter,
   contrastFilter,
   FilterFunc,
-  greyscaleFilter, Pixels,
+  greyscaleFilter,
+  Pixels,
   preprocessPixels,
 } from '../utils/image';
 import { JobTypes } from '../utils/tesseract';
@@ -54,6 +55,7 @@ export type DetectProps = {
   video: HTMLVideoElement,
   videoBrightness: number,
   videoContrast: number,
+  resizeToSize: number,
   applyFilters: boolean,
 };
 
@@ -118,6 +120,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
       video,
       videoBrightness,
       videoContrast,
+      resizeToSize,
       applyFilters,
     } = detectProps;
 
@@ -153,7 +156,11 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     ] : [];
 
     preprocessingProfiler.current.start();
-    const processedPixels = preprocessPixels(video, filters);
+    const processedPixels = preprocessPixels({
+      pixels: video,
+      resizeToSize,
+      filters,
+    });
     setPixels(processedPixels);
     const imageProcessingTime = preprocessingProfiler.current.stop();
 
