@@ -156,11 +156,20 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     ] : [];
 
     preprocessingProfiler.current.start();
-    const processedPixels = preprocessPixels({
-      pixels: video,
-      resizeToSize,
-      filters,
-    });
+    let processedPixels: Pixels | null = null;
+    try {
+      processedPixels = preprocessPixels({
+        pixels: video,
+        resizeToSize,
+        filters,
+      });
+    } catch (error) {
+      const errMessage: string = (error && error.message) || 'Image preprocessing failed';
+      setDetectionError(errMessage);
+    }
+    if (!processedPixels) {
+      return null;
+    }
     setPixels(processedPixels);
     const imageProcessingTime = preprocessingProfiler.current.stop();
 

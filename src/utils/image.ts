@@ -88,13 +88,13 @@ export const preprocessPixels = (props: PreprocessPixelsProps): Pixels => {
   const canvas: HTMLCanvasElement | null = canvasFromPixels(pixels, resizeToSize);
 
   if (!canvas) {
-    return pixels;
+    throw new Error('Canvas cannot be created');
   }
 
   const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
 
   if (!context) {
-    return pixels;
+    throw new Error('Empty canvas context');
   }
 
   const imageData: ImageData = context.getImageData(0, 0, canvas.width, canvas.height);

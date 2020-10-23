@@ -114,6 +114,7 @@ export const graphModelExecute = async (
       inferenceTime,
       results,
     });
+    inputTensor.dispose();
   } catch (e) {
     const errorMessage = (e && e.message) || 'Cannot execute the model';
     logger.logError(errorMessage);

@@ -51,25 +51,40 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
     return toFixed((1 - warmupLoadingRatio) * progress);
   };
 
+  const calculateLoadingProgressCallback = useCallback(calculateLoadingProgress, [warmup]);
+
   const onLoadingProgress = (progress: ZeroOneRange): void => {
     logger.logDebug('onLoadingProgress', { progress });
-    setLoadingProgress(calculateLoadingProgress(progress));
+    setLoadingProgress(calculateLoadingProgressCallback(progress));
   };
 
-  const onLoadingProgressCallback = useCallback(onLoadingProgress, [logger]);
+  const onLoadingProgressCallback = useCallback(
+    onLoadingProgress,
+    [calculateLoadingProgressCallback, logger],
+  );
 
   // Effect for loading a model.
   useEffect(() => {
-    logger.logDebug('useEffect: loading the model');
-    graphModelLoad(modelURL, onLoadingProgressCallback)
-      .then((graphModel: tf.GraphModel) => {
-        setModel(graphModel);
-      })
-      .catch((e: Error) => {
-        setError(e.message);
-        logger.logError(`Cannot load the model: ${e.message}`);
-      });
-  }, [modelURL, setError, setModel, logger, onLoadingProgressCallback]);
+    logger.logDebug('useEffect');
+    if (!model) {
+      logger.logDebug('useEffect: loading the model');
+      graphModelLoad(modelURL, onLoadingProgressCallback)
+        .then((graphModel: tf.GraphModel) => {
+          setModel(graphModel);
+        })
+        .catch((e: Error) => {
+          setError(e.message);
+          logger.logError(`Cannot load the model: ${e.message}`);
+        });
+    }
+    return (): void => {
+      logger.logDebug('useEffect: shutdown');
+      if (model) {
+        logger.logDebug('useEffect: shutdown: disposing the model');
+        model.dispose();
+      }
+    };
+  }, [modelURL, setError, setModel, logger, onLoadingProgressCallback, model]);
 
   // Effect for warming up a model.
   useEffect(() => {
