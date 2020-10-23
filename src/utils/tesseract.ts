@@ -2,12 +2,13 @@ import {
   createWorker, createScheduler, Scheduler, Worker, WorkerOptions,
 } from 'tesseract.js';
 import { buildLoggers } from './logger';
+import { ZeroOneRange } from './types';
 
 export type InitSchedulerProps = {
   workersNum: number,
   language: string,
   onError?: (error: any) => void,
-  onLoading?: (progress: number) => void, // [0, 1]
+  onLoading?: (progress: ZeroOneRange) => void,
 };
 
 export enum JobTypes {

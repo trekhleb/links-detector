@@ -22,16 +22,19 @@ type UseSchedulerOutput = {
 const useTesseract = (props: UseSchedulerProps): UseSchedulerOutput => {
   const { workersNum, language } = props;
   const [loaded, setLoaded] = useState<boolean>(false);
+  const [loadingProgress, serLoadingProgress] = useState<ZeroOneRange>(0);
   const [error, setError] = useState<string | null>(null);
 
   const scheduler = useRef<Scheduler | null>(null);
 
   const logger = useLogger({ context: 'useTesseract' });
 
-  const onSchedulerLoading = (progress: number): void => {
+  const onSchedulerLoading = (progress: ZeroOneRange): void => {
     logger.logDebug('onSchedulerLoading', {
+      progress,
       workersNum: scheduler.current ? scheduler.current.getNumWorkers() : 0,
     });
+    serLoadingProgress(progress);
   };
 
   const onSchedulerLoadingCallback = useCallback(onSchedulerLoading, [logger]);
@@ -82,7 +85,7 @@ const useTesseract = (props: UseSchedulerProps): UseSchedulerOutput => {
 
   return {
     scheduler: scheduler.current,
-    loadingProgress: 0,
+    loadingProgress,
     loaded,
     error,
   };
