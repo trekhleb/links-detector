@@ -3,6 +3,7 @@ import {
 } from 'tesseract.js';
 import { buildLoggers } from './logger';
 import { ZeroOneRange } from './types';
+import { toFloatFixed } from './numbers';
 
 export type InitSchedulerProps = {
   workersNum: number,
@@ -30,47 +31,54 @@ export enum WorkerLoadingStatuses {
 
 export type LoadingStages = WorkerLoadingStatuses[][];
 
-const loadingStages: LoadingStages = [
-  [
-    WorkerLoadingStatuses.LoadingCore,
-  ],
-  [
-    WorkerLoadingStatuses.Initializing,
-    WorkerLoadingStatuses.Initialized,
-  ],
-  [
-    WorkerLoadingStatuses.LoadingLanguageTrainData,
-    WorkerLoadingStatuses.LoadingLanguageTrainDataCached,
-    WorkerLoadingStatuses.LoadedLanguageTrainData,
-  ],
-  [
-    WorkerLoadingStatuses.InitializingAPI,
-    WorkerLoadingStatuses.InitializedAPI,
-  ],
-];
+type WorkerLoadingProgress = {
+  [loadingState: string]: ZeroOneRange | null,
+};
+
+type WorkersLoadingProgress = {
+  [workerId: string]: WorkerLoadingProgress,
+};
 
 export type WorkerLogEvent = {
   status: WorkerLoadingStatuses,
   workerId?: string,
-  progress?: number, // [0, 1]
+  progress?: ZeroOneRange,
 };
 
-const getLoadingProgressFromLog = (
-  scheduler: Scheduler,
-  logEvent: WorkerLogEvent,
-): number | null => {
-  if (!logEvent || !logEvent.status) {
-    return null;
-  }
-  const eventStageIndex: number = loadingStages.findIndex(
-    (stageStatuses: WorkerLoadingStatuses[]) => stageStatuses.includes(logEvent.status),
+const getLoadingProgress = (
+  workersLoadingProgress: WorkersLoadingProgress,
+  workersNum: number,
+): ZeroOneRange => {
+  const rawWorkerProgresses: WorkerLoadingProgress[] = Object.values<WorkerLoadingProgress>(
+    workersLoadingProgress,
   );
-  if (eventStageIndex === -1) {
-    return null;
+  if (!rawWorkerProgresses || !rawWorkerProgresses.length) {
+    return 0;
   }
-  const totalStagesNum: number = loadingStages.length;
-  const currentStageProgress: number = typeof logEvent.progress === 'number' ? logEvent.progress : 0;
-  return eventStageIndex / totalStagesNum + currentStageProgress / totalStagesNum;
+  const workerProgresses: ZeroOneRange[] = rawWorkerProgresses.map(
+    (rawWorkerProgress: WorkerLoadingProgress) => {
+      const tesseractLoadingProgress: ZeroOneRange = rawWorkerProgress[
+        WorkerLoadingStatuses.Initialized
+      ] || 0;
+
+      const apiLoadingProgress: ZeroOneRange = rawWorkerProgress[
+        WorkerLoadingStatuses.InitializedAPI
+      ] || 0;
+
+      const trainDataLoadingProgress: ZeroOneRange = rawWorkerProgress[
+        WorkerLoadingStatuses.LoadedLanguageTrainData
+      ] || 0;
+
+      return (tesseractLoadingProgress + apiLoadingProgress + trainDataLoadingProgress) / 3;
+    },
+  );
+  const denormalizedLoadingProgress: number = workerProgresses.reduce(
+    (overallProgress: number, currentProgress: ZeroOneRange) => {
+      return overallProgress + currentProgress;
+    },
+    0,
+  );
+  return toFloatFixed(denormalizedLoadingProgress / workersNum, 2);
 };
 
 export const initScheduler = async (props: InitSchedulerProps): Promise<Scheduler> => {
@@ -85,17 +93,30 @@ export const initScheduler = async (props: InitSchedulerProps): Promise<Schedule
   logger.logDebug('initScheduler', { ...props });
 
   const workerIDs: string[] = [];
+  const workersLoadingProgress: WorkersLoadingProgress = {};
 
   const scheduler: Scheduler = createScheduler();
 
   const onWorkerLog = (logEvent: WorkerLogEvent): void => {
-    const progress: number | null = getLoadingProgressFromLog(scheduler, logEvent);
+    // Register a new loading state in worker loading progress object.
+    if (logEvent.workerId) {
+      const workerID: string = logEvent.workerId;
+      if (!workersLoadingProgress[workerID]) {
+        workersLoadingProgress[workerID] = {};
+      }
+      workersLoadingProgress[workerID][logEvent.status] = logEvent.progress || null;
+    }
+
+    // Calculate overall loading progress.
+    const progress: ZeroOneRange = getLoadingProgress(workersLoadingProgress, workersNum);
     logger.logDebug('worker log', {
       ...logEvent,
-      calcProgress: progress,
+      overallProgress: progress,
+      workersLoadingProgress: { ...workersLoadingProgress },
       loadedWorkersNum: scheduler.getNumWorkers(),
+      workerIDs,
     });
-    onLoading(progress || 0);
+    onLoading(progress);
   };
 
   const onWorkerError = (error: any): void => {
@@ -129,6 +150,7 @@ export const initScheduler = async (props: InitSchedulerProps): Promise<Schedule
 
   workers.forEach((worker: Worker) => {
     const workerID = scheduler.addWorker(worker);
+    workerIDs.push(workerID);
     logger.logDebug('addWorker', { workerID });
   });
 

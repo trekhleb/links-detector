@@ -1,3 +1,5 @@
+import { toFloatFixed } from './numbers';
+
 export type Profiler = {
   start: () => void,
   stop: (inSeconds?: boolean) => number,
@@ -7,7 +9,7 @@ export type Profiler = {
 };
 
 const msToSs = (timeMs: number, fractionDigits: number = 2): number => {
-  return parseFloat((timeMs / 1000).toFixed(fractionDigits));
+  return toFloatFixed(timeMs / 1000, fractionDigits);
 };
 
 export const newProfiler = (): Profiler => {
@@ -41,11 +43,11 @@ export const newProfiler = (): Profiler => {
   };
 
   const fps = (): number => {
-    return parseFloat((1 / msToSs(lastTimeRange)).toFixed(2));
+    return toFloatFixed(1 / msToSs(lastTimeRange), 2);
   };
 
   const avgFps = (): number => {
-    return parseFloat((1 / avg()).toFixed(2));
+    return toFloatFixed(1 / avg(), 2);
   };
 
   return {

@@ -4,6 +4,7 @@ import * as tf from '@tensorflow/tfjs';
 import useLogger from './useLogger';
 import { graphModelLoad, graphModelWarmup } from '../utils/graphModel';
 import { ZeroOneRange } from '../utils/types';
+import { toFloatFixed } from '../utils/numbers';
 
 type UseGraphModelProps = {
   modelURL: string,
@@ -39,16 +40,12 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
   );
 
   const calculateLoadingProgress = (progress: ZeroOneRange): ZeroOneRange => {
-    const toFixed = (num: ZeroOneRange): ZeroOneRange => {
-      return Math.round(num * 100) / 100;
-    };
-
     if (!warmup) {
-      return toFixed(progress);
+      return toFloatFixed(progress, 2);
     }
     // In case of model warm up we need to reserve some percentage of loader for warming up.
     const warmupLoadingRatio = 0.05;
-    return toFixed((1 - warmupLoadingRatio) * progress);
+    return toFloatFixed((1 - warmupLoadingRatio) * progress, 2);
   };
 
   const calculateLoadingProgressCallback = useCallback(calculateLoadingProgress, [warmup]);
