@@ -59,7 +59,7 @@ export const DETECTION_CONFIG: DetectionConfig = {
     // @see: https://js.tensorflow.org/api/latest/#image.nonMaxSuppressionAsync
     maxBoxesNum: 3,
     IOUThreshold: 0.5,
-    scoreThreshold: 0.05,
+    scoreThreshold: 0.5,
   },
   ocr: {
     // @see: https://github.com/naptha/tesseract.js/blob/master/docs/examples.md

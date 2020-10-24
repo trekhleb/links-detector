@@ -86,26 +86,15 @@ export type UseLinkDetectorOutput = {
 
 export type TesseractDetection = ConfigResult | RecognizeResult | DetectResult;
 
-const HTTPS_LINK_PREFIX = 'https://';
+// @see: https://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url
+const URL_REG_EXP = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
 
 const extractLinkFromText = (text: string): string | null => {
-  const processedText: string = text.toLowerCase();
-  const httpsStart: number = processedText.indexOf(HTTPS_LINK_PREFIX);
-  if (httpsStart < 0) {
+  const urls: string[] | null = text.match(URL_REG_EXP);
+  if (!urls || !urls.length) {
     return null;
   }
-  let httpsEnd: number = httpsStart + HTTPS_LINK_PREFIX.length;
-  for (
-    let charIdx = (httpsStart + HTTPS_LINK_PREFIX.length);
-    charIdx < processedText.length;
-    charIdx += 1
-  ) {
-    if (processedText[charIdx] === ' ') {
-      break;
-    }
-    httpsEnd += 1;
-  }
-  return processedText.substring(httpsStart, httpsEnd);
+  return urls[0];
 };
 
 const extractLinkFromDetection = (
