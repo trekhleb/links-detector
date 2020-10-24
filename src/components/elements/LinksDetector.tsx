@@ -15,6 +15,7 @@ import useLinksDetector, { DetectionPerformance } from '../../hooks/useLinksDete
 import { normalizeCSSFilterParam } from '../../utils/image';
 import PerformanceMonitor from './PerformanceMonitor';
 import { DetectionBox } from '../../utils/graphModel';
+import DetectedLinks from './DetectedLinks';
 
 const uiVideoBrightness = normalizeCSSFilterParam(
   DETECTION_CONFIG.imagePreprocessing.ui.brightness,
@@ -101,6 +102,14 @@ function LinksDetector(): React.ReactElement | null {
     position: 'absolute',
   };
 
+  const detectedLinksContainerStyles: CSSProperties = {
+    marginTop: `-${videoSize}px`,
+    width: `${videoSize}px`,
+    height: `${videoSize}px`,
+    position: 'absolute',
+    overflow: 'hidden',
+  };
+
   const performanceMonitorStyles: CSSProperties = {
     position: 'absolute',
     left: 0,
@@ -160,6 +169,14 @@ function LinksDetector(): React.ReactElement | null {
     </ErrorBoundary>
   ) : null;
 
+  const detectedLinksCanvas = detectedLinks && detectedLinks.length ? (
+    <ErrorBoundary>
+      <div style={detectedLinksContainerStyles}>
+        <DetectedLinks links={detectedLinks} />
+      </div>
+    </ErrorBoundary>
+  ) : null;
+
   const performanceMonitor = isDebug ? (
     <ErrorBoundary>
       <div style={performanceMonitorStyles}>
@@ -183,6 +200,7 @@ function LinksDetector(): React.ReactElement | null {
       { regionProposalsCanvas }
       { httpsBoxesCanvas }
       { performanceMonitor }
+      { detectedLinksCanvas }
     </div>
   );
 }

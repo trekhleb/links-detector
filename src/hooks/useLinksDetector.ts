@@ -2,6 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import {
   ConfigResult,
   DetectResult,
+  Line,
   RecognizeOptions,
   RecognizeResult,
   Rectangle,
@@ -31,6 +32,7 @@ import {
 } from '../utils/image';
 import { JobTypes } from '../utils/tesseract';
 import { toFloatFixed } from '../utils/numbers';
+import { Loggers } from '../utils/logger';
 
 export type DetectionPerformance = {
   processing: number,
@@ -84,7 +86,52 @@ export type UseLinkDetectorOutput = {
 
 export type TesseractDetection = ConfigResult | RecognizeResult | DetectResult;
 
-const extractLinkFromDetection = (detection: TesseractDetection | null): DetectedLink | null => {
+const HTTPS_LINK_PREFIX = 'https://';
+
+const extractLinkFromText = (text: string): string | null => {
+  const processedText: string = text.toLowerCase();
+  const httpsStart: number = processedText.indexOf(HTTPS_LINK_PREFIX);
+  if (httpsStart < 0) {
+    return null;
+  }
+  let httpsEnd: number = httpsStart + HTTPS_LINK_PREFIX.length;
+  for (
+    let charIdx = (httpsStart + HTTPS_LINK_PREFIX.length);
+    charIdx < processedText.length;
+    charIdx += 1
+  ) {
+    if (processedText[charIdx] === ' ') {
+      break;
+    }
+    httpsEnd += 1;
+  }
+  return processedText.substring(httpsStart, httpsEnd);
+};
+
+const extractLinkFromDetection = (
+  detection: TesseractDetection | null,
+  logger: Loggers,
+): DetectedLink | null => {
+  if (!detection || !detection.data || !detection.data.lines || !detection.data.lines.length) {
+    logger.logDebug('extractLinkFromDetection: empty');
+    return null;
+  }
+  for (let lineIndex = 0; lineIndex < detection.data.lines.length; lineIndex += 1) {
+    const line: Line = detection.data.lines[lineIndex];
+    const url: string | null = extractLinkFromText(line.text);
+    logger.logDebug('extractLinkFromDetection: line link', { url, text: line.text });
+    if (url) {
+      const detectedLink: DetectedLink = {
+        url,
+        x1: line.bbox.x0,
+        y1: line.bbox.y0,
+        x2: line.bbox.x1,
+        y2: line.bbox.y1,
+      };
+      logger.logDebug('extractLinkFromDetection: detected', { detectedLink });
+      return detectedLink;
+    }
+  }
   return null;
 };
 
@@ -106,7 +153,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
   const modelRef = useRef<tf.GraphModel | null>(null);
   const tesseractSchedulerRef = useRef<Scheduler | null>(null);
 
-  const logger = useLogger({ context: 'useLinksDetector' });
+  const logger: Loggers = useLogger({ context: 'useLinksDetector' });
 
   const [detectedLinks, setDetectedLinks] = useState<DetectedLink[]>([]);
   const [pixels, setPixels] = useState<Pixels | null>(null);
@@ -268,7 +315,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
       if (texts && texts.length) {
         const currentDetectedLinks: Array<DetectedLink | null> = texts
           .map((text: TesseractDetection | null): DetectedLink | null => {
-            return extractLinkFromDetection(text);
+            return extractLinkFromDetection(text, logger);
           })
           .filter(
             (detection: DetectedLink | null): boolean => detection !== null,
