@@ -27,6 +27,7 @@ import {
   greyscaleFilter,
   Pixels,
   preprocessPixels,
+  relativeToAbsolute,
 } from '../utils/image';
 import { JobTypes } from '../utils/tesseract';
 import { toFloatFixed } from '../utils/numbers';
@@ -66,6 +67,7 @@ export type UseLinkDetectorOutput = {
   loadingProgress: ZeroOneRange | null,
   loadingStage: string | null,
   httpsBoxes: DetectionBox[] | null,
+  regionProposals: Rectangle[],
   pixels: Pixels | null,
 };
 
@@ -94,6 +96,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
   const [pixels, setPixels] = useState<Pixels | null>(null);
   const [detectionError, setDetectionError] = useState<string | null>(null);
   const [httpsBoxes, setHttpsBoxes] = useState<DetectionBox[] | null>(null);
+  const [regionProposals, setRegionProposals] = useState<Rectangle[]>([]);
   const [loadingProgress, setLoadingProgress] = useState<ZeroOneRange | null>(null);
   const [loadingStage, setLoadingStage] = useState<string | null>(null);
 
@@ -189,34 +192,53 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     // OCR execution.
     ocrProfiler.current.start();
 
+    const rectangles: Rectangle[] = !httpsPredictions || !httpsPredictions.length
+      ? []
+      : httpsPredictions.map((httpsPrediction: DetectionBox): Rectangle => {
+        const { x1, y1, y2 } = httpsPrediction;
+
+        const imageW: number = (processedPixels && processedPixels.width) || 0;
+        const imageH: number = (processedPixels && processedPixels.height) || 0;
+
+        const left: number = relativeToAbsolute(x1, imageW);
+        const top: number = relativeToAbsolute(y1, imageH);
+        const bottom: number = relativeToAbsolute(y2, imageH);
+        const width: number = imageW - left;
+        const height: number = bottom - top;
+
+        return {
+          left,
+          top,
+          width,
+          height,
+        };
+      });
+
+    setRegionProposals(rectangles);
+
     logger.logDebug('detectLinks: tesseract is ready', {
       numWorkers: tesseractSchedulerRef.current.getNumWorkers(),
+      rectangles: { ...rectangles },
     });
 
-    const rectangles: Rectangle[] = [
-      {
-        left: 0,
-        top: 0,
-        width: processedPixels.width,
-        height: processedPixels.height,
-      },
-    ];
-
-    const texts: Array<TesseractDetection | null> = await Promise.all(
-      rectangles.map((rectangle: Rectangle): Promise<TesseractDetection | null> => {
-        const recognizeOptions: Partial<RecognizeOptions> = { rectangle };
-        if (!tesseractSchedulerRef.current) {
-          return Promise.resolve(null);
-        }
-        return tesseractSchedulerRef.current.addJob(
-          JobTypes.Recognize,
-          processedPixels,
-          recognizeOptions,
-        );
-      }),
-    );
-
-    logger.logDebug('recognized texts', { texts });
+    if (rectangles.length) {
+      const texts: Array<TesseractDetection | null> = await Promise.all(
+        rectangles.map((rectangle: Rectangle): Promise<TesseractDetection | null> => {
+          const recognizeOptions: Partial<RecognizeOptions> = { rectangle };
+          if (!tesseractSchedulerRef.current) {
+            return Promise.resolve(null);
+          }
+          return tesseractSchedulerRef.current.addJob(
+            JobTypes.Recognize,
+            processedPixels,
+            recognizeOptions,
+          );
+        }),
+      );
+      logger.logDebug('recognized texts', { texts });
+    } else {
+      logger.logDebug('skipping the text recognition');
+    }
 
     const ocrExecutionTime = ocrProfiler.current.stop();
 
@@ -280,6 +302,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     loadingStage,
     pixels,
     httpsBoxes,
+    regionProposals,
     error: modelError || detectionError || tesseractSchedulerError,
   };
 };

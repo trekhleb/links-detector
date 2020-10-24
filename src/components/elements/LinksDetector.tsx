@@ -41,6 +41,7 @@ function LinksDetector(): React.ReactElement | null {
     loadingProgress,
     loadingStage,
     httpsBoxes,
+    regionProposals,
     pixels,
   } = useLinksDetector({
     modelURL: DETECTION_CONFIG.modelLoading.linksDetectorModelURL,
@@ -108,6 +109,8 @@ function LinksDetector(): React.ReactElement | null {
           boxes={httpsBoxes}
           width={videoSize}
           height={videoSize}
+          boxColor="#2fff00"
+          boxLabelColor="#000000"
         />
       </div>
     </ErrorBoundary>

@@ -118,6 +118,8 @@ const BoxesCanvas = (props: BoxesCanvasProps): React.ReactElement => {
 
   const drawDetectionsCallback = useCallback(drawDetections, [
     boxes,
+    boxColor,
+    boxLabelColor,
     normalized,
     width,
     height,

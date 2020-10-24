@@ -110,3 +110,13 @@ export const preprocessPixels = (props: PreprocessPixelsProps): Pixels => {
 
   return canvas;
 };
+
+export const relativeToAbsolute = (relativeCoordinate: ZeroOneRange, imageSize: number): number => {
+  return Math.max(
+    Math.min(
+      Math.round(relativeCoordinate * imageSize),
+      imageSize,
+    ),
+    0,
+  );
+};
