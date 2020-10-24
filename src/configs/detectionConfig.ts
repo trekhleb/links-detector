@@ -30,6 +30,7 @@ export type DetectionConfig = {
   ocr: {
     workersNum: number,
     language: string,
+    regionProposalPadding: ZeroOneRange,
   },
 };
 
@@ -63,5 +64,6 @@ export const DETECTION_CONFIG: DetectionConfig = {
     // @see: https://github.com/naptha/tesseract.js/blob/master/docs/examples.md
     workersNum: 3,
     language: 'eng',
+    regionProposalPadding: 0,
   },
 };
