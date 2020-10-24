@@ -29,7 +29,7 @@ export enum WorkerLoadingStatuses {
   RecognizingText = 'recognizing text',
 }
 
-export type LoadingStages = WorkerLoadingStatuses[][];
+const CORE_WORKER_ID = 'core';
 
 type WorkerLoadingProgress = {
   [loadingState: string]: ZeroOneRange | null,
@@ -46,9 +46,22 @@ export type WorkerLogEvent = {
 };
 
 const getLoadingProgress = (
-  workersLoadingProgress: WorkersLoadingProgress,
+  originalWorkersLoadingProgress: WorkersLoadingProgress,
   workersNum: number,
 ): ZeroOneRange => {
+  const workersLoadingProgress: WorkersLoadingProgress = { ...originalWorkersLoadingProgress };
+
+  // Detect core loading progress.
+  const coreNum: number = 1; // always 1
+  const rawCoreLoadingProgress: WorkerLoadingProgress = workersLoadingProgress[
+    CORE_WORKER_ID
+  ] || {};
+  const coreLoadingProgress: ZeroOneRange = rawCoreLoadingProgress[
+    WorkerLoadingStatuses.LoadingCore
+  ] || 0;
+  delete workersLoadingProgress[CORE_WORKER_ID];
+
+  // Detect workers loading progress.
   const rawWorkerProgresses: WorkerLoadingProgress[] = Object.values<WorkerLoadingProgress>(
     workersLoadingProgress,
   );
@@ -78,7 +91,12 @@ const getLoadingProgress = (
     },
     0,
   );
-  return toFloatFixed(denormalizedLoadingProgress / workersNum, 2);
+
+  // Calculate overall loading progress.
+  return toFloatFixed(
+    (coreLoadingProgress + denormalizedLoadingProgress) / (workersNum + coreNum),
+    2,
+  );
 };
 
 export const initScheduler = async (props: InitSchedulerProps): Promise<Scheduler> => {
@@ -99,13 +117,11 @@ export const initScheduler = async (props: InitSchedulerProps): Promise<Schedule
 
   const onWorkerLog = (logEvent: WorkerLogEvent): void => {
     // Register a new loading state in worker loading progress object.
-    if (logEvent.workerId) {
-      const workerID: string = logEvent.workerId;
-      if (!workersLoadingProgress[workerID]) {
-        workersLoadingProgress[workerID] = {};
-      }
-      workersLoadingProgress[workerID][logEvent.status] = logEvent.progress || null;
+    const workerID: string = logEvent.workerId || CORE_WORKER_ID;
+    if (!workersLoadingProgress[workerID]) {
+      workersLoadingProgress[workerID] = {};
     }
+    workersLoadingProgress[workerID][logEvent.status] = logEvent.progress || null;
 
     // Calculate overall loading progress.
     const progress: ZeroOneRange = getLoadingProgress(workersLoadingProgress, workersNum);
