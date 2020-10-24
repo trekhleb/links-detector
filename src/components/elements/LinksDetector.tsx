@@ -70,13 +70,17 @@ function LinksDetector(): React.ReactElement | null {
   }
 
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
-    logger.logDebug('onFrame start');
+    const resizeToSize: number = Math.min(
+      windowSize.width || Infinity,
+      DETECTION_CONFIG.imagePreprocessing.model.size,
+    );
+    logger.logDebug('onFrame start', { resizeToSize });
     const currentDetectionPerformance: DetectionPerformance | null = await detectLinks({
       video,
       applyFilters: DETECTION_CONFIG.imagePreprocessing.model.enabled,
       videoBrightness: DETECTION_CONFIG.imagePreprocessing.model.brightness,
       videoContrast: DETECTION_CONFIG.imagePreprocessing.model.contrast,
-      resizeToSize: DETECTION_CONFIG.imagePreprocessing.model.size,
+      resizeToSize,
     });
     if (isDebug) {
       setDetectionPerformance(currentDetectionPerformance);
