@@ -29,6 +29,7 @@ import {
   preprocessPixels,
 } from '../utils/image';
 import { JobTypes } from '../utils/tesseract';
+import { toFloatFixed } from '../utils/numbers';
 
 export type DetectionPerformance = {
   processing: number,
@@ -244,13 +245,19 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
 
   // Calculate the loading progress.
   useEffect(() => {
-    logger.logDebug('useEffect: Loading progress', { modelLoadingProgress, loadingProgress });
-    if (loadingProgress === modelLoadingProgress) {
-      return;
-    }
-    setLoadingProgress(modelLoadingProgress);
+    const normalizedProgress: ZeroOneRange = toFloatFixed(
+      (modelLoadingProgress + tesseractLoadingProgress) / 2,
+      2,
+    );
+    logger.logDebug('useEffect: loading progress', {
+      modelLoadingProgress,
+      tesseractLoadingProgress,
+      normalizedProgress,
+      loadingProgress,
+    });
+    setLoadingProgress(normalizedProgress);
     setLoadingStage('Loading links detector');
-  }, [loadingProgress, modelLoadingProgress, logger]);
+  }, [loadingProgress, modelLoadingProgress, logger, tesseractLoadingProgress]);
 
   // Update model references.
   useEffect(() => {
