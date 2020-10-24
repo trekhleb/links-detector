@@ -47,7 +47,7 @@ export const DETECTION_CONFIG: DetectionConfig = {
       enabled: true,
       brightness: 0.6,
       contrast: 0.7,
-      size: 100,
+      size: 600,
     },
   },
   videoStreaming: {
@@ -57,7 +57,7 @@ export const DETECTION_CONFIG: DetectionConfig = {
     // @see: https://js.tensorflow.org/api/latest/#image.nonMaxSuppressionAsync
     maxBoxesNum: 3,
     IOUThreshold: 0.5,
-    scoreThreshold: 0.1,
+    scoreThreshold: 0.5,
   },
   ocr: {
     // @see: https://github.com/naptha/tesseract.js/blob/master/docs/examples.md

@@ -71,7 +71,7 @@ function LinksDetector(): React.ReactElement | null {
 
   const onFrame = async (video: HTMLVideoElement): Promise<void> => {
     const resizeToSize: number = Math.min(
-      windowSize.width || Infinity,
+      video.width,
       DETECTION_CONFIG.imagePreprocessing.model.size,
     );
     logger.logDebug('onFrame start', { resizeToSize });
