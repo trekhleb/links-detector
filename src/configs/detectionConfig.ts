@@ -28,6 +28,7 @@ export type DetectionConfig = {
     scoreThreshold: ZeroOneRange,
   },
   ocr: {
+    useRegionProposals: boolean,
     workersNum: number,
     language: string,
     regionProposalPadding: ZeroOneRange,
@@ -58,12 +59,13 @@ export const DETECTION_CONFIG: DetectionConfig = {
     // @see: https://js.tensorflow.org/api/latest/#image.nonMaxSuppressionAsync
     maxBoxesNum: 3,
     IOUThreshold: 0.5,
-    scoreThreshold: 0.5,
+    scoreThreshold: 0.05,
   },
   ocr: {
     // @see: https://github.com/naptha/tesseract.js/blob/master/docs/examples.md
+    useRegionProposals: true,
     workersNum: 3,
     language: 'eng',
-    regionProposalPadding: 0,
+    regionProposalPadding: 0.03,
   },
 };

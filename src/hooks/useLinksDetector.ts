@@ -59,6 +59,8 @@ export type DetectProps = {
   videoContrast: number,
   resizeToSize: number,
   applyFilters: boolean,
+  regionProposalsPadding: ZeroOneRange,
+  useRegionProposals: boolean,
 };
 
 export type UseLinkDetectorOutput = {
@@ -126,6 +128,8 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
       videoContrast,
       resizeToSize,
       applyFilters,
+      regionProposalsPadding,
+      useRegionProposals,
     } = detectProps;
 
     logger.logDebug('detectLinks', detectProps);
@@ -192,7 +196,17 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
     // OCR execution.
     ocrProfiler.current.start();
 
-    const rectangles: Rectangle[] = !httpsPredictions || !httpsPredictions.length
+    const rectanglesImage: Rectangle[] = [
+      {
+        left: 0,
+        top: 0,
+        width: processedPixels.width,
+        height: processedPixels.height,
+      },
+    ];
+
+    /* eslint-disable-next-line max-len */
+    const rectanglesRegions: Rectangle[] = !useRegionProposals || !httpsPredictions || !httpsPredictions.length
       ? []
       : httpsPredictions.map((httpsPrediction: DetectionBox): Rectangle => {
         const { x1, y1, y2 } = httpsPrediction;
@@ -200,9 +214,9 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
         const imageW: number = (processedPixels && processedPixels.width) || 0;
         const imageH: number = (processedPixels && processedPixels.height) || 0;
 
-        const left: number = relativeToAbsolute(x1, imageW);
-        const top: number = relativeToAbsolute(y1, imageH);
-        const bottom: number = relativeToAbsolute(y2, imageH);
+        const left: number = relativeToAbsolute(x1 - regionProposalsPadding, imageW);
+        const top: number = relativeToAbsolute(y1 - regionProposalsPadding, imageH);
+        const bottom: number = relativeToAbsolute(y2 + regionProposalsPadding, imageH);
         const width: number = imageW - left;
         const height: number = bottom - top;
 
@@ -213,6 +227,8 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
           height,
         };
       });
+
+    const rectangles: Rectangle[] = useRegionProposals ? rectanglesRegions : rectanglesImage;
 
     setRegionProposals(rectangles);
 

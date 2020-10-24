@@ -1,4 +1,5 @@
 import React, { CSSProperties, useState } from 'react';
+import { Rectangle } from 'tesseract.js';
 
 import CameraStream from '../shared/CameraStream';
 import useWindowSize from '../../hooks/useWindowSize';
@@ -13,6 +14,7 @@ import PixelsCanvas from './PixelsCanvas';
 import useLinksDetector, { DetectionPerformance } from '../../hooks/useLinksDetector';
 import { normalizeCSSFilterParam } from '../../utils/image';
 import PerformanceMonitor from './PerformanceMonitor';
+import { DetectionBox } from '../../utils/graphModel';
 
 const uiVideoBrightness = normalizeCSSFilterParam(
   DETECTION_CONFIG.imagePreprocessing.ui.brightness,
@@ -81,6 +83,8 @@ function LinksDetector(): React.ReactElement | null {
       applyFilters: DETECTION_CONFIG.imagePreprocessing.model.enabled,
       videoBrightness: DETECTION_CONFIG.imagePreprocessing.model.brightness,
       videoContrast: DETECTION_CONFIG.imagePreprocessing.model.contrast,
+      regionProposalsPadding: DETECTION_CONFIG.ocr.regionProposalPadding,
+      useRegionProposals: DETECTION_CONFIG.ocr.useRegionProposals,
       resizeToSize,
     });
     if (isDebug) {
@@ -93,7 +97,7 @@ function LinksDetector(): React.ReactElement | null {
 
   const canvasContainerStyles: CSSProperties = {
     marginTop: `-${videoSize}px`,
-    position: 'relative',
+    position: 'absolute',
   };
 
   const performanceMonitorStyles: CSSProperties = {
@@ -109,8 +113,35 @@ function LinksDetector(): React.ReactElement | null {
           boxes={httpsBoxes}
           width={videoSize}
           height={videoSize}
-          boxColor="#2fff00"
-          boxLabelColor="#000000"
+          boxColor="#00ff00"
+          normalized
+        />
+      </div>
+    </ErrorBoundary>
+  ) : null;
+
+  const regionProposalBoxes: DetectionBox[] = regionProposals && regionProposals.length
+    ? regionProposals.map((regionProposal: Rectangle): DetectionBox => {
+      return {
+        x1: regionProposal.left,
+        x2: regionProposal.left + regionProposal.width,
+        y1: regionProposal.top,
+        y2: regionProposal.top + regionProposal.height,
+        score: 0,
+        categoryId: 0,
+      };
+    })
+    : [];
+
+  const regionProposalsCanvas = regionProposalBoxes && regionProposalBoxes.length && isDebug ? (
+    <ErrorBoundary>
+      <div style={canvasContainerStyles}>
+        <BoxesCanvas
+          boxes={regionProposalBoxes}
+          width={videoSize}
+          height={videoSize}
+          boxColor="#0000ff"
+          normalized={false}
         />
       </div>
     </ErrorBoundary>
@@ -148,6 +179,7 @@ function LinksDetector(): React.ReactElement | null {
         />
       </ErrorBoundary>
       { imageCanvas }
+      { regionProposalsCanvas }
       { httpsBoxesCanvas }
       { performanceMonitor }
     </div>
