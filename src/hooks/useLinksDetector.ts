@@ -44,6 +44,14 @@ export type DetectionPerformance = {
   fps: number,
 };
 
+export type DetectedLink = {
+  url: string,
+  x1: ZeroOneRange,
+  y1: ZeroOneRange,
+  x2: ZeroOneRange,
+  y2: ZeroOneRange,
+};
+
 export type UseLinkDetectorProps = {
   modelURL: string,
   maxBoxesNum: number,
@@ -65,6 +73,7 @@ export type DetectProps = {
 
 export type UseLinkDetectorOutput = {
   detectLinks: (props: DetectProps) => Promise<DetectionPerformance | null>,
+  detectedLinks: DetectedLink[],
   error: string | null,
   loadingProgress: ZeroOneRange | null,
   loadingStage: string | null,
@@ -74,6 +83,10 @@ export type UseLinkDetectorOutput = {
 };
 
 export type TesseractDetection = ConfigResult | RecognizeResult | DetectResult;
+
+const extractLinkFromDetection = (detection: TesseractDetection | null): DetectedLink | null => {
+  return null;
+};
 
 const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput => {
   const {
@@ -95,6 +108,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
 
   const logger = useLogger({ context: 'useLinksDetector' });
 
+  const [detectedLinks, setDetectedLinks] = useState<DetectedLink[]>([]);
   const [pixels, setPixels] = useState<Pixels | null>(null);
   const [detectionError, setDetectionError] = useState<string | null>(null);
   const [httpsBoxes, setHttpsBoxes] = useState<DetectionBox[] | null>(null);
@@ -251,6 +265,17 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
           );
         }),
       );
+      if (texts && texts.length) {
+        const currentDetectedLinks: Array<DetectedLink | null> = texts
+          .map((text: TesseractDetection | null): DetectedLink | null => {
+            return extractLinkFromDetection(text);
+          })
+          .filter(
+            (detection: DetectedLink | null): boolean => detection !== null,
+          );
+        // @ts-ignore
+        setDetectedLinks(currentDetectedLinks);
+      }
       logger.logDebug('recognized texts', { texts });
     } else {
       logger.logDebug('skipping the text recognition');
@@ -313,6 +338,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
   }, [tesseractScheduler, logger, tesseractSchedulerLoaded]);
 
   return {
+    detectedLinks,
     detectLinks: detectLinksCallback,
     loadingProgress,
     loadingStage,

@@ -38,6 +38,7 @@ function LinksDetector(): React.ReactElement | null {
   ] = useState<DetectionPerformance | null>(null);
 
   const {
+    detectedLinks,
     detectLinks,
     error,
     loadingProgress,
