@@ -77,8 +77,12 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
     return (): void => {
       logger.logDebug('useEffect: shutdown');
       if (model) {
-        logger.logDebug('useEffect: shutdown: disposing the model');
-        model.dispose();
+        try {
+          logger.logDebug('useEffect: shutdown: disposing the model');
+          model.dispose();
+        } catch (e) {
+          logger.logDebug('useEffect: shutdown: disposing the model: CAUGHT ERROR');
+        }
       }
     };
   }, [modelURL, setError, setModel, logger, onLoadingProgressCallback, model]);
