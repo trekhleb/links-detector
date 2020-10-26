@@ -172,7 +172,7 @@ function LinksDetector(): React.ReactElement | null {
   const detectedLinksCanvas = detectedLinks && detectedLinks.length ? (
     <ErrorBoundary>
       <div style={detectedLinksContainerStyles}>
-        <DetectedLinks links={detectedLinks} />
+        <DetectedLinks links={detectedLinks} containerSize={videoSize} />
       </div>
     </ErrorBoundary>
   ) : null;

@@ -48,10 +48,10 @@ export type DetectionPerformance = {
 
 export type DetectedLink = {
   url: string,
-  x1: ZeroOneRange,
-  y1: ZeroOneRange,
-  x2: ZeroOneRange,
-  y2: ZeroOneRange,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
 };
 
 export type UseLinkDetectorProps = {
@@ -311,6 +311,8 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
           );
         // @ts-ignore
         setDetectedLinks(currentDetectedLinks);
+      } else {
+        setDetectedLinks([]);
       }
       logger.logDebug('recognized texts', { texts });
     } else {
