@@ -53,7 +53,7 @@ export const DETECTION_CONFIG: DetectionConfig = {
     },
   },
   videoStreaming: {
-    idealFPS: 0.5,
+    idealFPS: 10,
   },
   httpsDetection: {
     // @see: https://js.tensorflow.org/api/latest/#image.nonMaxSuppressionAsync
