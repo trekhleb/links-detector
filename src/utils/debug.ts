@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import { setTFBackend } from './graphModel';
 
 type TFInfoProps = {
   modelURL: string,
@@ -11,6 +12,8 @@ export type TFInfo = {
 
 export const getTFInfo = async (props: TFInfoProps): Promise<TFInfo> => {
   const { modelURL } = props;
+
+  await setTFBackend();
 
   await tf.loadGraphModel(modelURL);
 

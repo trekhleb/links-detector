@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import { GraphModel } from '@tensorflow/tfjs';
 import {
   ConfigResult,
   DetectResult,
@@ -139,7 +139,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
   const ocrProfiler = useRef<Profiler>(newProfiler());
   const onFrameProfiler = useRef<Profiler>(newProfiler());
 
-  const modelRef = useRef<tf.GraphModel | null>(null);
+  const modelRef = useRef<GraphModel | null>(null);
   const tesseractSchedulerRef = useRef<Scheduler | null>(null);
 
   const logger: Loggers = useLogger({ context: 'useLinksDetector' });

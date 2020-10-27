@@ -1,15 +1,41 @@
 import * as tf from '@tensorflow/tfjs';
+import { setWasmPaths } from '@tensorflow/tfjs-backend-wasm';
 import { DataType } from '@tensorflow/tfjs-core/src/types';
 
 import { buildLoggers } from './logger';
 import { Pixels } from './image';
 import { newProfiler, Profiler } from './profiler';
 
+export enum TFBackends {
+  cpu = 'cpu',
+  webgl = 'webgl',
+  wasm = 'wasm',
+}
+
+export const setTFBackend = async (
+  backendName: string = TFBackends.webgl,
+): Promise<boolean> => {
+  if (backendName === TFBackends.wasm) {
+    // @see: package.json
+    setWasmPaths({
+      'tfjs-backend-wasm.wasm': '/wasm/tfjs-backend-wasm.wasm',
+      'tfjs-backend-wasm-simd.wasm': '/wasm/tfjs-backend-wasm-simd.wasm',
+      'tfjs-backend-wasm-threaded-simd.wasm': '/wasm/tfjs-backend-wasm-threaded-simd.wasm',
+    });
+  }
+  return tf.setBackend(backendName);
+};
+
 export const graphModelLoad = async (
   modelURL: string,
   onProgress: (progress: number) => void,
 ): Promise<tf.GraphModel> => {
   const logger = buildLoggers({ context: 'graphModelLoad' });
+
+  const backIsSet: boolean = await setTFBackend();
+  if (!backIsSet) {
+    logger.logDebug('Backend was not set properly');
+  }
 
   const model: tf.GraphModel = await tf.loadGraphModel(modelURL, { onProgress });
 
