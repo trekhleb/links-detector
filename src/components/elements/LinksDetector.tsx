@@ -16,6 +16,7 @@ import { normalizeCSSFilterParam } from '../../utils/image';
 import PerformanceMonitor from './PerformanceMonitor';
 import { DetectionBox } from '../../utils/graphModel';
 import DetectedLinks from './DetectedLinks';
+import DetectedLinksPrefixes from './DetectedLinksPrefixes';
 
 const uiVideoBrightness = normalizeCSSFilterParam(
   DETECTION_CONFIG.imagePreprocessing.ui.brightness,
@@ -99,26 +100,17 @@ function LinksDetector(): React.ReactElement | null {
 
   const canvasContainerStyles: CSSProperties = {
     marginTop: `-${videoSize}px`,
-    position: 'absolute',
   };
 
   const detectedLinksContainerStyles: CSSProperties = {
     marginTop: `-${videoSize}px`,
     width: `${videoSize}px`,
     height: `${videoSize}px`,
-    position: 'absolute',
-    overflow: 'hidden',
-  };
-
-  const performanceMonitorStyles: CSSProperties = {
-    position: 'absolute',
-    left: 0,
-    bottom: 0,
   };
 
   const httpsBoxesCanvas = httpsBoxes && isDebug ? (
     <ErrorBoundary>
-      <div style={canvasContainerStyles}>
+      <div style={canvasContainerStyles} className="absolute">
         <BoxesCanvas
           boxes={httpsBoxes}
           width={videoSize}
@@ -145,7 +137,7 @@ function LinksDetector(): React.ReactElement | null {
 
   const regionProposalsCanvas = regionProposalBoxes && regionProposalBoxes.length && isDebug ? (
     <ErrorBoundary>
-      <div style={canvasContainerStyles}>
+      <div style={canvasContainerStyles} className="absolute">
         <BoxesCanvas
           boxes={regionProposalBoxes}
           width={videoSize}
@@ -159,7 +151,7 @@ function LinksDetector(): React.ReactElement | null {
 
   const imageCanvas = isDebug ? (
     <ErrorBoundary>
-      <div style={canvasContainerStyles}>
+      <div style={canvasContainerStyles} className="absolute">
         <PixelsCanvas
           pixels={pixels}
           width={videoSize}
@@ -169,9 +161,17 @@ function LinksDetector(): React.ReactElement | null {
     </ErrorBoundary>
   ) : null;
 
+  const detectedLinksPrefixesCanvas = httpsBoxes && httpsBoxes.length ? (
+    <ErrorBoundary>
+      <div style={detectedLinksContainerStyles} className="absolute overflow-hidden">
+        <DetectedLinksPrefixes boxes={httpsBoxes} containerSize={videoSize} />
+      </div>
+    </ErrorBoundary>
+  ) : null;
+
   const detectedLinksCanvas = detectedLinks && detectedLinks.length ? (
     <ErrorBoundary>
-      <div style={detectedLinksContainerStyles}>
+      <div style={detectedLinksContainerStyles} className="absolute overflow-hidden">
         <DetectedLinks links={detectedLinks} containerSize={videoSize} />
       </div>
     </ErrorBoundary>
@@ -179,7 +179,7 @@ function LinksDetector(): React.ReactElement | null {
 
   const performanceMonitor = isDebug ? (
     <ErrorBoundary>
-      <div style={performanceMonitorStyles}>
+      <div className="absolute left-0 bottom-0">
         <PerformanceMonitor metrics={detectionPerformance} />
       </div>
     </ErrorBoundary>
@@ -200,6 +200,7 @@ function LinksDetector(): React.ReactElement | null {
       { regionProposalsCanvas }
       { httpsBoxesCanvas }
       { performanceMonitor }
+      { detectedLinksPrefixesCanvas }
       { detectedLinksCanvas }
     </div>
   );

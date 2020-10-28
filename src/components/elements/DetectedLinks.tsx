@@ -18,36 +18,22 @@ function DetectedLinks(props: DetectedLinksProps): React.ReactElement | null {
   const containerStyle: CSSProperties = {
     width: `${containerSize}px`,
     height: `${containerSize}px`,
-    display: 'block',
-    overflow: 'hidden',
   };
 
   const linkStyle: CSSProperties = {
-    color: 'white',
     backgroundColor: 'black',
-    padding: '3px 6px',
     fontSize: '12px',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
   };
 
   const linksElements = links.map((link: DetectedLink) => {
     const linkContainerStyle: CSSProperties = {
-      overflow: 'hidden',
-      position: 'absolute',
-      display: 'block',
-      marginLeft: `${link.x1}px`,
       marginTop: `${link.y1}px`,
-      // width: `${link.x2 - link.x1}px`,
-      // height: `${link.y2 - link.y1}px`,
-      backgroundColor: 'rgba(0, 255, 255, 0.1)',
+      marginLeft: `${link.x1}px`,
     };
 
     return (
-      <div key={link.url} style={linkContainerStyle}>
-        <a href={link.url} style={linkStyle}>
+      <div key={link.url} style={linkContainerStyle} className="absolute block overflow-hidden">
+        <a href={link.url} style={linkStyle} className="text-white flex flex-row items-start justify-center p-3">
           <Icon iconKey={ICON_KEYS.LINK} className="w-4 h-4 mr-2" />
           <span>{link.url}</span>
         </a>
@@ -56,7 +42,7 @@ function DetectedLinks(props: DetectedLinksProps): React.ReactElement | null {
   });
 
   return (
-    <div style={containerStyle}>
+    <div style={containerStyle} className="block overflow-hidden">
       { linksElements }
     </div>
   );
