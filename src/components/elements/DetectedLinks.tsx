@@ -2,6 +2,7 @@ import React, { CSSProperties } from 'react';
 import { DetectedLink } from '../../hooks/useLinksDetector';
 import Icon from '../shared/Icon';
 import { ICON_KEYS } from '../../icons';
+import { DETECTION_BACKGROUND_COLOR, DETECTION_FOREGROUND_COLOR } from '../../constants/style';
 
 type DetectedLinksProps = {
   links: DetectedLink[],
@@ -21,7 +22,8 @@ function DetectedLinks(props: DetectedLinksProps): React.ReactElement | null {
   };
 
   const linkStyle: CSSProperties = {
-    backgroundColor: 'black',
+    backgroundColor: DETECTION_BACKGROUND_COLOR,
+    color: DETECTION_FOREGROUND_COLOR,
     fontSize: '12px',
   };
 
@@ -33,7 +35,7 @@ function DetectedLinks(props: DetectedLinksProps): React.ReactElement | null {
 
     return (
       <div key={link.url} style={linkContainerStyle} className="absolute block overflow-hidden">
-        <a href={link.url} style={linkStyle} className="text-white flex flex-row items-start justify-center p-3">
+        <a href={link.url} style={linkStyle} className="flex flex-row items-start justify-center pt-2 pb-2 pl-3 pr-3 font-bold">
           <Icon iconKey={ICON_KEYS.LINK} className="w-4 h-4 mr-2" />
           <span>{link.url}</span>
         </a>

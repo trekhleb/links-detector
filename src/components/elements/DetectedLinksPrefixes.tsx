@@ -1,6 +1,7 @@
 import React, { CSSProperties } from 'react';
 import { DetectionBox } from '../../utils/graphModel';
 import { relativeToAbsolute } from '../../utils/image';
+import Spinner from '../shared/Spinner';
 
 type DetectedLinksPrefixesProps = {
   boxes: DetectionBox[] | null,
@@ -28,17 +29,18 @@ function DetectedLinksPrefixes(props: DetectedLinksPrefixesProps): React.ReactEl
     const bottom: number = relativeToAbsolute(box.y2, containerSize);
     const width: number = right - left;
     const height: number = bottom - top;
+    const centerX: number = Math.floor(left + width / 2);
+    const centerY: number = Math.floor(top + height / 2);
 
     const boxStyle: CSSProperties = {
-      backgroundColor: 'red',
-      marginLeft: `${left}px`,
-      marginTop: `${top}px`,
-      width: `${width}px`,
-      height: `${height}px`,
+      marginLeft: `${centerX}px`,
+      marginTop: `${centerY}px`,
     };
 
     return (
-      <div key={`${left}${top}${width}`} style={boxStyle} className="overflow-hidden block absolute" />
+      <div key={`${left}${top}${width}${height}`} style={boxStyle} className="block absolute">
+        <Spinner />
+      </div>
     );
   });
 
