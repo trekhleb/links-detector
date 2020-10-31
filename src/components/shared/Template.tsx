@@ -7,10 +7,8 @@ type TemplateProps = {
 function Template(props: TemplateProps): React.ReactElement {
   const { children } = props;
   return (
-    <main>
-      <section>
-        {children}
-      </section>
+    <main className="full-height">
+      {children}
     </main>
   );
 }

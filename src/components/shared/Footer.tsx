@@ -7,7 +7,7 @@ function Footer(): React.ReactElement {
   return (
     <footer>
       <div className="flex flex-row">
-        <HyperLink to={GITHUB_BASE_URL} iconKey={ICON_KEYS.GIT_HUB} className="mr-3">
+        <HyperLink to={GITHUB_BASE_URL} iconKey={ICON_KEYS.GIT_HUB} className="mr-4">
           See on GitHub
         </HyperLink>
 
