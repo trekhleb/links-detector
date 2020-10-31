@@ -10,8 +10,8 @@ function Footer(): React.ReactElement {
         See on GitHub
       </HyperLink>
 
-      <HyperLink to={GITHUB_ISSUES_LINK}>
-        Report bug
+      <HyperLink to={GITHUB_ISSUES_LINK} iconKey={ICON_KEYS.EDIT}>
+        Report a bug
       </HyperLink>
     </div>
   );

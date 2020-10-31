@@ -27,7 +27,7 @@ function HyperLink(props: HyperLinkProps): React.ReactElement {
   ) : children;
 
   return (
-    <a href={to} className="underline">
+    <a href={to} className="underline text-sm">
       {linkContent}
     </a>
   );
