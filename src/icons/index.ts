@@ -4,12 +4,14 @@ import { ReactComponent as XIcon } from './feathericons/x.svg';
 import { ReactComponent as AlertCircleIcon } from './feathericons/alert-circle.svg';
 import { ReactComponent as LinkIcon } from './feathericons/link-2.svg';
 import { ReactComponent as ExternalLinkIcon } from './feathericons/external-link.svg';
+import { ReactComponent as GitHubIcon } from './feathericons/github.svg';
 
 export enum ICON_KEYS {
   X = 'x',
   ALERT_CIRCLE = 'alert-circle',
   LINK = 'link',
   EXTERNAL_LINK = 'external-link',
+  GIT_HUB = 'github',
 }
 
 type IconType = {
@@ -35,6 +37,10 @@ export const ICONS: IconsType = {
   },
   [ICON_KEYS.EXTERNAL_LINK]: {
     component: ExternalLinkIcon,
+    fillCurrent: false,
+  },
+  [ICON_KEYS.GIT_HUB]: {
+    component: GitHubIcon,
     fillCurrent: false,
   },
 };
