@@ -33,7 +33,7 @@ function HyperLink(props: HyperLinkProps): React.ReactElement {
   ) : children;
 
   return (
-    <a href={to} className={`underline text-sm ${className}`}>
+    <a href={to} className={`hover:text-yellow-500 underline text-sm ${className}`}>
       {linkContent}
     </a>
   );
