@@ -11,7 +11,6 @@ function Template(props: TemplateProps): React.ReactElement {
       <section>
         {children}
       </section>
-      <footer />
     </main>
   );
 }

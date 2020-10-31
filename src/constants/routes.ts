@@ -28,4 +28,4 @@ export const ROUTES: RoutesType = {
   },
 };
 
-export const HOME_ROUTE = ROUTES.home;
+export const HOME_ROUTE: RouteType = ROUTES.home;

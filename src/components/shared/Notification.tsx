@@ -60,7 +60,7 @@ function Notification(props: NotificationProps): React.ReactElement {
       <div className="mr-3">
         <Icon iconKey={ICON_KEYS.ALERT_CIRCLE} className="w-6 h-6" />
       </div>
-      <div>
+      <div className="flex-grow">
         {children}
       </div>
     </div>

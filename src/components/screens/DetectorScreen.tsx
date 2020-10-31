@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import LinksDetector from '../elements/LinksDetector';
 import Modal from '../shared/Modal';
 import { RouteNames, ROUTES } from '../../constants/routes';
-import ErrorBoundary from '../shared/ErrorBoundary';
 
 function DetectorScreen(): React.ReactElement {
   const history = useHistory();
@@ -14,11 +13,9 @@ function DetectorScreen(): React.ReactElement {
   };
 
   return (
-    <ErrorBoundary>
-      <Modal onClose={onModalClose}>
-        <LinksDetector />
-      </Modal>
-    </ErrorBoundary>
+    <Modal onClose={onModalClose}>
+      <LinksDetector />
+    </Modal>
   );
 }
 

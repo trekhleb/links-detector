@@ -6,21 +6,30 @@ import HomeScreen from './screens/HomeScreen';
 import DetectorScreen from './screens/DetectorScreen';
 import NoteFoundScreen from './screens/NotFoundScreen';
 import DebugInfo from './elements/DebugInfo';
+import ErrorBoundary from './shared/ErrorBoundary';
 
 function Routes(): React.ReactElement {
   return (
     <Switch>
       <Route path={ROUTES.home.path} exact>
-        <HomeScreen />
+        <ErrorBoundary>
+          <HomeScreen />
+        </ErrorBoundary>
       </Route>
       <Route path={ROUTES.detector.path} exact>
-        <DetectorScreen />
+        <ErrorBoundary>
+          <DetectorScreen />
+        </ErrorBoundary>
       </Route>
       <Route path={ROUTES.debug.path} exact>
-        <DebugInfo />
+        <ErrorBoundary>
+          <DebugInfo />
+        </ErrorBoundary>
       </Route>
       <Route>
-        <NoteFoundScreen />
+        <ErrorBoundary>
+          <NoteFoundScreen />
+        </ErrorBoundary>
       </Route>
     </Switch>
   );
