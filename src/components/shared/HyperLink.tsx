@@ -6,10 +6,16 @@ type HyperLinkProps = {
   to: string,
   children: React.ReactNode,
   iconKey?: ICON_KEYS,
+  className?: string,
 };
 
 function HyperLink(props: HyperLinkProps): React.ReactElement {
-  const { to, children, iconKey } = props;
+  const {
+    to,
+    children,
+    iconKey,
+    className = '',
+  } = props;
 
   const icon = iconKey ? (
     <Icon iconKey={iconKey} className="w-4 h-4" />
@@ -27,7 +33,7 @@ function HyperLink(props: HyperLinkProps): React.ReactElement {
   ) : children;
 
   return (
-    <a href={to} className="underline text-sm">
+    <a href={to} className={`underline text-sm ${className}`}>
       {linkContent}
     </a>
   );

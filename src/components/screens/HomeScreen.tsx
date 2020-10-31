@@ -6,11 +6,11 @@ import Footer from '../shared/Footer';
 
 function HomeScreen(): React.ReactElement {
   return (
-    <div className="bg-red-400">
-      <header>
+    <div className="min-h-screen flex flex-col p-3">
+      <header className="mb-3">
         <Header />
       </header>
-      <section>
+      <section className="flex-grow mb-3">
         <MainNavigation />
       </section>
       <footer>

@@ -5,15 +5,17 @@ import { ICON_KEYS } from '../../icons';
 
 function Footer(): React.ReactElement {
   return (
-    <div>
-      <HyperLink to={GITHUB_BASE_URL} iconKey={ICON_KEYS.GIT_HUB}>
-        See on GitHub
-      </HyperLink>
+    <footer>
+      <div className="flex flex-row">
+        <HyperLink to={GITHUB_BASE_URL} iconKey={ICON_KEYS.GIT_HUB} className="mr-3">
+          See on GitHub
+        </HyperLink>
 
-      <HyperLink to={GITHUB_ISSUES_LINK} iconKey={ICON_KEYS.EDIT}>
-        Report a bug
-      </HyperLink>
-    </div>
+        <HyperLink to={GITHUB_ISSUES_LINK} iconKey={ICON_KEYS.EDIT}>
+          Report an issue
+        </HyperLink>
+      </div>
+    </footer>
   );
 }
 
