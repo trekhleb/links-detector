@@ -8,21 +8,14 @@ export enum NotificationLevel {
   DANGER,
 }
 
-export enum NotificationPosition {
-  INLINE,
-  FLOATING,
-}
-
 type NotificationProps = {
   children: React.ReactNode,
   level?: NotificationLevel,
-  position?: NotificationPosition,
 };
 
 function Notification(props: NotificationProps): React.ReactElement {
   const {
     children,
-    // position = NotificationPosition.INLINE,
     level = NotificationLevel.INFO,
   } = props;
 
