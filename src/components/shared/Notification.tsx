@@ -55,8 +55,8 @@ function Notification(props: NotificationProps): React.ReactElement {
     borderColor = 'border-black';
   }
 
-  const notificationBody: React.ReactElement = (
-    <div className={`${bgColor} ${textColor} ${borderColor} border-solid p-3 m-3 rounded text-xs flex flex-row justify-center items-center`}>
+  return (
+    <div className={`${bgColor} ${textColor} ${borderColor} border-solid p-3 rounded text-xs flex flex-row justify-center items-center`}>
       <div className="mr-3">
         <Icon iconKey={ICON_KEYS.ALERT_CIRCLE} className="w-6 h-6" />
       </div>
@@ -65,8 +65,6 @@ function Notification(props: NotificationProps): React.ReactElement {
       </div>
     </div>
   );
-
-  return notificationBody;
 }
 
 export default Notification;

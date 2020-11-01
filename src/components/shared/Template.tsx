@@ -1,5 +1,8 @@
 import React from 'react';
 
+import Header from './Header';
+import Footer from './Footer';
+
 type TemplateProps = {
   children?: React.ReactNode,
 }
@@ -7,8 +10,16 @@ type TemplateProps = {
 function Template(props: TemplateProps): React.ReactElement {
   const { children } = props;
   return (
-    <main className="full-height">
-      {children}
+    <main className="full-height flex flex-col p-5">
+      <header className="mb-5">
+        <Header />
+      </header>
+      <section className="flex flex-grow mb-5 justify-center items-center">
+        {children}
+      </section>
+      <footer>
+        <Footer />
+      </footer>
     </main>
   );
 }
