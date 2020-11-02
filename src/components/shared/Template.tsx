@@ -2,6 +2,7 @@ import React from 'react';
 
 import Header from './Header';
 import Footer from './Footer';
+import { FRAME_PADDING_CLASS } from '../../constants/style';
 
 type TemplateProps = {
   children?: React.ReactNode,
@@ -10,7 +11,7 @@ type TemplateProps = {
 function Template(props: TemplateProps): React.ReactElement {
   const { children } = props;
   return (
-    <main className="full-height flex flex-col p-5">
+    <main className={`full-height flex flex-col ${FRAME_PADDING_CLASS}`}>
       <header className="mb-5">
         <Header />
       </header>

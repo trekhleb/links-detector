@@ -17,6 +17,7 @@ import PerformanceMonitor from './PerformanceMonitor';
 import { DetectionBox } from '../../utils/graphModel';
 import DetectedLinks from './DetectedLinks';
 import DetectedLinksPrefixes from './DetectedLinksPrefixes';
+import { FRAME_PADDING_CLASS } from '../../constants/style';
 
 const uiVideoBrightness = normalizeCSSFilterParam(
   DETECTION_CONFIG.imagePreprocessing.ui.brightness,
@@ -61,9 +62,11 @@ function LinksDetector(): React.ReactElement | null {
 
   if (error) {
     return (
-      <Notification level={NotificationLevel.DANGER}>
-        {error}
-      </Notification>
+      <div className={`flex-grow ${FRAME_PADDING_CLASS}`}>
+        <Notification level={NotificationLevel.DANGER}>
+          {error}
+        </Notification>
+      </div>
     );
   }
 
