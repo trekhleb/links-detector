@@ -15,7 +15,7 @@ function Template(props: TemplateProps): React.ReactElement {
       <header className="mb-5">
         <Header />
       </header>
-      <section className="flex flex-grow mb-5 justify-center items-center">
+      <section className="flex flex-row flex-grow mb-5 justify-center items-center">
         {children}
       </section>
       <footer>

@@ -4,6 +4,7 @@ import { History } from 'history';
 
 import { ROUTES } from '../../constants/routes';
 import LaunchButton from '../shared/LaunchButton';
+import Promo from '../shared/Promo';
 
 function HomeScreen(): React.ReactElement {
   const history: History = useHistory();
@@ -13,10 +14,15 @@ function HomeScreen(): React.ReactElement {
   };
 
   return (
-    <div className="flex justify-center items-center flex-col">
-      <LaunchButton onClick={onLaunch}>
-        Scan
-      </LaunchButton>
+    <div className="flex justify-center items-center flex-col flex-grow self-stretch">
+      <div className="text-left self-stretch">
+        <Promo />
+      </div>
+      <div className="flex justify-center items-center flex-col flex-grow self-stretch">
+        <LaunchButton onClick={onLaunch}>
+          Scan
+        </LaunchButton>
+      </div>
     </div>
   );
 }
