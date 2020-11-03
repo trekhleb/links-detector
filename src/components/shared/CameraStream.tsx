@@ -164,7 +164,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
         width={videoWidth}
         height={videoHeight}
         style={videoStyle}
-        className="fade-in-1"
+        className="fade-in-10"
         playsInline
         autoPlay
         muted

@@ -33,9 +33,19 @@ function DetectedLinks(props: DetectedLinksProps): React.ReactElement | null {
       marginLeft: `${link.x1}px`,
     };
 
+    /* eslint-disable react/jsx-no-target-blank */
     return (
-      <div key={link.url} style={linkContainerStyle} className="absolute block overflow-hidden">
-        <a href={link.url} style={linkStyle} className="flex flex-row items-start rounded justify-center pt-2 pb-2 pl-3 pr-3 font-bold">
+      <div
+        key={link.url}
+        style={linkContainerStyle}
+        className="absolute block overflow-hidden fade-in-1"
+      >
+        <a
+          href={link.url}
+          style={linkStyle}
+          className="flex flex-row items-start rounded justify-center pt-2 pb-2 pl-3 pr-3 font-bold"
+          target="_blank"
+        >
           <Icon iconKey={ICON_KEYS.LINK} className="w-4 h-4 mr-2" />
           <span>{link.url}</span>
         </a>
