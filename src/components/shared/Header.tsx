@@ -4,7 +4,7 @@ function Header(): React.ReactElement {
   return (
     <header>
       <div className="font-bold text-2xl">
-        Book Links Detector
+        Links Detector
       </div>
     </header>
   );
