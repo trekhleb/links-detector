@@ -6,6 +6,7 @@ import { ReactComponent as LinkIcon } from './feathericons/link-2.svg';
 import { ReactComponent as ExternalLinkIcon } from './feathericons/external-link.svg';
 import { ReactComponent as GitHubIcon } from './feathericons/github.svg';
 import { ReactComponent as EditIcon } from './feathericons/edit-3.svg';
+import { ReactComponent as LinksDetectorLogoIcon } from './vectr/links-detector-logo.svg';
 
 export enum ICON_KEYS {
   X = 'x',
@@ -14,6 +15,7 @@ export enum ICON_KEYS {
   EXTERNAL_LINK = 'external-link',
   GIT_HUB = 'github',
   EDIT = 'edit',
+  LINKS_DETECTOR_LOGO = 'links-detector-logo',
 }
 
 type IconType = {
@@ -47,6 +49,10 @@ export const ICONS: IconsType = {
   },
   [ICON_KEYS.EDIT]: {
     component: EditIcon,
+    fillCurrent: false,
+  },
+  [ICON_KEYS.LINKS_DETECTOR_LOGO]: {
+    component: LinksDetectorLogoIcon,
     fillCurrent: false,
   },
 };
