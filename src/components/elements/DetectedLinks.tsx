@@ -35,7 +35,7 @@ function DetectedLinks(props: DetectedLinksProps): React.ReactElement | null {
 
     return (
       <div key={link.url} style={linkContainerStyle} className="absolute block overflow-hidden">
-        <a href={link.url} style={linkStyle} className="flex flex-row items-start justify-center pt-2 pb-2 pl-3 pr-3 font-bold">
+        <a href={link.url} style={linkStyle} className="flex flex-row items-start rounded justify-center pt-2 pb-2 pl-3 pr-3 font-bold">
           <Icon iconKey={ICON_KEYS.LINK} className="w-4 h-4 mr-2" />
           <span>{link.url}</span>
         </a>
