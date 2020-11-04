@@ -8,11 +8,11 @@ function Footer(): React.ReactElement {
     <footer>
       <div className="flex flex-row">
         <HyperLink to={GITHUB_BASE_URL} iconKey={ICON_KEYS.GIT_HUB} className="mr-4">
-          See on GitHub
+          About
         </HyperLink>
 
         <HyperLink to={GITHUB_ISSUES_LINK} iconKey={ICON_KEYS.EDIT}>
-          Report an issue
+          Issues
         </HyperLink>
       </div>
     </footer>
