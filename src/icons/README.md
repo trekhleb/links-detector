@@ -6,3 +6,4 @@
 - [Icomoon](https://icomoon.io/) - SVG icons set
 - [FeatherIcons](https://feathericons.com/) - SVG icons set
 - [Vectr](https://vectr.com/) - creating vector icons online
+- [FaviconGenerator](https://realfavicongenerator.net/) - to generate favicon and app icons
