@@ -10,13 +10,21 @@ type LaunchButtonProps = {
 function LaunchButton(props: LaunchButtonProps): React.ReactElement {
   const { children, onClick } = props;
 
+  const buttonSizePx: number = 180;
+
   const buttonStyles: CSSProperties = {
+    width: `${buttonSizePx}px`,
+    height: `${buttonSizePx}px`,
     backgroundImage: `url(${detectionImage})`,
     backgroundSize: 'cover',
+    overflow: 'hidden',
   };
 
   const buttonTextStyles: CSSProperties = {
-    backgroundColor: 'rgba(255, 255, 255, .8)',
+    width: `${buttonSizePx}px`,
+    height: `${buttonSizePx}px`,
+    backgroundColor: 'rgba(255, 255, 255, .7)',
+    overflow: 'hidden',
   };
 
   return (
@@ -24,11 +32,11 @@ function LaunchButton(props: LaunchButtonProps): React.ReactElement {
       style={buttonStyles}
       onClick={onClick}
       type="button"
-      className="border-0 rounded-full text-black bg-white w-48 h-48 flex flex-row items-center justify-center"
+      className="flex flex-row items-center justify-center border-0 rounded-full"
     >
       <div
         style={buttonTextStyles}
-        className="font-light text-5xl rounded-full p-6 w-48 h-48 flex flex-row items-center justify-center"
+        className="flex flex-row items-center justify-center font-light text-5xl text-black"
       >
         { children }
       </div>
