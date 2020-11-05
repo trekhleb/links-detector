@@ -3,7 +3,7 @@ import './Spinner.css';
 import { DETECTION_BACKGROUND_COLOR } from '../../constants/style';
 
 function Spinner(): React.ReactElement {
-  const spinnerWidth: number = 40;
+  const spinnerWidth: number = 50;
 
   const spinnerStyles: CSSProperties = {
     width: `${spinnerWidth}px`,
