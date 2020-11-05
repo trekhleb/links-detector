@@ -3,6 +3,7 @@
   "short_name": "Links Detector",
   "description": "Links Detector makes printed links clickable. No need to type, just scan and click it.",
   "start_url": "/?src=pwa",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#000000",
