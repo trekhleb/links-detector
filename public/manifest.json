@@ -1,7 +1,12 @@
 {
-  "short_name": "Links Detector",
   "name": "Links Detector",
+  "short_name": "Links Detector",
   "description": "Links Detector makes printed links clickable. No need to type, just scan and click it.",
+  "start_url": "/?src=pwa",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#000000",
+  "background_color": "#000000",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,10 +23,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "start_url": "/?source=pwa",
-  "display": "standalone",
-  "orientation": "portrait",
-  "theme_color": "#000000",
-  "background_color": "#000000"
+  ]
 }

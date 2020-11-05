@@ -1,6 +1,6 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { History } from 'history';
+import { useHistory, useLocation } from 'react-router-dom';
+import { History, PartialPath, Location } from 'history';
 
 import { ROUTES } from '../../constants/routes';
 import LaunchButton from '../shared/LaunchButton';
@@ -8,9 +8,15 @@ import Promo from '../shared/Promo';
 
 function HomeScreen(): React.ReactElement {
   const history: History = useHistory();
+  const location: Location = useLocation();
 
   const onLaunch = (): void => {
-    history.push(ROUTES.detector.path);
+    const path: PartialPath = {
+      pathname: ROUTES.detector.path,
+      search: location.search,
+      hash: location.hash,
+    };
+    history.push(path);
   };
 
   return (
