@@ -9,6 +9,7 @@
     "cp-wasm-simd-thread": "cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm-threaded-simd.wasm ./public/wasm",
     "wasm": "yarn cp-wasm && yarn cp-wasm-simd && yarn cp-wasm-simd-thread",
     "build:style": "tailwind build src/styles/index.css -o src/styles/tailwind.css",
+    "build:pwa": "pwa-asset-generator src/icons/pwa/links-detector-logo-white.svg public/icons --manifest public/manifest.json --background black --path \"%PUBLIC_URL%/icons\" --icon-only",
     "prestart": "yarn wasm && yarn build:style",
     "start": "react-scripts start",
     "start-https": "HTTPS=true yarn start",
@@ -51,7 +52,8 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.6",
-    "eslint-plugin-react-hooks": "^4.1.2"
+    "eslint-plugin-react-hooks": "^4.1.2",
+    "pwa-asset-generator": "^3.2.3"
   },
   "eslintConfig": {
     "extends": "react-app"
