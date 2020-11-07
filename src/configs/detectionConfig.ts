@@ -1,6 +1,7 @@
 import { ZeroOneRange } from '../utils/types';
+import { BASE_APP_PATH } from '../constants/routes';
 
-export const MODELS_BASE_URL = '';
+export const MODELS_BASE_URL = `${BASE_APP_PATH}`;
 
 export type DetectionConfig = {
   modelLoading: {
