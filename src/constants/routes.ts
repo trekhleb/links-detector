@@ -30,7 +30,7 @@ export const ROUTES: RoutesType = {
   },
   [RouteNames.detector]: {
     path: '/detector',
-    title: generateAppTitle('Detection'),
+    title: generateAppTitle('Scanning'),
   },
   [RouteNames.debug]: {
     path: '/debug',
