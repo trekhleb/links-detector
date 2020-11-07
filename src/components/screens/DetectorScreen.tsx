@@ -5,6 +5,7 @@ import { Location, PartialPath } from 'history';
 import LinksDetector from '../elements/LinksDetector';
 import Modal from '../shared/Modal';
 import { RouteNames, ROUTES } from '../../constants/routes';
+import PageTitle from '../shared/PageTitle';
 
 function DetectorScreen(): React.ReactElement {
   const history = useHistory();
@@ -20,9 +21,12 @@ function DetectorScreen(): React.ReactElement {
   };
 
   return (
-    <Modal onClose={onModalClose}>
-      <LinksDetector />
-    </Modal>
+    <>
+      <PageTitle />
+      <Modal onClose={onModalClose}>
+        <LinksDetector />
+      </Modal>
+    </>
   );
 }
 
