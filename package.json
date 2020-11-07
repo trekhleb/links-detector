@@ -2,7 +2,11 @@
   "name": "links-detector",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://localhost:3000/",
+  "author": {
+    "name": "Oleksii Trekhleb",
+    "url": "https://www.linkedin.com/in/trekhleb/"
+  },
+  "homepage": "https://trekhleb.github.io/links-detector",
   "scripts": {
     "cp-wasm": "cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm ./public/wasm",
     "cp-wasm-simd": "cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm-simd.wasm ./public/wasm",
