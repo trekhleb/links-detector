@@ -19,7 +19,7 @@ type RoutesType = {
   [routeName in RouteNames]: RouteType;
 };
 
-const generateAppTitle = (pageTitle: string): string => {
+export const generateAppTitle = (pageTitle: string): string => {
   return `${APP_TITLE}${APP_TITLE_SEPARATOR}${pageTitle}`;
 };
 
