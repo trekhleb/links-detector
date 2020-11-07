@@ -10,12 +10,12 @@ export enum RouteNames {
   debug = 'debug',
 }
 
-type RouteType = {
+export type RouteType = {
   path: string,
   title: string,
 };
 
-type RoutesType = {
+export type RoutesType = {
   [routeName in RouteNames]: RouteType;
 };
 
