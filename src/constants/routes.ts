@@ -26,7 +26,7 @@ const generateAppTitle = (pageTitle: string): string => {
 export const ROUTES: RoutesType = {
   [RouteNames.home]: {
     path: '/',
-    title: generateAppTitle('Home'),
+    title: generateAppTitle('Start'),
   },
   [RouteNames.detector]: {
     path: '/detector',
