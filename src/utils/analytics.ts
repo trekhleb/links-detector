@@ -1,6 +1,6 @@
 import { Location, Action } from 'history';
 import { buildLoggers } from './logger';
-// import { GOOGLE_ANALYTICS_ID } from '../configs/analytics';
+import { GOOGLE_ANALYTICS_ID } from '../configs/analytics';
 
 const getPathFromLocation = (location: Location): string => {
   let path = location.pathname;
@@ -20,9 +20,9 @@ export const gaPageView = (location: Location, action: Action): void => {
 
   logger.logDebug('call', { location, action, path });
 
-  // if (window.gtag) {
-  //   window.gtag('config', GOOGLE_ANALYTICS_ID, {
-  //     page_path: pagePath,
-  //   });
-  // }
+  if (window.gtag) {
+    window.gtag('config', GOOGLE_ANALYTICS_ID, {
+      page_path: path,
+    });
+  }
 };
