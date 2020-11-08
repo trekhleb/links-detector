@@ -160,7 +160,7 @@ export const initScheduler = async (props: InitSchedulerProps): Promise<Schedule
       .map(() => initWorker());
     workers = await Promise.all(workersPromises);
   } catch (error) {
-    logger.logError('Cannot init workers', { error });
+    logger.logError('cannot init workers', { error });
     onError(error);
   }
 

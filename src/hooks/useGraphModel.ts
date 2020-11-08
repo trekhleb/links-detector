@@ -71,7 +71,7 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
         })
         .catch((e: Error) => {
           setError(e.message);
-          logger.logError(`Cannot load the model: ${e.message}`);
+          logger.logError(`cannot load the model: ${e.message}`);
         });
     }
     return (): void => {
