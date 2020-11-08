@@ -2,12 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { HOME_ROUTE } from '../../constants/routes';
 import Notification, { NotificationLevel } from '../shared/Notification';
-import usePageView from '../../hooks/usePageView';
 import PageTitle from '../shared/PageTitle';
 
 function NoteFoundScreen(): React.ReactElement {
-  usePageView();
-
   return (
     <>
       <PageTitle />

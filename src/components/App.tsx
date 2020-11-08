@@ -1,20 +1,27 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
+import { Action, createBrowserHistory, Location } from 'history';
 
 import Template from './shared/Template';
 import Routes from './Routes';
-import { BASE_APP_PATH } from '../constants/routes';
 import ErrorBoundary from './shared/ErrorBoundary';
+import { gaPageView } from '../utils/analytics';
+
+const history = createBrowserHistory();
+
+history.listen((location: Location, action: Action): void => {
+  gaPageView(location, action);
+});
 
 function App(): React.ReactElement {
   return (
-    <BrowserRouter basename={BASE_APP_PATH}>
+    <Router history={history}>
       <Template>
         <ErrorBoundary>
           <Routes />
         </ErrorBoundary>
       </Template>
-    </BrowserRouter>
+    </Router>
   );
 }
 

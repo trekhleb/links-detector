@@ -23,17 +23,24 @@ const generateAppTitle = (pageTitle: string): string => {
   return `${APP_TITLE}${APP_TITLE_SEPARATOR}${pageTitle}`;
 };
 
+const generatePath = (path: string): string => {
+  if (path === '/') {
+    return BASE_APP_PATH;
+  }
+  return `${BASE_APP_PATH}${path}`;
+};
+
 export const ROUTES: RoutesType = {
   [RouteNames.home]: {
-    path: '/',
+    path: generatePath('/'),
     title: generateAppTitle('Start'),
   },
   [RouteNames.detector]: {
-    path: '/detector',
+    path: generatePath('/detector'),
     title: generateAppTitle('Scanning'),
   },
   [RouteNames.debug]: {
-    path: '/debug',
+    path: generatePath('/debug'),
     title: generateAppTitle('Debug'),
   },
 };
