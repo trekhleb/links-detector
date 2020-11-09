@@ -18,6 +18,7 @@ import { DetectionBox } from '../../utils/graphModel';
 import DetectedLinks from './DetectedLinks';
 import DetectedLinksPrefixes from './DetectedLinksPrefixes';
 import { FRAME_PADDING_CLASS } from '../../constants/style';
+import Grid from '../shared/Grid';
 
 const uiVideoBrightness = normalizeCSSFilterParam(
   DETECTION_CONFIG.imagePreprocessing.ui.brightness,
@@ -111,19 +112,25 @@ function LinksDetector(): React.ReactElement | null {
     height: `${videoSize}px`,
   };
 
-  const httpsBoxesCanvas = httpsBoxes && isDebug ? (
+  const imageCanvas = isDebug ? (
     <ErrorBoundary>
       <div style={canvasContainerStyles} className="absolute">
-        <BoxesCanvas
-          boxes={httpsBoxes}
+        <PixelsCanvas
+          pixels={pixels}
           width={videoSize}
           height={videoSize}
-          boxColor="#00ff00"
-          normalized
         />
       </div>
     </ErrorBoundary>
   ) : null;
+
+  const gridCanvas = (
+    <ErrorBoundary>
+      <div style={canvasContainerStyles} className="absolute">
+        <Grid hCells={4} vCells={4} width={videoSize} height={videoSize} />
+      </div>
+    </ErrorBoundary>
+  );
 
   const regionProposalBoxes: DetectionBox[] = regionProposals && regionProposals.length
     ? regionProposals.map((regionProposal: Rectangle): DetectionBox => {
@@ -152,14 +159,24 @@ function LinksDetector(): React.ReactElement | null {
     </ErrorBoundary>
   ) : null;
 
-  const imageCanvas = isDebug ? (
+  const httpsBoxesCanvas = httpsBoxes && isDebug ? (
     <ErrorBoundary>
       <div style={canvasContainerStyles} className="absolute">
-        <PixelsCanvas
-          pixels={pixels}
+        <BoxesCanvas
+          boxes={httpsBoxes}
           width={videoSize}
           height={videoSize}
+          boxColor="#00ff00"
+          normalized
         />
+      </div>
+    </ErrorBoundary>
+  ) : null;
+
+  const performanceMonitor = isDebug ? (
+    <ErrorBoundary>
+      <div className="absolute left-0 bottom-0">
+        <PerformanceMonitor metrics={detectionPerformance} />
       </div>
     </ErrorBoundary>
   ) : null;
@@ -180,14 +197,6 @@ function LinksDetector(): React.ReactElement | null {
     </ErrorBoundary>
   ) : null;
 
-  const performanceMonitor = isDebug ? (
-    <ErrorBoundary>
-      <div className="absolute left-0 bottom-0">
-        <PerformanceMonitor metrics={detectionPerformance} />
-      </div>
-    </ErrorBoundary>
-  ) : null;
-
   return (
     <div>
       <ErrorBoundary>
@@ -200,6 +209,7 @@ function LinksDetector(): React.ReactElement | null {
         />
       </ErrorBoundary>
       { imageCanvas }
+      { gridCanvas }
       { regionProposalsCanvas }
       { httpsBoxesCanvas }
       { performanceMonitor }
