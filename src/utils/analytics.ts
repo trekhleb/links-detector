@@ -1,5 +1,4 @@
-import { Location, Action } from 'history';
-import { buildLoggers } from './logger';
+import { Location } from 'history';
 import { GOOGLE_ANALYTICS_ID } from '../configs/analytics';
 
 const getPathFromLocation = (location: Location): string => {
@@ -13,12 +12,8 @@ const getPathFromLocation = (location: Location): string => {
   return path;
 };
 
-export const gaPageView = (location: Location, action: Action): void => {
-  const logger = buildLoggers({ context: 'gaPageView' });
-
+export const gaPageView = (location: Location): void => {
   const path: string = getPathFromLocation(location);
-
-  logger.logDebug('call', { location, action, path });
 
   if (!window.gtag) {
     return;
@@ -31,9 +26,6 @@ export const gaPageView = (location: Location, action: Action): void => {
 };
 
 export const gaErrorLog = (errorType: string, errorMessage: string): void => {
-  const logger = buildLoggers({ context: 'gaErrorLog' });
-  logger.logDebug('call', { errorType, errorMessage });
-
   if (!window.gtag) {
     return;
   }

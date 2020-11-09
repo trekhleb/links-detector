@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
-import { Action, createBrowserHistory, Location } from 'history';
+import { createBrowserHistory, Location } from 'history';
 
 import Template from './shared/Template';
 import Routes from './Routes';
@@ -9,8 +9,8 @@ import { gaPageView } from '../utils/analytics';
 
 const history = createBrowserHistory();
 
-history.listen((location: Location, action: Action): void => {
-  gaPageView(location, action);
+history.listen((location: Location): void => {
+  gaPageView(location);
 });
 
 function App(): React.ReactElement {

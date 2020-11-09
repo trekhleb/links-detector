@@ -1,4 +1,5 @@
 import { isDebugMode } from '../constants/debug';
+import { gaErrorLog } from './analytics';
 
 export type LoggerContext = string | null;
 export type LoggerMessage = string;
@@ -25,9 +26,12 @@ export type Loggers = {
 
 const contextSeparator = '→';
 
+type OnCallLoggerCallback =
+  (context: LoggerContext, message: LoggerMessage, meta?: LoggerMeta) => void;
+
 type BuildLoggerProps = {
   loggerFunc: (message?: any, ...optionalParams: any[]) => void,
-  onCall?: (context: LoggerContext, message: LoggerMessage, meta?: LoggerMeta) => void,
+  onCall?: OnCallLoggerCallback,
   context?: LoggerContext,
   muted?: boolean,
 };
@@ -78,6 +82,13 @@ const buildTableLogger = (
   loggerFunc(tabularData, properties);
 };
 
+const onGAError: OnCallLoggerCallback = (
+  context: LoggerContext,
+  message: LoggerMessage,
+): void => {
+  gaErrorLog(context || 'unknownContext', message);
+};
+
 /* global Console */
 const logger: Console = console;
 
@@ -115,6 +126,7 @@ export const buildLoggers = (params: BuildLoggersParams): Loggers => {
     logError: buildLogger({
       loggerFunc: logger.error,
       context,
+      onCall: onGAError,
     }),
   };
 };
