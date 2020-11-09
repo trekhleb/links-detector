@@ -23,7 +23,7 @@ function Grid(props: GridProps): React.ReactElement {
     gridTemplateRows: `repeat(${vCells}, 1fr)`,
   };
 
-  const borderStyle: string = '1px solid rgba(255, 255, 255, 0.3)';
+  const borderStyle: string = '1px solid rgba(255, 255, 255, 0.2)';
 
   const cellStyle: CSSProperties = {
     borderLeft: borderStyle,
