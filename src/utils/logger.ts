@@ -25,29 +25,53 @@ export type Loggers = {
 
 const contextSeparator = '→';
 
-const buildLogger = (
+type BuildLoggerProps = {
   loggerFunc: (message?: any, ...optionalParams: any[]) => void,
+  onCall?: (context: LoggerContext, message: LoggerMessage, meta?: LoggerMeta) => void,
   context?: LoggerContext,
   muted?: boolean,
+};
+
+const buildLogger = (
+  props: BuildLoggerProps,
 ): Logger => (message: LoggerMessage, meta?: LoggerMeta): void => {
+  const {
+    loggerFunc,
+    onCall,
+    context,
+    muted,
+  } = props;
+
   if (muted) {
     return;
   }
+
   const args: (LoggerMessage | LoggerContext | LoggerMeta)[] = [message];
   if (context) {
     args.unshift(context, contextSeparator);
   }
+
   if (meta) {
     args.push(meta);
   }
+
   loggerFunc(...args);
+
+  if (onCall) {
+    onCall(context || 'unknown', message, meta);
+  }
 };
 
-const buildTableLogger = (
+type BuildTableLoggerProps = {
   loggerFunc: (tabularData: any, properties?: string[]) => void,
   context?: LoggerContext,
   muted?: boolean,
+};
+
+const buildTableLogger = (
+  props: BuildTableLoggerProps,
 ): TableLogger => (message: string, tabularData: any, properties?: string[]): void => {
+  const { loggerFunc, muted } = props;
   if (muted) {
     return;
   }
@@ -65,10 +89,32 @@ export const buildLoggers = (params: BuildLoggersParams): Loggers => {
   const { context } = params;
   const muted = !isDebugMode();
   return {
-    logDebugTable: buildTableLogger(logger.table, context, muted),
-    logDebug: buildLogger(logger.info, context, muted),
-    logInfo: buildLogger(logger.info, context, muted),
-    logWarn: buildLogger(logger.warn, context),
-    logError: buildLogger(logger.error, context),
+    logDebugTable: buildTableLogger({
+      loggerFunc: logger.table,
+      context,
+      muted,
+    }),
+
+    logDebug: buildLogger({
+      loggerFunc: logger.info,
+      context,
+      muted,
+    }),
+
+    logInfo: buildLogger({
+      loggerFunc: logger.info,
+      context,
+      muted,
+    }),
+
+    logWarn: buildLogger({
+      loggerFunc: logger.warn,
+      context,
+    }),
+
+    logError: buildLogger({
+      loggerFunc: logger.error,
+      context,
+    }),
   };
 };

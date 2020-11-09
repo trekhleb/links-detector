@@ -1,8 +1,6 @@
 import { Location, Action } from 'history';
 import { buildLoggers } from './logger';
 import { GOOGLE_ANALYTICS_ID } from '../configs/analytics';
-/* global Gtag */
-import EventNames = Gtag.EventNames;
 
 const getPathFromLocation = (location: Location): string => {
   let path = location.pathname;
@@ -40,13 +38,11 @@ export const gaErrorLog = (errorType: string, errorMessage: string): void => {
     return;
   }
 
-  const eventName: EventNames = 'exception';
-
   // @see: https://developers.google.com/gtagjs/reference/api#config
   window.gtag('config', GOOGLE_ANALYTICS_ID);
 
   // @see: https://developers.google.com/gtagjs/reference/event#exception
-  window.gtag('event', eventName, {
+  window.gtag('event', 'exception', {
     type: errorType,
     description: errorMessage,
   });
