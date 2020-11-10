@@ -1,4 +1,9 @@
-import React, { CSSProperties, useState } from 'react';
+import React, {
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { Rectangle } from 'tesseract.js';
 
 import CameraStream from '../shared/CameraStream';
@@ -31,7 +36,13 @@ const videoStyle: CSSProperties = DETECTION_CONFIG.imagePreprocessing.ui.enabled
   filter: `brightness(${uiVideoBrightness}) contrast(${uiVideoContrast}) grayscale(1)`,
 } : {};
 
-function LinksDetector(): React.ReactElement | null {
+type LinksDetectorProps = {
+  onLoaded?: () => void,
+};
+
+function LinksDetector(props: LinksDetectorProps): React.ReactElement | null {
+  const { onLoaded = (): void => {} } = props;
+
   const logger = useLogger({ context: 'LiveDetector' });
   const windowSize = useWindowSize();
 
@@ -57,6 +68,16 @@ function LinksDetector(): React.ReactElement | null {
     workersNum: DETECTION_CONFIG.ocr.workersNum,
     language: DETECTION_CONFIG.ocr.language,
   });
+
+  const onLoadedCallback = useCallback(onLoaded, [onLoaded]);
+
+  useEffect(() => {
+    if (loadingProgress === null || loadingProgress < 1) {
+      return;
+    }
+    logger.logDebug('useEffect: onLoadedCallback', { loadingProgress });
+    onLoadedCallback();
+  }, [loadingProgress, onLoadedCallback, logger]);
 
   const isDebug: boolean = isDebugMode();
 

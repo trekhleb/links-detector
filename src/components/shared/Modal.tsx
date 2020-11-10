@@ -5,12 +5,14 @@ import ModalCloseButton from './ModalCloseButton';
 type ModalProps = {
   children: React.ReactNode,
   onClose?: () => void,
+  disableClose?: boolean,
 };
 
 function Modal(props: ModalProps): React.ReactElement {
   const {
     children,
     onClose = (): void => {},
+    disableClose = false,
   } = props;
 
   const bgClass = 'bg-black';
@@ -24,10 +26,12 @@ function Modal(props: ModalProps): React.ReactElement {
 
   const modalContentClass = 'w-full flex items-center justify-center flex-col';
 
+  const closeButton = !disableClose ? (<ModalCloseButton onClick={onClose} />) : null;
+
   return (
     <div className={modalContainerClasses}>
       <div className={iconContainerClass}>
-        <ModalCloseButton onClick={onClose} />
+        {closeButton}
       </div>
       <div className={modalContentClass}>
         {children}
