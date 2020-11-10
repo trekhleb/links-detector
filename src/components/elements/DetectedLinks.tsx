@@ -31,6 +31,7 @@ function DetectedLinks(props: DetectedLinksProps): React.ReactElement | null {
     const linkContainerStyle: CSSProperties = {
       marginTop: `${link.y1}px`,
       marginLeft: `${link.x1}px`,
+      boxShadow: '0px 5px 10px 0px rgba(0,0,0,0.5)',
     };
 
     /* eslint-disable react/jsx-no-target-blank */
@@ -38,7 +39,7 @@ function DetectedLinks(props: DetectedLinksProps): React.ReactElement | null {
       <div
         key={link.url}
         style={linkContainerStyle}
-        className="absolute block overflow-hidden fade-in-1"
+        className="absolute block overflow-hidden fade-in-1 rounded"
       >
         <a
           href={link.url}
