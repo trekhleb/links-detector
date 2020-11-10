@@ -1,10 +1,21 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Location } from 'history';
+
 import { HOME_ROUTE } from '../../constants/routes';
 import Notification, { NotificationLevel } from '../shared/Notification';
 import PageTitle from '../shared/PageTitle';
+import useLogger from '../../hooks/useLogger';
 
 function NoteFoundScreen(): React.ReactElement {
+  const logger = useLogger({ context: 'NoteFoundScreen' });
+  const location: Location = useLocation();
+
+  useEffect(() => {
+    const path: string = (location.pathname || '') + (location.search || '') + (location.hash || '');
+    logger.logError(`page no found: ${path}`);
+  }, [logger, location.pathname, location.search, location.hash]);
+
   return (
     <>
       <PageTitle />
