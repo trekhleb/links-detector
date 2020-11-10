@@ -31,7 +31,7 @@ function DetectedLinks(props: DetectedLinksProps): React.ReactElement | null {
     const linkContainerStyle: CSSProperties = {
       marginTop: `${link.y1}px`,
       marginLeft: `${link.x1}px`,
-      boxShadow: '0px 5px 10px 0px rgba(0,0,0,0.5)',
+      boxShadow: '0px 5px 10px 0px rgba(0,0,0,0.3)',
     };
 
     /* eslint-disable react/jsx-no-target-blank */
