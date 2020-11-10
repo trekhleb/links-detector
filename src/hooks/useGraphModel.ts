@@ -75,7 +75,7 @@ const useGraphModel = (props: UseGraphModelProps): UseGraphModelOutput => {
         });
     }
     return (): void => {
-      logger.logDebug('useEffect: shutdown');
+      logger.logDebug('useEffect: shutdown', { model });
       if (model) {
         try {
           logger.logDebug('useEffect: shutdown: disposing the model');

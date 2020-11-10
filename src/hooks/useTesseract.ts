@@ -74,11 +74,11 @@ const useTesseract = (props: UseSchedulerProps): UseSchedulerOutput => {
       });
 
     return (): void => {
-      logger.logDebug('useEffect: shutdown');
+      logger.logDebug('useEffect: shutdown', { scheduler: scheduler.current });
       if (scheduler.current) {
-        logger.logDebug('useEffect: deactivate');
+        logger.logDebug('useEffect: shutdown: terminating the scheduler');
         scheduler.current.terminate().then(() => {
-          logger.logDebug('useEffect: scheduler terminated');
+          logger.logDebug('useEffect: shutdown: scheduler is terminated');
         });
       }
     };
