@@ -5,6 +5,37 @@ export type LoggerContext = string | null;
 export type LoggerMessage = string;
 export type LoggerMeta = Error | Object | null;
 
+interface LinksDetectorConsole {
+  log(...data: any[]): void;
+  table(tabularData?: any, properties?: string[]): void;
+  warn(...data: any[]): void;
+  error(...data: any[]): void;
+}
+
+const linksDetectorConsoleName: string = 'linksDetectorConsole';
+
+function getSystemLogger(): LinksDetectorConsole {
+  if (Object.prototype.hasOwnProperty.call(window, linksDetectorConsoleName)) {
+    return window[linksDetectorConsoleName];
+  }
+
+  const linksDetectorConsole: LinksDetectorConsole = {
+    log: window.console.log,
+    table: window.console.table,
+    warn: window.console.warn,
+    error: window.console.error,
+  };
+
+  Object.defineProperty(window, linksDetectorConsoleName, {
+    value: linksDetectorConsole,
+    writable: false,
+  });
+
+  return linksDetectorConsole;
+}
+
+const logger: LinksDetectorConsole = getSystemLogger();
+
 export type TableLogger = (
   message: string,
   tabularData: any,
@@ -89,9 +120,6 @@ const onGAError: OnCallLoggerCallback = (
   gaErrorLog(context || 'unknownContext', message);
 };
 
-/* global Console */
-const logger: Console = console;
-
 type BuildLoggersParams = {
   context?: LoggerContext,
 };
@@ -107,13 +135,13 @@ export const buildLoggers = (params: BuildLoggersParams): Loggers => {
     }),
 
     logDebug: buildLogger({
-      loggerFunc: logger.info,
+      loggerFunc: logger.log,
       context,
       muted,
     }),
 
     logInfo: buildLogger({
-      loggerFunc: logger.info,
+      loggerFunc: logger.log,
       context,
       muted,
     }),
