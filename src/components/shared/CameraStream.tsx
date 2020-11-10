@@ -86,7 +86,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       const msg = 'Your browser does not support camera access';
       setErrorMessage(msg);
-      logger.logWarn(msg);
+      logger.logError(msg);
       return (): void => {
       };
     }

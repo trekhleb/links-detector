@@ -111,6 +111,19 @@ function LinksDetector(): React.ReactElement | null {
     height: `${videoSize}px`,
   };
 
+  const cameraStream = (
+    <ErrorBoundary>
+      <CameraStream
+        onFrame={onFrame}
+        width={videoSize}
+        height={videoSize}
+        videoStyle={videoStyle}
+        idealFrameRate={DETECTION_CONFIG.videoStreaming.idealFPS}
+        withGrid
+      />
+    </ErrorBoundary>
+  );
+
   const imageCanvas = isDebug ? (
     <ErrorBoundary>
       <div style={canvasContainerStyles} className="absolute">
@@ -190,22 +203,13 @@ function LinksDetector(): React.ReactElement | null {
 
   return (
     <div>
-      <ErrorBoundary>
-        <CameraStream
-          onFrame={onFrame}
-          width={videoSize}
-          height={videoSize}
-          videoStyle={videoStyle}
-          idealFrameRate={DETECTION_CONFIG.videoStreaming.idealFPS}
-          withGrid
-        />
-      </ErrorBoundary>
-      { imageCanvas }
-      { regionProposalsCanvas }
-      { httpsBoxesCanvas }
-      { performanceMonitor }
-      { detectedLinksPrefixesCanvas }
-      { detectedLinksCanvas }
+      {cameraStream}
+      {imageCanvas}
+      {regionProposalsCanvas}
+      {httpsBoxesCanvas}
+      {performanceMonitor}
+      {detectedLinksPrefixesCanvas}
+      {detectedLinksCanvas}
     </div>
   );
 }

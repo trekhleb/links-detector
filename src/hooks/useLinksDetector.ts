@@ -223,6 +223,7 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
       });
     } catch (error) {
       const errMessage: string = (error && error.message) || 'Image preprocessing failed';
+      logger.logError(errMessage);
       setDetectionError(errMessage);
     }
     if (!processedPixels) {
