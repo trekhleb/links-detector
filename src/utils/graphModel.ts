@@ -76,9 +76,12 @@ export const graphModelWarmup = async (
 
   logger.logDebug('warmupModel', { inputShape, fakeInput });
 
-  await model.executeAsync(fakeInput);
-
-  logger.logDebug('Model is wormed up');
+  try {
+    await model.executeAsync(fakeInput);
+    logger.logDebug('Model is wormed up');
+  } catch (error) {
+    logger.logError(`Cannot warmup the model: ${error.message}`, { error });
+  }
 };
 
 type ModelPredictions = {

@@ -74,6 +74,7 @@ const useTesseract = (props: UseSchedulerProps): UseSchedulerOutput => {
       });
 
     return (): void => {
+      logger.logDebug('useEffect: shutdown');
       if (scheduler.current) {
         logger.logDebug('useEffect: deactivate');
         scheduler.current.terminate().then(() => {
