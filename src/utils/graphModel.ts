@@ -14,7 +14,7 @@ export enum TFBackends {
 
 export const setTFBackend = async (
   backendName: string = TFBackends.webgl,
-): Promise<boolean> => {
+): Promise<void> => {
   if (backendName === TFBackends.wasm) {
     // @see: package.json
     setWasmPaths({
@@ -23,7 +23,8 @@ export const setTFBackend = async (
       'tfjs-backend-wasm-threaded-simd.wasm': '/wasm/tfjs-backend-wasm-threaded-simd.wasm',
     });
   }
-  return tf.setBackend(backendName);
+  await tf.setBackend(backendName);
+  await tf.ready();
 };
 
 export const graphModelLoad = async (
@@ -32,10 +33,7 @@ export const graphModelLoad = async (
 ): Promise<tf.GraphModel> => {
   const logger = buildLoggers({ context: 'graphModelLoad' });
 
-  const backIsSet: boolean = await setTFBackend();
-  if (!backIsSet) {
-    logger.logDebug('Backend was not set properly');
-  }
+  await setTFBackend();
 
   const model: tf.GraphModel = await tf.loadGraphModel(modelURL, { onProgress });
 
@@ -140,7 +138,6 @@ export const graphModelExecute = async (
       inferenceTime,
       results,
     });
-    inputTensor.dispose();
   } catch (e) {
     const errorMessage = (e && e.message) || 'Cannot execute the model';
     logger.logError(errorMessage);
