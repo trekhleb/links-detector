@@ -6,6 +6,8 @@ import throttle from 'lodash/throttle';
 
 import useLogger from '../../hooks/useLogger';
 import Notification, { NotificationLevel } from './Notification';
+import ErrorBoundary from './ErrorBoundary';
+import Grid from './Grid';
 
 type FacingMode = 'user' | 'environment';
 
@@ -16,10 +18,13 @@ type CameraStreamProps = {
   onFrame: (video: HTMLVideoElement) => Promise<void>,
   facingMode?: FacingMode,
   videoStyle?: CSSProperties,
+  withGrid?: boolean,
 };
 
 const videoFrameRate = 30;
 const oneSecond = 1000;
+const gridVerticalCells = 4;
+const gridHorizontalCells = 4;
 
 /* global MediaStreamConstraints */
 function CameraStream(props: CameraStreamProps): React.ReactElement {
@@ -30,6 +35,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     idealFrameRate,
     facingMode = 'environment',
     videoStyle: videoStyleOverrides = {},
+    withGrid = false,
   } = props;
 
   const frameThrottlingMs = Math.floor(oneSecond / idealFrameRate);
@@ -157,6 +163,23 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
     ...videoStyleOverrides,
   };
 
+  const gridStyles: CSSProperties = {
+    marginTop: `-${videoHeight}px`,
+  };
+
+  const gridCanvas = withGrid ? (
+    <ErrorBoundary>
+      <div style={gridStyles} className="absolute">
+        <Grid
+          hCells={gridHorizontalCells}
+          vCells={gridVerticalCells}
+          width={videoWidth}
+          height={videoHeight}
+        />
+      </div>
+    </ErrorBoundary>
+  ) : null;
+
   return (
     <div style={videoWrapperStyle}>
       <video
@@ -171,6 +194,7 @@ function CameraStream(props: CameraStreamProps): React.ReactElement {
       >
         Your browser does not support embedded videos
       </video>
+      {gridCanvas}
     </div>
   );
 }

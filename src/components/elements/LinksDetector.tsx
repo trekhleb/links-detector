@@ -18,7 +18,6 @@ import { DetectionBox } from '../../utils/graphModel';
 import DetectedLinks from './DetectedLinks';
 import DetectedLinksPrefixes from './DetectedLinksPrefixes';
 import { FRAME_PADDING_CLASS } from '../../constants/style';
-import Grid from '../shared/Grid';
 
 const uiVideoBrightness = normalizeCSSFilterParam(
   DETECTION_CONFIG.imagePreprocessing.ui.brightness,
@@ -124,14 +123,6 @@ function LinksDetector(): React.ReactElement | null {
     </ErrorBoundary>
   ) : null;
 
-  const gridCanvas = (
-    <ErrorBoundary>
-      <div style={canvasContainerStyles} className="absolute">
-        <Grid hCells={4} vCells={4} width={videoSize} height={videoSize} />
-      </div>
-    </ErrorBoundary>
-  );
-
   const regionProposalBoxes: DetectionBox[] = regionProposals && regionProposals.length
     ? regionProposals.map((regionProposal: Rectangle): DetectionBox => {
       return {
@@ -206,10 +197,10 @@ function LinksDetector(): React.ReactElement | null {
           height={videoSize}
           videoStyle={videoStyle}
           idealFrameRate={DETECTION_CONFIG.videoStreaming.idealFPS}
+          withGrid
         />
       </ErrorBoundary>
       { imageCanvas }
-      { gridCanvas }
       { regionProposalsCanvas }
       { httpsBoxesCanvas }
       { performanceMonitor }
