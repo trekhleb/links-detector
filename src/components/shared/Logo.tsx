@@ -5,6 +5,7 @@ import Icon from './Icon';
 import { ICON_KEYS } from '../../icons';
 import EnhancedRow from './EnhancedRow';
 import { HOME_ROUTE } from '../../constants/routes';
+import { LINKS_HOVER_CLASSNAME } from '../../constants/style';
 
 function Logo(): React.ReactElement {
   const logoIcon = (
@@ -14,7 +15,7 @@ function Logo(): React.ReactElement {
   const content = (
     <>
       <span className="text-3xl">
-        <Link to={HOME_ROUTE.path}>
+        <Link to={HOME_ROUTE.path} className={`${LINKS_HOVER_CLASSNAME}`}>
           Links Detector
         </Link>
       </span>
