@@ -1,5 +1,5 @@
 import {
-  createWorker, createScheduler, Scheduler, Worker, WorkerOptions,
+  createWorker, createScheduler, Scheduler, Worker, WorkerOptions, WorkerParams, PSM,
 } from 'tesseract.js';
 import { buildLoggers } from './logger';
 import { ZeroOneRange } from './types';
@@ -146,10 +146,18 @@ export const initScheduler = async (props: InitSchedulerProps): Promise<Schedule
   };
 
   const initWorker = async (): Promise<Worker> => {
+    // @see: https://github.com/naptha/tesseract.js/blob/master/docs/api.md#workersetparametersparams-jobid-promise
+    const workerParams: Partial<WorkerParams> = {
+      // @ts-ignore
+      tessedit_pageseg_mode: PSM.SINGLE_LINE,
+    };
+
     const worker: Worker = createWorker(workerOptions);
     await worker.load();
     await worker.loadLanguage(language);
     await worker.initialize(language);
+    await worker.setParameters(workerParams);
+
     return worker;
   };
 

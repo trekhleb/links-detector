@@ -67,6 +67,6 @@ export const DETECTION_CONFIG: DetectionConfig = {
     useRegionProposals: true,
     workersNum: 3,
     language: 'eng',
-    regionProposalPadding: 0.03,
+    regionProposalPadding: 0.02,
   },
 };
