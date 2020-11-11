@@ -43,7 +43,7 @@ function PerformanceMonitor(props: DetectionPerformanceProps): React.ReactElemen
         total: <b>{metrics.total}</b>s
       </div>
       <div>
-        <b>{metrics.fps}</b>fps
+        fps: <b>{metrics.fps}</b>
       </div>
     </div>
   );
