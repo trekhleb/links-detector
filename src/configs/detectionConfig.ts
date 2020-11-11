@@ -50,7 +50,7 @@ export const DETECTION_CONFIG: DetectionConfig = {
       enabled: true,
       brightness: 0.6,
       contrast: 0.7,
-      size: 600,
+      size: 640,
     },
   },
   videoStreaming: {
