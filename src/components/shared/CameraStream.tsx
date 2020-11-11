@@ -23,7 +23,7 @@ type CameraStreamProps = {
 
 const videoFrameRate = 30;
 const oneSecond = 1000;
-const gridVerticalCells = 4;
+const gridVerticalCells = 10;
 const gridHorizontalCells = 4;
 
 /* global MediaStreamConstraints */
