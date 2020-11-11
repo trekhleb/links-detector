@@ -25,10 +25,19 @@ function PerformanceMonitor(props: DetectionPerformanceProps): React.ReactElemen
         proc: <b>{metrics.processing}</b>s
       </div>
       <div>
+        avgProc: <b>{metrics.avgProcessing}</b>s
+      </div>
+      <div>
         https: <b>{metrics.inference}</b>s
       </div>
       <div>
+        avgHttps: <b>{metrics.avgInference}</b>s
+      </div>
+      <div>
         ocr: <b>{metrics.ocr}</b>s
+      </div>
+      <div>
+        avgOcr: <b>{metrics.avgOcr}</b>s
       </div>
       <div>
         total: <b>{metrics.total}</b>s
