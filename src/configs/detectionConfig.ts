@@ -58,14 +58,14 @@ export const DETECTION_CONFIG: DetectionConfig = {
   },
   httpsDetection: {
     // @see: https://js.tensorflow.org/api/latest/#image.nonMaxSuppressionAsync
-    maxBoxesNum: 3,
+    maxBoxesNum: 2,
     IOUThreshold: 0.5,
     scoreThreshold: 0.5,
   },
   ocr: {
     // @see: https://github.com/naptha/tesseract.js/blob/master/docs/examples.md
     useRegionProposals: true,
-    workersNum: 3,
+    workersNum: 2,
     language: 'eng',
     regionProposalPadding: 0.02,
   },
