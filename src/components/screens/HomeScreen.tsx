@@ -29,7 +29,7 @@ function HomeScreen(): React.ReactElement {
         </div>
         <div className="flex justify-center items-center flex-col flex-grow self-stretch">
           <LaunchButton onClick={onLaunch}>
-            scan
+            Scan
           </LaunchButton>
         </div>
       </div>

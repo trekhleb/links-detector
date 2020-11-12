@@ -50,7 +50,7 @@ function LaunchButton(props: LaunchButtonProps): React.ReactElement {
         onClick={onClick}
         type="button"
         className={
-          `flex flex-row items-center justify-center border-0 rounded-full bg-white hover:${LAUNCH_BUTTON_BACKGROUND_HOVER_CLASS}`
+          `flex flex-row items-center justify-center border-0 rounded-full transition duration-300 ease-in-out bg-white hover:${LAUNCH_BUTTON_BACKGROUND_HOVER_CLASS}`
         }
       >
         <div
