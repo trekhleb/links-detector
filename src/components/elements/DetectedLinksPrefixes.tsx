@@ -29,16 +29,22 @@ function DetectedLinksPrefixes(props: DetectedLinksPrefixesProps): React.ReactEl
     const bottom: number = relativeToAbsolute(box.y2, containerSize);
     const width: number = right - left;
     const height: number = bottom - top;
-    const centerX: number = Math.floor(left + width / 2);
-    const centerY: number = Math.floor(top + height / 2);
+
+    const horizontalScaleFactor: number = 10;
 
     const boxStyle: CSSProperties = {
-      marginLeft: `${centerX}px`,
-      marginTop: `${centerY}px`,
+      marginLeft: `${left}px`,
+      marginTop: `${top}px`,
+      width: `${horizontalScaleFactor * Math.max(width, height)}px`,
+      height: `${height}px`,
     };
 
     return (
-      <div key={`${left}${top}${width}${height}`} style={boxStyle} className="block absolute">
+      <div
+        key={`${left}${top}${width}${height}`}
+        style={boxStyle}
+        className="flex flex-row justify-start items-start absolute"
+      >
         <Spinner />
       </div>
     );

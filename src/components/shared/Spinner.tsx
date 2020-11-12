@@ -3,21 +3,17 @@ import './Spinner.css';
 import { DETECTION_BACKGROUND_COLOR_CLASS } from '../../constants/style';
 
 function Spinner(): React.ReactElement {
-  const spinnerWidth: number = 50;
-
   const spinnerStyles: CSSProperties = {
-    width: `${spinnerWidth}px`,
-    height: `${spinnerWidth}px`,
-    marginLeft: `-${Math.floor(spinnerWidth / 2)}px`,
-    marginTop: `-${Math.floor(spinnerWidth / 2)}px`,
-    borderRadius: '100%',
+    width: '100%',
+    height: '100%',
+    transformOrigin: 'top left',
     animation: 'sk-scaleout 1.0s infinite ease-in-out',
   };
 
   return (
     <div
       style={spinnerStyles}
-      className={`${DETECTION_BACKGROUND_COLOR_CLASS}`}
+      className={`rounded-lg ${DETECTION_BACKGROUND_COLOR_CLASS}`}
     />
   );
 }
