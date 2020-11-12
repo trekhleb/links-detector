@@ -1,7 +1,7 @@
 {
   "name": "Links Detector",
   "short_name": "Links Detector",
-  "description": "Links Detector makes printed links clickable. No need to type, just scan and click it.",
+  "description": "Links Detector makes printed links clickable via your smartphone camera. No need to type a link in, just scan and click on it.",
   "start_url": "/links-detector?src=pwa",
   "scope": "/links-detector",
   "display": "standalone",

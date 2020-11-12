@@ -7,7 +7,7 @@ function Promo(): React.ReactElement {
         Links Detector makes printed links clickable via your smartphone camera
       </span>
       <span className="text-xs font-light">
-        No need to type link in, just scan and click on it
+        No need to type a link in, just scan and click on it
       </span>
     </div>
   );
