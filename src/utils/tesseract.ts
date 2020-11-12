@@ -152,9 +152,6 @@ export const initScheduler = async (props: InitSchedulerProps): Promise<Schedule
       tessedit_pageseg_mode: PSM.SINGLE_LINE,
       tessjs_create_hocr: '0',
       tessjs_create_tsv: '0',
-      tessjs_create_box: '0',
-      tessjs_create_unlv: '0',
-      tessjs_create_osd: '0',
     };
 
     const worker: Worker = createWorker(workerOptions);
