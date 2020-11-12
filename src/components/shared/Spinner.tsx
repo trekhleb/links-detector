@@ -7,7 +7,7 @@ function Spinner(): React.ReactElement {
     width: '100%',
     height: '100%',
     transformOrigin: 'top left',
-    animation: 'sk-scaleout 2.0s cubic-bezier(0, 0, 0.2, 1) infinite',
+    animation: 'sk-scaleout 1.5s ease-out infinite',
   };
 
   return (
