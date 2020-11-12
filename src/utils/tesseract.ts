@@ -1,5 +1,11 @@
 import {
-  createWorker, createScheduler, Scheduler, Worker, WorkerOptions, WorkerParams, PSM,
+  createWorker,
+  createScheduler,
+  Scheduler,
+  Worker,
+  WorkerOptions,
+  WorkerParams,
+  PSM,
 } from 'tesseract.js';
 import { buildLoggers } from './logger';
 import { ZeroOneRange } from './types';
