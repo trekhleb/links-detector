@@ -13,7 +13,7 @@ function Spinner(): React.ReactElement {
   return (
     <div
       style={spinnerStyles}
-      className={`${DETECTION_BACKGROUND_COLOR_CLASS}`}
+      className={`${DETECTION_BACKGROUND_COLOR_CLASS} fade-in-5`}
     />
   );
 }
