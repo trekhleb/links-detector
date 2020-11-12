@@ -6,6 +6,8 @@ Links Detector makes printed links clickable via your smartphone camera. No need
 
 [![Links Detector](./src/images/links-detector-banner-bg-white.png)](https://trekhleb.github.io/links-detector)
 
+[![Links Detector](./src/images/links-detector-banner-bg-black-2.png)](https://trekhleb.github.io/links-detector)
+
 ## Version locks
 
 `react-router-dom v5.X.X` isn't compatible with `history v5.X.X`.
