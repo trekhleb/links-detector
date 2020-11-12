@@ -22,7 +22,8 @@ function LaunchButton(props: LaunchButtonProps): React.ReactElement {
   const buttonBackgroundStyle: CSSProperties = {
     width: `${buttonSizePx}px`,
     height: `${buttonSizePx}px`,
-    background: '#f6e05e',
+    background: 'rgba(255, 255, 255, .3)',
+    border: '1px solid rgba(255, 255, 255, .7)',
     position: 'absolute',
   };
 
@@ -44,7 +45,14 @@ function LaunchButton(props: LaunchButtonProps): React.ReactElement {
 
   return (
     <div style={wrapperStyles}>
-      <div style={buttonBackgroundStyle} className="rounded-full" />
+      <div
+        style={buttonBackgroundStyle}
+        className="rounded-full pulsate-1"
+      />
+      <div
+        style={buttonBackgroundStyle}
+        className="rounded-full pulsate-2"
+      />
       <button
         style={buttonStyles}
         onClick={onClick}

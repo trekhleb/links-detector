@@ -11,23 +11,22 @@ html, body {
 
 .fade-in-1 {
   animation: fadeIn ease-in-out .1s;
-  -webkit-animation: fadeIn ease-in-out .1s;
-  -moz-animation: fadeIn ease-in-out .1s;
-  -o-animation: fadeIn ease-in-out .1s;
 }
 
 .fade-in-5 {
   animation: fadeIn ease-in-out .5s;
-  -webkit-animation: fadeIn ease-in-out .5s;
-  -moz-animation: fadeIn ease-in-out .5s;
-  -o-animation: fadeIn ease-in-out .5s;
 }
 
 .fade-in-10 {
   animation: fadeIn ease-in-out 1s;
-  -webkit-animation: fadeIn ease-in-out 1s;
-  -moz-animation: fadeIn ease-in-out 1s;
-  -o-animation: fadeIn ease-in-out 1s;
+}
+
+.pulsate-1 {
+  animation: pulsate-1 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.pulsate-2 {
+  animation: pulsate-2 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
 @keyframes fadeIn {
@@ -39,38 +38,24 @@ html, body {
   }
 }
 
-@-moz-keyframes fadeIn {
+@keyframes pulsate-1 {
   0% {
-    opacity: 0;
-  }
-  100% {
+    transform: scale(1);
     opacity: 1;
+  }
+  75%, 100% {
+    transform: scale(1.5);
+    opacity: 0;
   }
 }
 
-@-webkit-keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
+@keyframes pulsate-2 {
+  0%, 10% {
+    transform: scale(1);
     opacity: 1;
   }
-}
-
-@-o-keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
   100% {
-    opacity: 1;
-  }
-}
-
-@-ms-keyframes fadeIn {
-  0% {
+    transform: scale(1.5);
     opacity: 0;
-  }
-  100% {
-    opacity: 1;
   }
 }
