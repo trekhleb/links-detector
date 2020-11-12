@@ -2,6 +2,7 @@ import React, { CSSProperties } from 'react';
 import { DetectionBox } from '../../utils/graphModel';
 import { relativeToAbsolute } from '../../utils/image';
 import Spinner from '../shared/Spinner';
+import { DETECTION_CONFIG } from '../../configs/detectionConfig';
 
 type DetectedLinksPrefixesProps = {
   boxes: DetectionBox[] | null,
@@ -14,6 +15,10 @@ function DetectedLinksPrefixes(props: DetectedLinksPrefixesProps): React.ReactEl
   if (!boxes || !boxes.length) {
     return null;
   }
+
+  const regionProposalPadding: number = Math.ceil(
+    containerSize * DETECTION_CONFIG.ocr.regionProposalPadding,
+  );
 
   const containerStyle: CSSProperties = {
     width: `${containerSize}px`,
@@ -33,7 +38,7 @@ function DetectedLinksPrefixes(props: DetectedLinksPrefixesProps): React.ReactEl
     const horizontalScaleFactor: number = 10;
 
     const boxStyle: CSSProperties = {
-      marginLeft: `${left}px`,
+      marginLeft: `${left - regionProposalPadding}px`,
       marginTop: `${top}px`,
       width: `${horizontalScaleFactor * Math.max(width, height)}px`,
       height: `${height}px`,
