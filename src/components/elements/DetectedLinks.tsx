@@ -41,7 +41,7 @@ function DetectedLinks(props: DetectedLinksProps): React.ReactElement | null {
         key={link.url}
         style={linkContainerStyle}
         className={
-          `absolute block overflow-hidden fade-in-1 rounded ${DETECTION_TEXT_COLOR_CLASS}`
+          `absolute block overflow-hidden fade-in-2 rounded ${DETECTION_TEXT_COLOR_CLASS}`
         }
       >
         <a

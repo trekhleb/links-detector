@@ -14,6 +14,10 @@ html, body {
   animation: fadeIn ease-in-out .1s;
 }
 
+.fade-in-2 {
+  animation: fadeIn ease-in-out .2s;
+}
+
 .fade-in-5 {
   animation: fadeIn ease-in-out .5s;
 }
