@@ -313,7 +313,10 @@ const useLinksDetector = (props: UseLinkDetectorProps): UseLinkDetectorOutput =>
         // @ts-ignore
         setDetectedLinks(currentDetectedLinks);
       } else {
-        setDetectedLinks([]);
+        // If no links are recognized we should clear the previously recognized links.
+        // However to give users more time to click on them even if the next recognition
+        // round was not successful we may avoid clearing the array of links.
+        // setDetectedLinks([]);
       }
       logger.logDebug('recognized texts', { texts });
     } else {
