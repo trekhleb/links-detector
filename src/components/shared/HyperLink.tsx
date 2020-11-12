@@ -1,7 +1,7 @@
 import React from 'react';
 import { ICON_KEYS } from '../../icons';
 import Icon from './Icon';
-import { LINKS_HOVER_CLASSNAME } from '../../constants/style';
+import { LINKS_TEXT_HOVER_COLOR_CLASS } from '../../constants/style';
 
 type HyperLinkProps = {
   to: string,
@@ -34,7 +34,7 @@ function HyperLink(props: HyperLinkProps): React.ReactElement {
   ) : children;
 
   return (
-    <a href={to} className={`underline text-sm ${className} ${LINKS_HOVER_CLASSNAME}`}>
+    <a href={to} className={`underline text-sm ${className} hover:${LINKS_TEXT_HOVER_COLOR_CLASS}`}>
       {linkContent}
     </a>
   );

@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 import './Spinner.css';
-import { DETECTION_BACKGROUND_COLOR } from '../../constants/style';
+import { DETECTION_BACKGROUND_COLOR_CLASS } from '../../constants/style';
 
 function Spinner(): React.ReactElement {
   const spinnerWidth: number = 50;
@@ -12,11 +12,13 @@ function Spinner(): React.ReactElement {
     marginTop: `-${Math.floor(spinnerWidth / 2)}px`,
     borderRadius: '100%',
     animation: 'sk-scaleout 1.0s infinite ease-in-out',
-    backgroundColor: DETECTION_BACKGROUND_COLOR,
   };
 
   return (
-    <div style={spinnerStyles} />
+    <div
+      style={spinnerStyles}
+      className={`${DETECTION_BACKGROUND_COLOR_CLASS}`}
+    />
   );
 }
 
