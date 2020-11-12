@@ -7,13 +7,13 @@ function Spinner(): React.ReactElement {
     width: '100%',
     height: '100%',
     transformOrigin: 'top left',
-    animation: 'sk-scaleout 1.0s infinite ease-in-out',
+    animation: 'sk-scaleout 2.0s cubic-bezier(0, 0, 0.2, 1) infinite',
   };
 
   return (
     <div
       style={spinnerStyles}
-      className={`rounded-lg ${DETECTION_BACKGROUND_COLOR_CLASS}`}
+      className={`${DETECTION_BACKGROUND_COLOR_CLASS}`}
     />
   );
 }

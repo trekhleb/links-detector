@@ -23,7 +23,7 @@ function HomeScreen(): React.ReactElement {
   return (
     <>
       <PageTitle />
-      <div className="flex justify-center items-center flex-col flex-grow self-stretch">
+      <div className="flex justify-center items-center flex-col flex-grow self-stretch fade-in-5">
         <div className="text-left self-stretch">
           <Promo />
         </div>

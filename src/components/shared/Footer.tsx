@@ -6,7 +6,7 @@ import { ICON_KEYS } from '../../icons';
 function Footer(): React.ReactElement {
   return (
     <footer>
-      <div className="flex flex-row">
+      <div className="flex flex-row fade-in-5">
         <HyperLink to={GITHUB_BASE_URL} iconKey={ICON_KEYS.GIT_HUB} className="mr-4">
           About
         </HyperLink>

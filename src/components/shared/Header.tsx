@@ -4,7 +4,7 @@ import Logo from './Logo';
 
 function Header(): React.ReactElement {
   return (
-    <header>
+    <header className="fade-in-5">
       <Logo />
     </header>
   );
