@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 import { ICON_KEYS } from '../../icons';
 import Icon from './Icon';
 import { LINKS_TEXT_HOVER_COLOR_CLASS } from '../../constants/style';
@@ -8,6 +10,7 @@ type HyperLinkProps = {
   children: React.ReactNode,
   iconKey?: ICON_KEYS,
   className?: string,
+  routerLink?: boolean,
 };
 
 function HyperLink(props: HyperLinkProps): React.ReactElement {
@@ -16,6 +19,7 @@ function HyperLink(props: HyperLinkProps): React.ReactElement {
     children,
     iconKey,
     className = '',
+    routerLink = false,
   } = props;
 
   const icon = iconKey ? (
@@ -33,8 +37,18 @@ function HyperLink(props: HyperLinkProps): React.ReactElement {
     </span>
   ) : children;
 
+  const linkClassName: string = `underline text-sm ${className} hover:${LINKS_TEXT_HOVER_COLOR_CLASS}`;
+
+  if (routerLink) {
+    return (
+      <Link to={to} className={linkClassName}>
+        {linkContent}
+      </Link>
+    );
+  }
+
   return (
-    <a href={to} className={`underline text-sm ${className} hover:${LINKS_TEXT_HOVER_COLOR_CLASS}`}>
+    <a href={to} className={linkClassName}>
       {linkContent}
     </a>
   );

@@ -10,6 +10,8 @@ import { ReactComponent as EditIcon } from './feathericons/edit-3.svg';
 import { ReactComponent as BookOpenIcon } from './feathericons/book-open.svg';
 import { ReactComponent as SearchIcon } from './feathericons/search.svg';
 import { ReactComponent as SmartphoneIcon } from './feathericons/smartphone.svg';
+import { ReactComponent as EyeIcon } from './feathericons/eye.svg';
+import { ReactComponent as YoutubeIcon } from './feathericons/youtube.svg';
 import { ReactComponent as LinksDetectorLogoIcon } from './vectr/links-detector-logo.svg';
 
 export enum ICON_KEYS {
@@ -24,6 +26,8 @@ export enum ICON_KEYS {
   BOOK_OPEN = 'book-open',
   SEARCH = 'search',
   SMARTPHONE = 'smartphone',
+  EYE = 'eye',
+  YOUTUBE = 'youtube',
 }
 
 type IconType = {
@@ -77,6 +81,14 @@ export const ICONS: IconsType = {
   },
   [ICON_KEYS.SMARTPHONE]: {
     component: SmartphoneIcon,
+    fillCurrent: false,
+  },
+  [ICON_KEYS.EYE]: {
+    component: EyeIcon,
+    fillCurrent: false,
+  },
+  [ICON_KEYS.YOUTUBE]: {
+    component: YoutubeIcon,
     fillCurrent: false,
   },
 };
