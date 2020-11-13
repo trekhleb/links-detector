@@ -1,6 +1,7 @@
 import { APP_TITLE, APP_TITLE_SEPARATOR } from './page';
 
 export const BASE_APP_PATH: string = '/links-detector';
+export const BASE_VIDEO_PATH: string = `${BASE_APP_PATH}/videos`;
 
 export const DEBUG_GET_PARAM = 'debug';
 
@@ -8,6 +9,7 @@ export enum RouteNames {
   home = 'home',
   detector = 'detector',
   debug = 'debug',
+  demo = 'demo',
 }
 
 export type RouteType = {
@@ -42,6 +44,10 @@ export const ROUTES: RoutesType = {
   [RouteNames.debug]: {
     path: generatePath('/debug'),
     title: generateAppTitle('Debug'),
+  },
+  [RouteNames.demo]: {
+    path: generatePath('/demo'),
+    title: generateAppTitle('Demo'),
   },
 };
 

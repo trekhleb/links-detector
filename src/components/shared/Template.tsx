@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 import Header from './Header';
 import Footer from './Footer';
@@ -10,15 +10,24 @@ type TemplateProps = {
 
 function Template(props: TemplateProps): React.ReactElement {
   const { children } = props;
+
+  const headerStyles: CSSProperties = {
+    zIndex: 1,
+  };
+
+  const footerStyles: CSSProperties = {
+    zIndex: 1,
+  };
+
   return (
     <main className={`full-height flex flex-col ${FRAME_PADDING_CLASS}`}>
-      <header className="mb-5">
+      <header style={headerStyles} className="mb-5">
         <Header />
       </header>
       <section className="flex flex-row flex-grow mb-5 justify-center items-center">
         {children}
       </section>
-      <footer>
+      <footer style={footerStyles}>
         <Footer />
       </footer>
     </main>
