@@ -8,7 +8,7 @@ function Demo(): React.ReactElement {
 
   /* eslint-disable jsx-a11y/media-has-caption */
   return (
-    <video width="300" className="fade-in-5" controls={false} autoPlay loop playsInline muted>
+    <video width="250" className="fade-in-5" controls={false} autoPlay loop playsInline muted>
       <source src={mp4DemoPath} type="video/mp4" />
       <source src={webmDemoPath} type="video/webm" />
       Your browser does not support the video tag.
