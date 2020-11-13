@@ -14,6 +14,8 @@ So you read a book or a magazine and see the link like `https://some-url.com/whi
 
 Links Detector tries to detect and recognize such links for you and make it clickable using you smartphone camera. So in result you should do just one click on the link instead of typing the whole link manually character by character.
 
+![Links Detector Demo](./public/videos/demo-white.gif)
+
 ## Limitations
 
 ⚠️ Currently the application is in _experimental_ _Alpha_ stage and has [many issues and limitations](https://github.com/trekhleb/links-detector/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement). So don't raise your expectations bar to high until these issues are resolved 🤷🏻‍.
