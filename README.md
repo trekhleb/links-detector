@@ -17,3 +17,7 @@ Links Detector tries to detect and recognize such links for you and make it clic
 ## Limitations
 
 ⚠️ Currently the application is in _experimental_ _Alpha_ stage and has [many issues and limitations](https://github.com/trekhleb/links-detector/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement). So don't raise your expectations bar to high until these issues are resolved 🤷🏻‍.
+
+## Technologies
+
+The detection and recognition part was made possible by using [TensorFlow](https://www.tensorflow.org) and [Tesseract.js](https://github.com/naptha/tesseract.js).
