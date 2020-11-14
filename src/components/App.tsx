@@ -1,13 +1,13 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
-import { createBrowserHistory, Location } from 'history';
+import { createHashHistory, Location } from 'history';
 
 import Template from './shared/Template';
 import Routes from './Routes';
 import ErrorBoundary from './shared/ErrorBoundary';
 import { gaPageView } from '../utils/analytics';
 
-const history = createBrowserHistory();
+const history = createHashHistory();
 
 history.listen((location: Location): void => {
   gaPageView(location);
