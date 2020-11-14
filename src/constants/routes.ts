@@ -3,6 +3,10 @@ import { APP_TITLE, APP_TITLE_SEPARATOR } from './page';
 export const BASE_APP_PATH: string = '/links-detector';
 export const BASE_VIDEO_PATH: string = `${BASE_APP_PATH}/videos`;
 
+// The BASE_ROUTE_PATH may be different from BASE_APP_PATH path in case of a hash router.
+// Compare /links-detector#/home (hash router) vs /links-detector/home (history router)
+export const BASE_ROUTE_PATH: string = '/';
+
 export const DEBUG_GET_PARAM = 'debug';
 
 export enum RouteNames {
@@ -27,9 +31,12 @@ const generateAppTitle = (pageTitle: string): string => {
 
 const generatePath = (path: string): string => {
   if (path === '/') {
-    return BASE_APP_PATH;
+    return BASE_ROUTE_PATH;
   }
-  return `${BASE_APP_PATH}${path}`;
+  if (BASE_ROUTE_PATH === '/') {
+    return path;
+  }
+  return `${BASE_ROUTE_PATH}${path}`;
 };
 
 export const ROUTES: RoutesType = {
