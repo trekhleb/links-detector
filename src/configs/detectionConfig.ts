@@ -38,7 +38,7 @@ export type DetectionConfig = {
 
 export const DETECTION_CONFIG: DetectionConfig = {
   modelLoading: {
-    linksDetectorModelURL: `${MODELS_BASE_URL}/models/links_detector/model.json`,
+    linksDetectorModelURL: `${MODELS_BASE_URL}/models/links_detector/v1/model.json`,
   },
   imagePreprocessing: {
     ui: {
