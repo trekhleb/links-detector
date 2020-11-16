@@ -1,0 +1,20 @@
+{
+  "public": "./build",
+  "rewrites": [
+    {
+      "source": "/links-detector",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/links-detector/:file",
+      "destination": "/:file"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/links-detector",
+      "type": 302
+    }
+  ]
+}
