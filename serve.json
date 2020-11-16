@@ -3,11 +3,11 @@
   "rewrites": [
     {
       "source": "/links-detector",
-      "destination": "/index.html"
+      "destination": "index.html"
     },
     {
-      "source": "/links-detector/:file",
-      "destination": "/:file"
+      "source": "/links-detector/:a/:b?/:c?/:d?/:e?/:f?/:g?",
+      "destination": "/:a/:b?/:c?/:d?/:e?/:f?/:g?"
     }
   ],
   "redirects": [
