@@ -8,19 +8,22 @@
   },
   "homepage": "https://trekhleb.github.io/links-detector",
   "scripts": {
+    "format:index": "prettier \"public/index.html\" --write",
     "cp-wasm": "cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm ./public/wasm",
     "cp-wasm-simd": "cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm-simd.wasm ./public/wasm",
     "cp-wasm-simd-thread": "cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm-threaded-simd.wasm ./public/wasm",
-    "wasm": "yarn cp-wasm && yarn cp-wasm-simd && yarn cp-wasm-simd-thread",
+    "build:wasm": "yarn cp-wasm && yarn cp-wasm-simd && yarn cp-wasm-simd-thread",
     "build:style": "tailwind build src/styles/index.css -o src/styles/tailwind.css",
     "build:pwa": "pwa-asset-generator src/icons/pwa/links-detector-logo-white.svg public/icons --manifest public/manifest.json --index public/index.html --background black --path \"%PUBLIC_URL%\" --scrape false --icon-only",
-    "format:index": "prettier \"public/index.html\" --write",
     "postbuild:pwa": "yarn run format:index",
-    "prestart": "yarn wasm && yarn build:style && yarn build:pwa",
+    "build:assets": "yarn build:wasm && yarn build:style && build:pwa",
+    "prebuild": "build:assets",
+    "build": "react-scripts build",
+    "prestart": "yarn build:assets",
     "start": "react-scripts start",
     "start-https": "HTTPS=true yarn start",
-    "prebuild": "yarn wasm && yarn build:style && yarn build:pwa",
-    "build": "react-scripts build",
+    "prestart-prod": "yarn build",
+    "start-prod": "serve -c serve.json -l 4000",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint 'src/**/*.{js,ts,tsx}'",
@@ -52,7 +55,14 @@
     "react-scripts": "4.0.0",
     "tailwindcss": "^1.8.10",
     "tesseract.js": "^2.1.3",
-    "typescript": "~4.0.5"
+    "typescript": "~4.0.5",
+    "workbox-core": "^5.1.3",
+    "workbox-expiration": "^5.1.3",
+    "workbox-precaching": "^5.1.3",
+    "workbox-routing": "^5.1.3",
+    "workbox-strategies": "^5.1.3",
+    "workbox-cacheable-response": "^5.1.3",
+    "workbox-google-analytics": "^5.1.3"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.1.1",
@@ -64,7 +74,8 @@
     "eslint-plugin-react-hooks": "^4.1.2",
     "gh-pages": "^3.1.0",
     "prettier": "^2.1.2",
-    "pwa-asset-generator": "^3.2.3"
+    "pwa-asset-generator": "^3.2.3",
+    "serve": "^11.3.2"
   },
   "eslintConfig": {
     "extends": "react-app"
