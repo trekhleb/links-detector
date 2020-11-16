@@ -22,4 +22,6 @@ Links Detector tries to detect and recognize such links for you and make it clic
 
 ## Technologies
 
+The app is a pure frontend [React](https://create-react-app.dev/) app without a backend.
+
 The detection and recognition part was made possible by using [TensorFlow](https://www.tensorflow.org) and [Tesseract.js](https://github.com/naptha/tesseract.js).
