@@ -83,7 +83,17 @@ const buildLogger = (
 
   const args: (LoggerMessage | LoggerContext | LoggerMeta)[] = [message];
   if (context) {
-    args.unshift(context, contextSeparator);
+    const consoleColors: string[] = [
+      'green', 'orange', 'blue', 'brown', 'blueviolet', 'chocolate', 'coral', 'dodgerblue', 'olive', 'teal',
+    ];
+    const contextHash: number = context.length % consoleColors.length;
+    const contextColor: string = consoleColors[contextHash];
+    const contextStyles: string = `background: ${contextColor}; color: white; padding: 0 3px; border-radius: 3px;`;
+    args.unshift(
+      `%c${context}`,
+      contextStyles,
+      contextSeparator,
+    );
   }
 
   if (meta) {
