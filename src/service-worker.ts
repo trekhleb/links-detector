@@ -7,11 +7,10 @@
 // service worker, and the Workbox build step will be skipped.
 
 import { clientsClaim, skipWaiting } from 'workbox-core';
-// import { ExpirationPlugin } from 'workbox-expiration';
-// import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
-// import { precacheAndRoute } from 'workbox-precaching';
-// import { registerRoute } from 'workbox-routing';
-// import { StaleWhileRevalidate } from 'workbox-strategies';
+import { ExpirationPlugin } from 'workbox-expiration';
+import { registerRoute } from 'workbox-routing';
+import { CacheFirst, StaleWhileRevalidate } from 'workbox-strategies';
+import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 
 // eslint-disable-next-line no-undef
 declare const self: ServiceWorkerGlobalScope;
@@ -26,8 +25,60 @@ declare const self: ServiceWorkerGlobalScope;
 // eslint-disable-next-line no-restricted-globals, no-underscore-dangle, @typescript-eslint/no-unused-vars
 const ignored = self.__WB_MANIFEST;
 
+const CACHE_PREFIX: string = 'detector';
+const CACHE_VERSION: number = 1;
+
+const getCacheName = (name: string): string => {
+  return `${CACHE_PREFIX}-${CACHE_VERSION}-${name}`;
+};
+
+console.log('sw', '→', { CACHE_VERSION });
+
 skipWaiting();
 clientsClaim();
+
+// @see: https://developer.mozilla.org/en-US/docs/Web/API/Request
+// @see: https://developer.mozilla.org/en-US/docs/Web/API/RequestDestination
+
+// Caching Images.
+registerRoute(
+  ({ request }) => {
+    return request.destination === 'image';
+  },
+  new CacheFirst({
+    cacheName: getCacheName('images'),
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 50,
+        maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
+      }),
+      // Ensure that only requests that result in a 200 status are cached.
+      new CacheableResponsePlugin({
+        statuses: [200],
+      }),
+    ],
+  }),
+);
+
+// Caching static assets.
+registerRoute(
+  ({ request }) => {
+    // eslint-disable-next-line no-undef
+    const assetTypes: RequestDestination[] = [
+      'style', 'script', 'worker',
+    ];
+    return assetTypes.includes(request.destination);
+  },
+  new StaleWhileRevalidate({
+    cacheName: getCacheName('assets'),
+    plugins: [
+      // Ensure that only requests that result in a 200 status are cached.
+      new CacheableResponsePlugin({
+        statuses: [200],
+      }),
+    ],
+  }),
+);
 
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
