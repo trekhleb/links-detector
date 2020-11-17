@@ -119,11 +119,11 @@ export function register(config?: Config): void {
 }
 
 export function unregister(): void {
-  logger.logDebug('unregister');
   if (!isServiceWorkerSupported()) {
     logger.logDebug('unregister: not supported');
     return;
   }
+  logger.logDebug('unregister', { sw: navigator.serviceWorker });
   navigator.serviceWorker.ready
     .then((registration: ServiceWorkerRegistration) => {
       logger.logDebug('unregister: starting');
