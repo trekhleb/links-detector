@@ -2,6 +2,10 @@
   "public": "./build",
   "rewrites": [
     {
+      "source": "/links-detector",
+      "destination": "index.html"
+    },
+    {
       "source": "/links-detector/",
       "destination": "index.html"
     },
