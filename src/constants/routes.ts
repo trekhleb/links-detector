@@ -4,7 +4,7 @@ export const BASE_APP_PATH: string = '/links-detector';
 export const BASE_VIDEO_PATH: string = `${BASE_APP_PATH}/videos`;
 
 // The BASE_ROUTE_PATH may be different from BASE_APP_PATH path in case of a hash router.
-// Compare /links-detector#/home (hash router) vs /links-detector/home (history router)
+// Compare /links-detector/#/home (hash router) vs /links-detector/home (history router)
 export const BASE_ROUTE_PATH: string = '/';
 
 export const DEBUG_GET_PARAM = 'debug';
