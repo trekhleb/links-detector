@@ -6,7 +6,7 @@
     "name": "Oleksii Trekhleb",
     "url": "https://www.linkedin.com/in/trekhleb/"
   },
-  "homepage": "https://trekhleb.github.io/links-detector",
+  "homepage": "https://trekhleb.github.io/links-detector/",
   "scripts": {
     "format:index": "prettier \"public/index.html\" --write",
     "cp-wasm": "cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tfjs-backend-wasm.wasm ./public/wasm",
