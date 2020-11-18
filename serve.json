@@ -2,7 +2,7 @@
   "public": "./build",
   "rewrites": [
     {
-      "source": "/links-detector",
+      "source": "/links-detector/",
       "destination": "index.html"
     },
     {
@@ -13,7 +13,7 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "/links-detector",
+      "destination": "/links-detector/",
       "type": 302
     }
   ]
