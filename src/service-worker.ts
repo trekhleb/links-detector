@@ -11,6 +11,7 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
+import { precacheAndRoute } from 'workbox-precaching';
 
 import { CACHE_PREFIX, CACHE_VERSION } from './configs/pwa';
 import { daysToSeconds } from './utils/numbers';
@@ -22,10 +23,10 @@ import { daysToSeconds } from './utils/numbers';
 // eslint-disable-next-line no-undef
 declare const self: ServiceWorkerGlobalScope;
 
-// @ts-ignore
-// eslint-disable-next-line max-len
-// eslint-disable-next-line no-restricted-globals, no-underscore-dangle, @typescript-eslint/no-unused-vars
-const ignored = self.__WB_MANIFEST;
+// eslint-disable-next-line no-restricted-globals, no-underscore-dangle
+precacheAndRoute(self.__WB_MANIFEST, {
+  ignoreURLParametersMatching: [/.*/],
+});
 
 const getCacheName = (name: string): string => {
   return `${CACHE_PREFIX}--v${CACHE_VERSION}--${name}`;
