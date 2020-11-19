@@ -5,7 +5,8 @@ import Icon from './Icon';
 import { ICON_KEYS } from '../../icons';
 import EnhancedRow from './EnhancedRow';
 import { HOME_ROUTE } from '../../constants/routes';
-import { LINKS_TEXT_HOVER_COLOR_CLASS } from '../../constants/style';
+import { LINKS_TEXT_HOVER_COLOR_CLASS, THEME_BG_COLOR_CLASS } from '../../constants/style';
+import { GITHUB_ISSUES_LINK } from '../../constants/links';
 
 function Logo(): React.ReactElement {
   const logoIcon = (
@@ -19,8 +20,8 @@ function Logo(): React.ReactElement {
           Links Detector
         </Link>
       </span>
-      <sup className="text-xs bg-white text-black rounded-full pl-1 pr-1 ml-2">
-        alpha
+      <sup className={`text-xs bg-white hover:${THEME_BG_COLOR_CLASS} text-black rounded-full pl-1 pr-1 ml-2`}>
+        <a href={GITHUB_ISSUES_LINK}>alpha</a>
       </sup>
     </>
   );
