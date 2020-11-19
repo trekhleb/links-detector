@@ -38,8 +38,8 @@ clientsClaim();
 // @see: https://developer.mozilla.org/en-US/docs/Web/API/RequestDestination
 
 registerRoute(
-  (route) => {
-    console.log('++++ YO', route);
+  ({ request, url }: { request: Request; url: URL }) => {
+    console.log('++++ YO', { request, url });
 
     // Assets by type.
     // eslint-disable-next-line no-undef
@@ -49,7 +49,7 @@ registerRoute(
       'script',
       'worker',
     ];
-    if (assetTypes.includes(route.request.destination)) {
+    if (assetTypes.includes(request.destination)) {
       return true;
     }
 
@@ -61,7 +61,7 @@ registerRoute(
     ];
     for (let extIndex = 0; extIndex < assetExtensions.length; extIndex += 1) {
       const extension: string = assetExtensions[extIndex];
-      if (route.url.href.endsWith(extension)) {
+      if (url.href.endsWith(extension)) {
         return true;
       }
     }
@@ -73,7 +73,7 @@ registerRoute(
     ];
     for (let originIndex = 0; originIndex < assetOrigins.length; originIndex += 1) {
       const origin: string = originIndex[originIndex];
-      if (route.url.origin === origin) {
+      if (url.origin === origin) {
         return true;
       }
     }
