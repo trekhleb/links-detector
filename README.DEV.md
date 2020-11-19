@@ -20,7 +20,7 @@ It might be needed to get a camera access while testing the app on mobile device
 
 The app will be available at [https://localhost:3000/links-detector/](http://localhost:3000/links-detector/). You may also access it through the mobile device at `https://<your.local.ip.here>/links/detector` if it is on the same network.
 
-#### Running the 
+#### Running the production build
 
 Service workers and [PWA](https://web.dev/progressive-web-apps/) (Progressive Web App) features might be tested against production builds only. To build production version of the app and serve it, run:
 
