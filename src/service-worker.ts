@@ -20,8 +20,8 @@ import { daysToSeconds } from './utils/numbers';
 setCacheNameDetails({
   prefix: CACHE_PREFIX,
   suffix: CACHE_VERSION,
-  precache: 'install-time',
-  runtime: 'run-time',
+  precache: 'precache',
+  runtime: 'runtime',
   googleAnalytics: 'ga',
 });
 
