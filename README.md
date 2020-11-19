@@ -22,6 +22,8 @@ Links Detector tries to detect and recognize such links for you and make it clic
 
 ## Technologies
 
-The app is a pure frontend [React](https://create-react-app.dev/) app without a backend.
+The app is a serverless frontend [React](https://create-react-app.dev/) app.
+
+The app is [PWA (Progressive Web App)](https://web.dev/progressive-web-apps/) friendly. While you're navigating through the app it will try to cache all resources on first page visits to make all consequent visits much faster.
 
 The detection and recognition part was made possible by using [TensorFlow](https://www.tensorflow.org) and [Tesseract.js](https://github.com/naptha/tesseract.js).
