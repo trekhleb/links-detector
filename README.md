@@ -22,7 +22,7 @@ Links Detector tries to detect and recognize such links for you and makes it cli
 
 ## Technologies
 
-Links Detector is a pure frontend [React](https://create-react-app.dev/) application. Links detection is happening right in your browser and not on the server.
+Links Detector is a pure frontend [React](https://create-react-app.dev/) application written on [TypeScript](https://www.typescriptlang.org/). Links detection is happening right in your browser without a need of sending images to the server.
 
 Links Detector is [PWA](https://web.dev/progressive-web-apps/) (Progressive Web App) friendly application made on top of a [Workbox](https://developers.google.com/web/tools/workbox) library. While you navigate through the app it tries to cache all resources to make them available offline and to make consequent visits much faster for you.
 
