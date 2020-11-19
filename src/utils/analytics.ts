@@ -1,7 +1,10 @@
 import { Location } from 'history';
 import { GOOGLE_ANALYTICS_ID } from '../configs/analytics';
 
-const getPathFromLocation = (location: Location): string => {
+const getPathFromLocation = (routerLocation: Location): string => {
+  // @ts-ignore
+  const documentLocation: Location | null = document && document.location;
+  const location: Location = documentLocation || routerLocation;
   let path = location.pathname;
   if (location.search) {
     path += location.search;
