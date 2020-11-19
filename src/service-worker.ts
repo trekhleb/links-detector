@@ -25,14 +25,17 @@ declare const self: ServiceWorkerGlobalScope;
 // eslint-disable-next-line no-restricted-globals, no-underscore-dangle, @typescript-eslint/no-unused-vars
 const ignored = self.__WB_MANIFEST;
 
-const CACHE_PREFIX: string = 'detector';
+const CACHE_PREFIX: string = 'links-detector';
 const CACHE_VERSION: number = 1;
 
 const getCacheName = (name: string): string => {
-  return `${CACHE_PREFIX}-${CACHE_VERSION}-${name}`;
+  return `${CACHE_PREFIX}--v${CACHE_VERSION}--${name}`;
 };
 
-console.log('sw', '→', { CACHE_VERSION });
+const daysToSeconds = (days: number): number => {
+  const secondsInDay: number = 24 * 60 * 60;
+  return days * secondsInDay;
+};
 
 skipWaiting();
 clientsClaim();
@@ -40,41 +43,77 @@ clientsClaim();
 // @see: https://developer.mozilla.org/en-US/docs/Web/API/Request
 // @see: https://developer.mozilla.org/en-US/docs/Web/API/RequestDestination
 
-// Caching Images.
+// Caching static assets.
 registerRoute(
-  ({ request }) => {
-    return request.destination === 'image';
+  (route) => {
+    // eslint-disable-next-line no-undef
+    const assetTypes: RequestDestination[] = ['image'];
+    console.log('++++ YO', route);
+    return assetTypes.includes(route.request.destination);
   },
   new CacheFirst({
-    cacheName: getCacheName('images'),
+    cacheName: getCacheName('static-assets'),
     plugins: [
       new ExpirationPlugin({
         maxEntries: 50,
-        maxAgeSeconds: 7 * 24 * 60 * 60, // 7 Days
+        maxAgeSeconds: daysToSeconds(30),
       }),
-      // Ensure that only requests that result in a 200 status are cached.
-      new CacheableResponsePlugin({
-        statuses: [200],
-      }),
+      new CacheableResponsePlugin({ statuses: [200] }),
     ],
   }),
 );
 
-// Caching static assets.
+// Caching dynamic assets.
 registerRoute(
-  ({ request }) => {
+  (route) => {
     // eslint-disable-next-line no-undef
-    const assetTypes: RequestDestination[] = [
-      'style', 'script', 'worker',
-    ];
-    return assetTypes.includes(request.destination);
+    const assetTypes: RequestDestination[] = ['style', 'script', 'worker'];
+    return assetTypes.includes(route.request.destination) || route.url.href.endsWith('.json');
   },
   new StaleWhileRevalidate({
-    cacheName: getCacheName('assets'),
+    cacheName: getCacheName('dynamic-assets'),
     plugins: [
-      // Ensure that only requests that result in a 200 status are cached.
-      new CacheableResponsePlugin({
-        statuses: [200],
+      new CacheableResponsePlugin({ statuses: [200] }),
+    ],
+  }),
+);
+
+// Caching models.
+registerRoute(
+  (route) => {
+    // .bin is for TensorFlow and .gz is for Tesseract.
+    return route.url.href.endsWith('.bin') || route.url.href.endsWith('.gz');
+  },
+  new StaleWhileRevalidate({
+    cacheName: getCacheName('models'),
+    plugins: [
+      new CacheableResponsePlugin({ statuses: [200] }),
+    ],
+  }),
+);
+
+// Cache the Google Fonts stylesheets.
+registerRoute(
+  (route) => {
+    return route.url.origin === 'https://fonts.googleapis.com';
+  },
+  new StaleWhileRevalidate({
+    cacheName: getCacheName('google-fonts-stylesheets'),
+  }),
+);
+
+// Cache the underlying font files.
+registerRoute(
+  (route) => {
+    return route.url.origin === 'https://fonts.gstatic.com';
+  },
+  new CacheFirst({
+    cacheName: getCacheName('google-fonts-webfonts'),
+    plugins: [
+      new CacheableResponsePlugin({ statuses: [200] }),
+      new ExpirationPlugin({
+        maxEntries: 50,
+        maxAgeSeconds: daysToSeconds(30),
       }),
     ],
   }),
@@ -107,20 +146,4 @@ registerRoute(
 //     return true;
 //   },
 //   createHandlerBoundToURL(`${process.env.PUBLIC_URL}/index.html`),
-// );
-
-// An example runtime caching route for requests that aren't handled by the
-// precache, in this case same-origin .png requests like those from in public/
-// registerRoute(
-//   // Add in any other file extensions or routing criteria as needed.
-//   ({ url }) => url.origin === self.location.origin && url.pathname.endsWith('.png'),
-//   // Customize this strategy as needed, e.g., by changing to CacheFirst.
-//   new StaleWhileRevalidate({
-//     cacheName: 'images',
-//     plugins: [
-//       // Ensure that once this runtime cache reaches a maximum size the
-//       // least-recently used images are removed.
-//       new ExpirationPlugin({ maxEntries: 50 }),
-//     ],
-//   }),
 // );
