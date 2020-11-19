@@ -2,9 +2,11 @@
 
 ## Working with the repository
 
-Installing dependencies:
+### Installation
 
 `yarn install`
+
+### Running locally over `http`
 
 Launching the app locally over `http`:
 
