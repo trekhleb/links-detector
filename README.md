@@ -12,7 +12,7 @@ So you read a book or a magazine and see the link like `https://some-url.com/whi
 
 ## Solution
 
-Links Detector tries to detect and recognize such links for you and makes it clickable using you smartphone camera. So in result you should do just one click on the link instead of typing the whole link manually character by character.
+_Links Detector_ tries to detect and recognize such links for you and makes it clickable using you smartphone camera. So in result you should do just one click on the link instead of typing the whole link manually character by character.
 
 ![Links Detector Demo](./public/videos/demo-white.gif)
 
@@ -22,8 +22,8 @@ Links Detector tries to detect and recognize such links for you and makes it cli
 
 ## Technologies
 
-Links Detector is a pure frontend [React](https://create-react-app.dev/) application written on [TypeScript](https://www.typescriptlang.org/). Links detection is happening right in your browser without a need of sending images to the server.
+_Links Detector_ is a pure frontend [React](https://create-react-app.dev/) application written on [TypeScript](https://www.typescriptlang.org/). Links detection is happening right in your browser without a need of sending images to the server.
 
-Links Detector is [PWA](https://web.dev/progressive-web-apps/) (Progressive Web App) friendly application made on top of a [Workbox](https://developers.google.com/web/tools/workbox) library. While you navigate through the app it tries to cache all resources to make them available offline and to make consequent visits much faster for you. You may also [install](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Developer_guide/Installing) Links Detector as a standalone app on your smartphone.
+_Links Detector_ is [PWA](https://web.dev/progressive-web-apps/) (Progressive Web App) friendly application made on top of a [Workbox](https://developers.google.com/web/tools/workbox) library. While you navigate through the app it tries to cache all resources to make them available offline and to make consequent visits much faster for you. You may also [install](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Developer_guide/Installing) Links Detector as a standalone app on your smartphone.
 
 Links detection and recognition happens by means of [TensorFlow](https://www.tensorflow.org) and [Tesseract.js](https://github.com/naptha/tesseract.js) libraries which in turn rely on [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) and [WebAssembly](https://developer.mozilla.org/en-US/docs/WebAssembly) browser support.
