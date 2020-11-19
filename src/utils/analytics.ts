@@ -12,27 +12,26 @@ const getPathFromLocation = (location: Location): string => {
   return path;
 };
 
-export const gaPageView = (location: Location): void => {
-  const path: string = getPathFromLocation(location);
+const gTagSupported = (): boolean => {
+  return window && window.gtag && true;
+};
 
-  if (!window.gtag) {
+export const gaPageView = (location: Location): void => {
+  if (!gTagSupported()) {
     return;
   }
-
   // @see: https://developers.google.com/gtagjs/reference/api#config
   window.gtag('config', GOOGLE_ANALYTICS_ID, {
-    page_path: path,
+    page_path: getPathFromLocation(location),
   });
 };
 
 export const gaErrorLog = (errorType: string, errorMessage: string): void => {
-  if (!window.gtag) {
+  if (!gTagSupported()) {
     return;
   }
-
   // @see: https://developers.google.com/gtagjs/reference/api#config
   window.gtag('config', GOOGLE_ANALYTICS_ID);
-
   // @see: https://developers.google.com/gtagjs/reference/event#exception
   window.gtag('event', 'exception', {
     type: errorType,
