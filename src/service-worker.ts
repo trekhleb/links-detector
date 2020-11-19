@@ -12,6 +12,7 @@ import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { precacheAndRoute } from 'workbox-precaching';
+// import * as googleAnalytics from 'workbox-google-analytics';
 
 import { CACHE_PREFIX, CACHE_VERSION } from './configs/pwa';
 import { daysToSeconds } from './utils/numbers';
@@ -32,6 +33,11 @@ setCacheNameDetails({
 // eslint-disable-next-line no-undef
 declare const self: ServiceWorkerGlobalScope;
 
+// googleAnalytics.initialize();
+
+// Precache logic needs to go before registerRoute. Otherwise the caching strategy
+// from registerRoute will be applied instead of a CacheFirst strategy of precacheAndRoute.
+// @see: https://developers.google.com/web/tools/workbox/modules/workbox-precaching#serving_precached_responses
 // eslint-disable-next-line no-restricted-globals, no-underscore-dangle
 precacheAndRoute(self.__WB_MANIFEST, {
   ignoreURLParametersMatching: [/.*/],
@@ -101,32 +107,3 @@ registerRoute(
     ],
   }),
 );
-
-// Set up App Shell-style routing, so that all navigation requests
-// are fulfilled with your index.html shell. Learn more at
-// https://developers.google.com/web/fundamentals/architecture/app-shell
-// registerRoute(
-//   // Return false to exempt requests from being fulfilled by index.html.
-//   ({ request, url }: { request: Request; url: URL }) => {
-//     // If this isn't a navigation, skip.
-//     if (request.mode !== 'navigate') {
-//       return false;
-//     }
-//
-//     // If this is a URL that starts with /_, skip.
-//     if (url.pathname.startsWith('/_')) {
-//       return false;
-//     }
-//
-//     // If this looks like a URL for a resource, because it contains
-//     // a file extension, skip.
-//     const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$');
-//     if (url.pathname.match(fileExtensionRegexp)) {
-//       return false;
-//     }
-//
-//     // Return true to signal that we want to use the handler.
-//     return true;
-//   },
-//   createHandlerBoundToURL(`${process.env.PUBLIC_URL}/index.html`),
-// );
