@@ -38,10 +38,14 @@ const videoStyle: CSSProperties = DETECTION_CONFIG.imagePreprocessing.ui.enabled
 
 type LinksDetectorProps = {
   onLoaded?: () => void,
+  onError?: () => void,
 };
 
 function LinksDetector(props: LinksDetectorProps): React.ReactElement | null {
-  const { onLoaded = (): void => {} } = props;
+  const {
+    onLoaded = (): void => {},
+    onError = (): void => {},
+  } = props;
 
   const logger = useLogger({ context: 'LiveDetector' });
   const windowSize = useWindowSize();
@@ -70,7 +74,6 @@ function LinksDetector(props: LinksDetectorProps): React.ReactElement | null {
   });
 
   const onLoadedCallback = useCallback(onLoaded, [onLoaded]);
-
   useEffect(() => {
     if (loadingProgress === null || loadingProgress < 1) {
       return;
@@ -78,6 +81,15 @@ function LinksDetector(props: LinksDetectorProps): React.ReactElement | null {
     logger.logDebug('useEffect: onLoadedCallback', { loadingProgress });
     onLoadedCallback();
   }, [loadingProgress, onLoadedCallback, logger]);
+
+  const onErrorCallback = useCallback(onError, [onError]);
+  useEffect(() => {
+    if (!error) {
+      return;
+    }
+    logger.logDebug('useEffect: onErrorCallback', { error });
+    onErrorCallback();
+  }, [error, onErrorCallback, logger]);
 
   const isDebug: boolean = isDebugMode();
 

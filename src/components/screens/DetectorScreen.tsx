@@ -13,6 +13,7 @@ function DetectorScreen(): React.ReactElement {
   const history: History = useHistory();
   const location: Location = useLocation();
   const [loaded, setLoaded] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
   const onModalClose = (): void => {
     const path: LocationDescriptor = {
@@ -30,11 +31,18 @@ function DetectorScreen(): React.ReactElement {
     }
   };
 
+  const onError = (): void => {
+    logger.logDebug('onError', { error });
+    if (!error) {
+      setError(true);
+    }
+  };
+
   return (
     <>
       <PageTitle />
-      <Modal onClose={onModalClose} disableClose={!loaded}>
-        <LinksDetector onLoaded={onLoaded} />
+      <Modal onClose={onModalClose} disableClose={!(loaded || error)}>
+        <LinksDetector onLoaded={onLoaded} onError={onError} />
       </Modal>
     </>
   );
