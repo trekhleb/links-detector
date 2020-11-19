@@ -22,8 +22,8 @@ Links Detector tries to detect and recognize such links for you and make it clic
 
 ## Technologies
 
-The app is a serverless frontend [React](https://create-react-app.dev/) app.
+Links Detector is a _serverless_ frontend [React](https://create-react-app.dev/) application. It means that links detection happens right in your browser and not on the server.
 
-The app is [PWA (Progressive Web App)](https://web.dev/progressive-web-apps/) friendly. While you're navigating through the app it will try to cache all resources on first page visits to make all consequent visits much faster.
+Links Detector is [PWA (Progressive Web App)](https://web.dev/progressive-web-apps/) friendly. It means that while you navigate through the app it will try to cache all resources to make consequent visits much faster and to save your network traffic. It also means that it is possible for the application to work offline once you visited all the pages you're interested in.
 
 The detection and recognition part was made possible by using [TensorFlow](https://www.tensorflow.org) and [Tesseract.js](https://github.com/naptha/tesseract.js).
