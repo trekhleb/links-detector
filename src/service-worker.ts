@@ -39,8 +39,6 @@ clientsClaim();
 
 registerRoute(
   ({ request, url }: { request: Request; url: URL }) => {
-    console.log('++++ YO', { request, url });
-
     // Assets by type.
     // eslint-disable-next-line no-undef
     const assetTypes: RequestDestination[] = [
@@ -48,6 +46,7 @@ registerRoute(
       'style',
       'script',
       'worker',
+      'font',
     ];
     if (assetTypes.includes(request.destination)) {
       return true;
@@ -67,12 +66,13 @@ registerRoute(
     }
 
     // Assets by origin.
+    // @see: https://developers.google.com/web/tools/workbox/guides/common-recipes#google_fonts
     const assetOrigins: string[] = [
       'https://fonts.googleapis.com', // i.e. Google Fonts stylesheets.
       'https://fonts.gstatic.com', // i.e. Google Font font files.
     ];
     for (let originIndex = 0; originIndex < assetOrigins.length; originIndex += 1) {
-      const origin: string = originIndex[originIndex];
+      const origin: string = assetOrigins[originIndex];
       if (url.origin === origin) {
         return true;
       }
@@ -86,7 +86,8 @@ registerRoute(
       new ExpirationPlugin({
         maxAgeSeconds: daysToSeconds(30),
       }),
-      new CacheableResponsePlugin({ statuses: [200] }),
+      // @see: https://developers.google.com/web/tools/workbox/modules/workbox-cacheable-response#caching_based_on_status_codes
+      new CacheableResponsePlugin({ statuses: [0, 200] }),
     ],
   }),
 );
@@ -94,7 +95,6 @@ registerRoute(
 // Set up App Shell-style routing, so that all navigation requests
 // are fulfilled with your index.html shell. Learn more at
 // https://developers.google.com/web/fundamentals/architecture/app-shell
-// const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$');
 // registerRoute(
 //   // Return false to exempt requests from being fulfilled by index.html.
 //   ({ request, url }: { request: Request; url: URL }) => {
@@ -110,6 +110,7 @@ registerRoute(
 //
 //     // If this looks like a URL for a resource, because it contains
 //     // a file extension, skip.
+//     const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$');
 //     if (url.pathname.match(fileExtensionRegexp)) {
 //       return false;
 //     }
