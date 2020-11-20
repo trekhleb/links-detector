@@ -12,7 +12,7 @@ So you read a book or a magazine and see the link like `https://some-url.com/whi
 
 ## Solution
 
-_Links Detector_ tries to detect and recognize such links for you and makes it clickable using you smartphone camera. So in result you should do just one click on the link instead of typing the whole link manually character by character.
+_Links Detector_ tries to detect and recognize such links for you and makes it clickable using your smartphone camera. So in result you should do just one click on the link instead of typing the whole link manually character by character.
 
 ![Links Detector Demo](./public/videos/demo-white.gif)
 
