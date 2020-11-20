@@ -8,7 +8,7 @@
 
 ## Problem
 
-So you read a book or a magazine and see the link like `https://some-url.com/which/may/be/long?and_with_params=true`, but you can't click on it since it is printed. To visit this link you need to start typing it in the browser's address bar character by character, which may be pretty annoying and error prone.
+So you read a book or a magazine and see the link like `https://some-url.com/which/may/be/long?and_with_params=true`, but you can't click on it since it is printed. To visit this link you need to start typing it character by character in the browser's address bar, which may be pretty annoying and error prone.
 
 ## Solution
 
