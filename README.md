@@ -8,11 +8,11 @@
 
 ## Problem
 
-So you read a book or a magazine and see the link like `https://some-url.com/which/may/be/long?and_with_params=true`, but you can't click on it since it is printed. To visit this link you need to start typing it character by character in the browser's address bar, which may be pretty annoying and error prone.
+So you read a book or a magazine and see the link like `https://some-url.com/which/may/be/long?and_with_params=true`, but you can't click on it since it is printed. To visit this link you need to start typing it character by character in the browser's address bar, which may be pretty annoying and error-prone.
 
 ## Solution
 
-Similarly to QR-code detection we may try to "teach" the smartphone to _detect_ and _recognize_ printed links for us and to make them _clickable_. This way you'll do just one click instead of multiple keystrokes. You operational complexity goes from `O(N)` to `O(1)`. This way you'll do just _one_ click instead of _multiple_ keystrokes. Your operational complexity goes from `O(N)` to `O(1)`. 
+Similarly to QR-code detection, we may try to "teach" the smartphone to _detect_ and _recognize_ printed links for us and to make them _clickable_. This way you'll do just _one_ click instead of _multiple_ keystrokes. Your operational complexity goes from `O(N)` to `O(1)`. 
 
 This is exactly what _Links Detector_ tries to achieve. It makes you do just one click on the link instead of typing the whole link manually character by character.
 
@@ -20,7 +20,7 @@ This is exactly what _Links Detector_ tries to achieve. It makes you do just one
 
 ## Limitations
 
-⚠️ Currently the application is in _experimental_ _Alpha_ stage and has [many issues and limitations](https://github.com/trekhleb/links-detector/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement). So don't raise your expectations bar to high until these issues are resolved 🤷🏻‍.
+⚠️ Currently, the application is in _experimental_ _Alpha_ stage and has [many issues and limitations](https://github.com/trekhleb/links-detector/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement). So don't raise your expectations level too high until these issues are resolved 🤷🏻‍.
 
 ## Technologies
 
