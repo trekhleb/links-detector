@@ -1,12 +1,12 @@
-# 📖 👆🏻 Обнаружение печатных ссылок с помощью TensorFlow 2 Object Detection API
+# 📖 👆🏻 Делаем печатные ссылки кликабельными с помощью TensorFlow 2 Object Detection API
 
 ![Links Detector Cover](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/01-banner.png)
 
 ## 📃 TL;DR
 
-_В этой статье мы начнем решать проблему _
+_В этой статье мы начнем решать проблему того, как сделать печатные ссылки (в книгах или журналах) кликабельными используя камеру вашего смартфона._
 
-_In this article we will start solving the issue of making the printed links (i.e. in a book or in a magazine) clickable via your smartphone camera._
+С помощью [TensorFlow 2 Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) мы обучим модель находить позиции и габариты строк `https://` 
 
 We will use TensorFlow 2 [Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) to train a custom object detector model to find positions and bounding boxes of the sub-strings like `https://` in the text image (i.e. in smartphone camera stream).
 

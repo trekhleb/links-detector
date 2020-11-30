@@ -6,7 +6,7 @@
 
 _In this article we will start solving the issue of making the printed links (i.e. in a book or in a magazine) clickable via your smartphone camera._
 
-We will use TensorFlow 2 [Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) to train a custom object detector model to find positions and bounding boxes of the sub-strings like `https://` in the text image (i.e. in smartphone camera stream).
+We will use [TensorFlow 2 Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) to train a custom object detector model to find positions and bounding boxes of the sub-strings like `https://` in the text image (i.e. in smartphone camera stream).
 
 The text of each link (right continuation of `https://` bounding box) will be recognized by using [Tesseract](https://tesseract.projectnaptha.com/) library. The recognition part will not be covered in this article, but you may find the complete code example of the application in [links-detector repository](https://github.com/trekhleb/links-detector).   
 
