@@ -2,7 +2,7 @@
 
 > Links Detector makes printed links clickable _via your smartphone camera_. No need to type a link in, just scan and click on it.
 
-🚀 [**Launch Links Detector**](https://trekhleb.github.io/links-detector)
+🚀 [**Launch Links Detector**](https://trekhleb.github.io/links-detector) from your smartphone
 
 [![Links Detector](./public/images/links-detector-banner-bg-black-2.png)](https://trekhleb.github.io/links-detector)
 
@@ -21,6 +21,12 @@ This is exactly what _Links Detector_ tries to achieve. It makes you do just one
 ## ⚠️ Limitations
 
 Currently, the application is in _experimental_ _Alpha_ stage and has [many issues and limitations](https://github.com/trekhleb/links-detector/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement). So don't raise your expectations level too high until these issues are resolved 🤷🏻‍.
+
+## 🏋🏻‍ Model Training
+
+The detection model was trained using [TensorFlow 2 Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection).
+
+You may found the details of the training in [📖 👆🏻 Making the Printed Links Clickable Using TensorFlow 2 Object Detection API](https://github.com/trekhleb/links-detector/blob/master/articles/printed_links_detection/printed_links_detection.md) long read article.
 
 ## ⚙️ Technologies
 
