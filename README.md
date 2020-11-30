@@ -12,7 +12,7 @@ So you read a book or a magazine and see the link like `https://some-url.com/whi
 
 ## Solution
 
-Similarly to QR-code detection we may try to "teach" the smartphone to _detect_ and _recognize_ printed links for us and also to make them _clickable_. This way you'll do just one click instead of multiple keystrokes. You operational complexity goes from `O(N)` to `O(1)`. This way you'll do just _one_ click instead of _multiple_ keystrokes. Your operational complexity goes from `O(N)` to `O(1)`. 
+Similarly to QR-code detection we may try to "teach" the smartphone to _detect_ and _recognize_ printed links for us and to make them _clickable_. This way you'll do just one click instead of multiple keystrokes. You operational complexity goes from `O(N)` to `O(1)`. This way you'll do just _one_ click instead of _multiple_ keystrokes. Your operational complexity goes from `O(N)` to `O(1)`. 
 
 This is exactly what _Links Detector_ tries to achieve. It makes you do just one click on the link instead of typing the whole link manually character by character.
 
