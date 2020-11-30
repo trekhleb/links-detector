@@ -236,7 +236,6 @@ _Изображение взято с репозитория [TensorFlow Model Z
 
 - 💚 Она относительно небольшая - всего `20Mb` в архиве.
 - 💚 Она достаточно быстрая - `39ms` на одно обнаружение.
-
 - 💚 It uses the MobileNet v2 network as a feature extractor which is optimized for usage on mobile devices to reduce energy consumption.
 - 💚 It does the object detection for the whole image and for all objects in it **in one go** regardless of the image content (no [regions proposal](https://en.wikipedia.org/wiki/Region_Based_Convolutional_Neural_Networks) step is involved which makes the detection faster). 
 - 💔 It is not the most accurate model though (everything is a tradeoff ⚖️).
