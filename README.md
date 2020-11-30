@@ -6,11 +6,11 @@
 
 [![Links Detector](./public/images/links-detector-banner-bg-black-2.png)](https://trekhleb.github.io/links-detector)
 
-## Problem
+## 🤷🏻‍ The Problem
 
 So you read a book or a magazine and see the link like `https://some-url.com/which/may/be/long?and_with_params=true`, but you can't click on it since it is printed. To visit this link you need to start typing it character by character in the browser's address bar, which may be pretty annoying and error-prone.
 
-## Solution
+## 💡 The Solution
 
 Similarly to QR-code detection, we may try to "teach" the smartphone to _detect_ and _recognize_ printed links for us and to make them _clickable_. This way you'll do just _one_ click instead of _multiple_ keystrokes. Your operational complexity goes from `O(N)` to `O(1)`. 
 
@@ -18,11 +18,11 @@ This is exactly what _Links Detector_ tries to achieve. It makes you do just one
 
 ![Links Detector Demo](./public/videos/demo-white.gif)
 
-## Limitations
+## ⚠️ Limitations
 
-⚠️ Currently, the application is in _experimental_ _Alpha_ stage and has [many issues and limitations](https://github.com/trekhleb/links-detector/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement). So don't raise your expectations level too high until these issues are resolved 🤷🏻‍.
+Currently, the application is in _experimental_ _Alpha_ stage and has [many issues and limitations](https://github.com/trekhleb/links-detector/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement). So don't raise your expectations level too high until these issues are resolved 🤷🏻‍.
 
-## Technologies
+## ⚙️ Technologies
 
 _Links Detector_ is a pure frontend [React](https://create-react-app.dev/) application written on [TypeScript](https://www.typescriptlang.org/). Links detection is happening right in your browser without a need of sending images to the server.
 
