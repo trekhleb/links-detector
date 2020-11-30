@@ -177,22 +177,22 @@ const extractLinkFromText = (text: string): string | null => {
 
 Итак, вместо создания новой модели обнаружения объектов, мы будем обучать уже существующую и натренированную модель обнаруживать новый для нее класс объектов (см. [transfer learning](https://en.wikipedia.org/wiki/Transfer_learning)). В нашем случае под "новым классом" объектов мы имеем в виду изображения префикса `https://`. Такой подход имеет следующие преимущества:
 
-- 💚 The dataset might be much smaller. We don't need to collect hundreds of thousands of the labeled images. Instead, we may do `~100` pictures and label them manually. This is because the model is already pre-trained on the general dataset like [COCO dataset](https://cocodataset.org/#home) and already learned how to extract general image features.
-- 💚 The training process will be much faster (minutes/hours on GPU instead of days/weeks). Again, this is because of a smaller dataset (smaller batches) and because of fewer trainable parameters.
+- 💚 Набор данных может быть гораздо меньшим. Нет необходимости собирать сотни тысяч изображений с локализациями (координатами объектов в изображении). Вместо этого мы можем обойтись сотней изображений и сделать локализацию объектов вручную. Это возможно по той причине, что модель уже натренированна на общем наборе данных типа [COCO](https://cocodataset.org/#home) и уже умеет извлекать основные характеристики изображения.
+- 💚 Время тренировки так же будет гораздо меньшим (минуты/часы на GPU вместо дней/недель). Время сокращается за счет меньшего объема данных (меньших партий данных во время тренировки) и меньшего количества тренируемых параметров модели.
 
-We may choose the existing model from [TensorFlow 2 Detection Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md) which provides a collection of detection models pre-trained on the [COCO 2017 dataset](https://cocodataset.org/#home). Now it contains `~40` model variations to choose from.
+Мы можем выбрать существующую модель из ["зоопарка" моделей TensorFlow 2](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md), который представляет собой коллекцию моделей натренированных на наборе данных [COCO 2017](https://cocodataset.org/#home). На данный момент эта коллекция включает в себе `~40` разных вариаций моделей.
 
-To re-train and fine-tune the model on the custom dataset we will use a [TensorFlow 2 Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection). The TensorFlow Object Detection API is an open-source framework built on top of [TensorFlow](https://www.tensorflow.org/) that makes it easy to construct, train, and deploy object detection models.
+Для того, чтобы "научить" модель обнаруживать новые, ранее неизвестные ей объекты, мы можем воспользоваться [TensorFlow 2 Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection). TensorFlow Object Detection API - это фреймворк на основе [TensorFlow](https://www.tensorflow.org/), который позволяет конструировать и тренировать модели обнаружения объектов.
 
-If you follow the [Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md) link you will find the _detection speed_ and _accuracy_ for each model.
+Если вы перейдете по ссылке на ["зоопарк" моделей](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md) вы увидите, что для каждой модели там указана _скорость_ и _точность_ обнаружения объектов. 
 
 ![Model Zoo](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/09-model-zoo.jpg)
 
-_Image source: [TensorFlow Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md) repository_
+_Изображение взято с репозитория [TensorFlow Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md)_
 
-Of course, we would want to find the right balance between the detection **speed** and **accuracy** while picking the model. But what might be even more important in our case is the **size** of the model since it will be loaded to the client-side.
+Конечно же, для того, чтобы выбрать подходящую модель, нам важно найти правильный баланс между **скоростью** и **точностью** обнаружения. Но что еще важнее в нашем случае, это **размер** модели, поскольку мы планируем загружать ее на сторону клиента.
 
-The size of the archived model might vary drastically from `~20Mb` to `~1Gb`. Here are several examples:
+Размер архива с моделью может варьироваться от `~20Mb` доа `~1Gb`. Вот несколько примеров:
 
 - `1386 (Mb)` `centernet_hg104_1024x1024_kpts_coco17_tpu-32`
 - ` 330 (Mb)` `centernet_resnet101_v1_fpn_512x512_coco17_tpu-8`
@@ -232,10 +232,11 @@ The size of the archived model might vary drastically from `~20Mb` to `~1Gb`. He
 - ` 233 (Mb)` `ssd_resnet50_v1_fpn_1024x1024_coco17_tpu-8`
 - ` 233 (Mb)` `ssd_resnet50_v1_fpn_640x640_coco17_tpu-8`
 
-The **`ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8`** model might be a good fit in our case:
+Модель **`ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8`** выглядит наиболее подходящей в нашем случае:
 
-- 💚 It is relatively lightweight: `20Mb` archived.
-- 💚 It is pretty fast: `39ms` for the detection.
+- 💚 Она относительно небольшая - всего `20Mb` в архиве.
+- 💚 Она достаточно быстрая - `39ms` на одно обнаружение.
+
 - 💚 It uses the MobileNet v2 network as a feature extractor which is optimized for usage on mobile devices to reduce energy consumption.
 - 💚 It does the object detection for the whole image and for all objects in it **in one go** regardless of the image content (no [regions proposal](https://en.wikipedia.org/wiki/Region_Based_Convolutional_Neural_Networks) step is involved which makes the detection faster). 
 - 💔 It is not the most accurate model though (everything is a tradeoff ⚖️).
