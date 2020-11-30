@@ -24,109 +24,107 @@ _В этой статье мы начнем решать проблему тог
 
 ## 🤷🏻‍️ Проблема
 
-Я работаю программистом, и в свободное от работы время учу Machine Learning в качестве хобби. Но проблема пока не в этом.
+Я работаю программистом, и в свободное от работы время учу Machine Learning в качестве хобби. Но проблема не в этом.
 
-I bought a printed book about Machine Learning recently and while I was reading through the first several chapters I've encountered many printed links in the text that looked like `https://tensorflow.org/` or `https://some-url.com/which/may/be/even/longer?and_with_params=true`.
+Я купил книгу по машинному обучению и, читая первые главы, я столкнулся с множеством печатных ссылок в ней на подобии `https://tensorflow.org/` или `https://some-url.com/which/may/be/even/longer?and_with_params=true`.
 
 ![Printed Links](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/02-printed-links.jpg)
 
-I saw all these links, but I couldn't click on them since they were printed (thanks, cap!). To visit these links I needed to start typing them character by character in the browser's address bar, which was pretty annoying and error-prone.
+К сожалению, кликать по печатным ссылкам не представлялось возможным (спасибо, Кэп!). Чтобы открыть ссылки в браузере мне приходилось набирать их посимвольно в адресной строке браузера, что было довольно медленно. К тому же при наборе ссылок достаточно легко допустить ошибки.
 
-## 💡 Possible Solution
+## 💡 Возможное решение
 
-So, I was thinking, what if, similarly to QR-code detection, we will try to "teach" the smartphone to _(1)_ _detect_ and _(2)_ _recognize_ printed links for us and to make them _clickable_? This way you would do just one click instead of multiple keystrokes. The operational complexity of "clicking" the printed links goes from `O(N)` to `O(1)`.
+Я подумал, что если, по аналогии с распознавателем QR кодов, мы "научим" смартфон _(1)_ _определять местоположение_ and _(2)_ _распознавать_ печатные гипер-ссылки и делать их кликабельными? В таком случае читатель книги делал бы всего один клик вместо посимвольного ввода с множеством нажатий на клавиши. Операционная сложность всей этой операции уменьшилась бы с `O(N)` до `O(1)`.
 
-This is how the final workflow will look like:
+Вот так бы этот процесс выглядел:
 
 ![Links Detector Demo](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/03-links-detector-demo.gif)
 
-## 📝 Solution Requirements
+## 📝 Требования к решению
 
-As I've mentioned earlier I'm just studying Machine Learning as a hobby. Thus, the purpose of this article is more about _learning_ how to work with TensorFlow 2 Object Detection API rather than coming up with a production-ready application.
+Как я уже упомянул выше, я не эксперт в машинном обучении. Для меня это больше как хобби. Поэтому и цель этой статьи заключается больше в _экспериментировании_ и _обучении_ работе с TensorFlow 2 Object Detection API, чем в попытке создания production-ready приложения.
 
-With that being said, I simplified the solution requirements to the following:
+С учетом вышесказанного, я упростил требования к финальному решению и свел их к следующим пунктам:
 
-1. The detection and recognition processes should have a **close-to-real-time** performance (i.e. `0.5-1` frames per second) on a device like iPhone X. It means that the whole _detection + recognition_ process should take up to `2` seconds (pretty bearable as for the amateur project).
-2. Only **English** links should be supported.
-3. Only **dark text** (i.e. black or dark-grey) on **light background** (i.e. white or light-grey) should be supported.
-4. Only `https://` links should be supported for now (it is ok if our model will not recognize the `http://`, `ftp://`, `tcp://` or other types of links).
+1. Производительность процесса обнаружения и распознавания должна быть **близка** к реальному времени (например, `0.5-1` кадров в секунду на устройстве схожем с iPhone X). Это будет означать, что весь процесс _обнаружения + распознавания_ должен происходить не более чем за `2` секунды (довольно неплохой результат для аматорского проекта).
+2. Должны поддерживаться только ссылки на **английском** языке.
+3. Должны поддерживаться только ссылки **черного (темно-серого) цвета на белом (светло-сером) фоне**.
+4. Должны поддерживаться только `https://` ссылки (допускается, что `http://`, `ftp://`, `tcp://` и прочие ссылки не будут распознаны).
 
-## 🧩 Solution Breakdown
+## 🧩 Находим решение
 
-### High-level breakdown
+### Общий подход
 
-Let's see how we could approach the problem on a high level.
+#### Вариант №1: Модель на стороне сервера
 
-#### Option 1: Detection model on the back-end
+**Алгоритм действий:**
 
-**The flow:**
-
-1. Get camera stream (frame by frame) on the client-side.
-2. Send each frame one by one over the network to the back-end.
-3. Do link detection and recognition on the back-end and send the response back to the client.
-4. Client draws the detection boxes with the clickable links.
+1. Получаем видео-поток (кадр за кадром) на стороне клиента.
+2. Отправляем каждый кадр на сервер.
+3. Осуществляем обнаружение и распознавание ссылок на сервере и отправляем результат клиенту.
+4. Отображаем распознанные ссылки ни стороне клиента и делаем их кликабельными.
 
 ![Model on the back-end](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/04-frontend-backend.jpg)
 
-**Pros:**
+**Преимущества:**
 
-- 💚 The detection performance is not limited by the client's device. We may speed the detection up by scaling the service horizontally (adding more instances) and vertically (adding more cores/GPUs).
-- 💚 The model might be bigger since there is no need to upload it to the client-side. Downloading the `~10Mb` model on the client-side may be ok, but loading the `~100Mb` model might be a big issue for the client's network and application UX (user experience) otherwise.
-- 💚 It is possible to control who is using the model. Model is guarded behind the API, so we would have complete control over its callers/clients.
+- 💚 Скорость обнаружения и распознавания ссылок не ограничена производительностью клиентского устройства. При желании мы можем ускорить скорость обнаружения ссылок масштабируя наши сервера горизонтально (больше серверов) или вертикально (больше ядер и GPUs).
+- 💚 Модель может иметь больший размер (и, как результат, возможно, большую точность), поскольку отсутствует необходимость ее загрузки на сторону клиента. Загрузить модель размером `~10Mb` на сторону клиента выглядит реалистичным, но все-же загрузить модель размером `~100Mb` может быть довольно проблематичным с точки зрения пользовательского UX (user experience) и интернет трафика.
+- 💚 У нас появляется возможность контролировать доступ к модели. Поскольку модель "спрятана" за публичным API, мы можем контролировать каким клиентам она будет доступна.
 
-**Cons:**
+**Недостатки:**
 
-- 💔 System complexity growth. The application tech stack grew from just `JavaScript` to, let's say, `JavaScript + Python`. We need to take care of the autoscaling.
-- 💔 Offline mode for the app is not possible since it needs an internet connection to work.
-- 💔 Too many HTTP requests between the client and the server may become a bottleneck at some point. Imagine if we would want to improve the performance of the detection, let's say, from `1` to `10+` frames per second. This means that each client will send `10+` requests per second. For `10` simultaneous clients it is already `100+` requests per second. The `HTTP/2` bidirectional streaming and `gRPC` might be useful in this case, but we're going back to the increased system complexity here.  
-- 💔 System becomes more expensive. Almost all points from the Pros section need to be paid for.
+- 💔 Сложность системы растет. Вместо использования одного лишь `JavaScript` на стороне клиента нам необходимо будет так же создать, например, `Python` инфраструктуру на стороне сервера. Нам так же будет необходимо позаботиться об автоматическом масштабировании сервиса.
+- 💔 Работа приложения в режиме оффлайн невозможна поскольку для работы приложения требуется доступ к интернету.
+- 💔 Множество HTTP запросов к сервису со стороны клиента может стать слабым местом системы с точки зрения производительности. Предположим, мы хотим улучшить производительность обнаружения и распознавания ссылок с `1` до `10+` кадров в секунду. В таком случае каждый клиент будет слать `10+` запросов в секунду на сервер. Для `10` клиентов, работающих одновременно, это уже будет означать `100+` запросов в секунду. На помощь могут прийти двусторонний стриминг `HTTP/2` и `gRPC`, но мы снова возвращаемся к первому пункту, связанному с растущей сложностью системы.
+- 💔 Стоимость системы растет. В основном это связано с оплатой за аренду серверов.
 
-#### Option 2: Detection model on the front-end
+#### Вариант №2: Модель на стороне клиента
 
-**The flow:**
+**Алгоритм действий:**
 
-1. Get camera stream (frame by frame) on the client-side.
-2. Do link detection and recognition on the client-side (without sending anything to the back-end).
-3. Client draws the detection boxes with the clickable links.
+1. Получаем видео-поток (кадр за кадром) на стороне клиента.
+2. Осуществляем обнаружение и распознавание ссылок на стороне клиента (без отправки на сервер).
+3. Отображаем распознанные ссылки ни стороне клиента и делаем их кликабельными.
 
 ![Model on the front-end](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/05-frontend-only.jpg)
 
-**Pros:**
+**Преимущества:**
 
-- 💚 System is less complex. We don't need to set up the servers, build the API, and introduce an additional Python stack to the system. 
-- 💚 Offline mode is possible. The app doesn't need an internet connection to work since the model is fully loaded to the device. So the Progressive Web Application ([PWA](https://web.dev/progressive-web-apps/)) might be built to support that.
-- 💚 System is "kind of" scaling automatically. The more clients you have, the more cores and GPUs they bring. This is not a proper scaling solution though (more about that in a Cons section below). 
-- 💚 System is cheaper. We only need a server for static assets (`HTML`, `JS`, `CSS`, model files, etc.). This may be done for free, let's say, on GitHub.
-- 💚 No issue with the growing number of HTTP requests per second to the server-side.
+- 💚 Менее сложная система. Нет необходимости в разработке серверной части приложения и создания API.
+- 💚 Приложение может работать в режиме оффлайн. Модель загружена на сторону клиента и нет необходимости в доступе к интернету (см. [Progressive Web Application](https://web.dev/progressive-web-apps/))
+- 💚 Система "почти" автоматически масштабируема. Каждый новый клиент приложения "приходит" со своим процессором и видеокартой. Это конечно же неполноценное масштабирование (мы затронем причины ниже).
+- 💚 Система гораздо дешевле. Нам необходимо заплатить только за сервер со статическими данными (`HTML`, `JS`, `CSS`, файлы модели и пр.). В случае с GitHub, такой сервер может быть предоставлен бесплатно.
+- 💚 Отсутствует (так же как и серверы) проблема большого количества HTTP запросов в секунду к серверам.
 
-**Cons:**
+**Недостатки:**
 
-- 💔 Only horizontal scaling is possible (each client will have its own CPU/GPU). Vertical scaling is not possible since we can't influence the client's device performance. As a result, we can't guarantee fast detection for low performant devices.
-- 💔 It is not possible to guard the model usage and control the callers/clients of the model. Everyone could download the model and re-use it. 
-- 💔 Battery consumption of the client's device might become an issue. For the model to work it needs computational resources. So clients might not be happy with their iPhone getting warmer and warmer while the app is working.
+- 💔 Возможно только горизонтальное масштабирование, когда каждый клиент автоматически имеет свои собственные процессоры и графическую карту. Вертикальное масштабирование невозможно поскольку мы не можем повлиять на производительность клиентского устройства. В результате мы не можем гарантировать быстрого обнаружения и распознавания ссылок для медленных устройств.
+- 💔 Невозможно контролировать использование модели клиентами. Каждый может загрузить к себе модель и использовать ее где и как угодно.
+- 💔 Скорость расхода батареи клиентского устройства может стать проблемой. Модель при работе потребляет вычислительные ресурсы. Пользователи приложения могут быть недовольны тем, что их iPhone становится все теплее и теплее во время работы.
 
-#### High-level conclusion
+#### Выбираем общий подход
 
-Since the purpose of the project was more about learning and not coming up with a production-ready solution _I decided to go with the second option of serving the model from the client side_. This made the whole project much cheaper (actually with GitHub it was free to host it), and I could focus more on Machine Learning than on the autoscaling back-end infrastructure.
+Поскольку целю этой статьи и проекта в целом является обучение, а не создание приложения коммерческого уровня _мы можем выбрать второй вариант и хранить модель на стороне клиента_. Это сделает весь проект менее затратным и у нас будет возможность больше сфокусироваться на машинном обучении, а не на создании автоматически масштабируемой серверной инфраструктуры.
 
-### Lower level breakdown
+### Углубляемся в детали
 
-Ok, so we've decided to go with the serverless solution. Now we have an image from the camera stream as an input that looks something like this:
+Итак, мы выбрали вариант приложения без серверной части. Предположим теперь, что у нас на входе есть изображение (кадр) из видео-потока камеры, который выглядит так:
 
 ![Printed Links Input](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/06-printed-links-clean.jpg)
 
-We need to solve two sub-tasks for this image:
+Нам необходимо решить две подзадачи:
 
-1. Links **detection** (finding the position and bounding boxes of the links)
-2. Links **recognition** (recognizing the text of the links)
+1. **Обнаружение** ссылок (найти позицию и габариты ссылок на странице)
+2. **Распознавание** ссылок (распознать текст ссылок)
 
-#### Option 1: Tesseract based solution
+#### Вариант №1: Решение на основе библиотеки Tesseract
 
-The first and the most obvious approach would be to solve the _Optical Character Recognition_ ([OCR](https://en.wikipedia.org/wiki/Optical_character_recognition)) task by recognizing the whole text of the image by using, let's say, [Tesseract.js](https://github.com/naptha/tesseract.js) library. It returns the bounding boxes of the paragraphs, text lines, and text blocks along with the recognized text.
+Первым и наиболее очевидным решением задачи _оптического распознавания символов_ ([OCR](https://en.wikipedia.org/wiki/Optical_character_recognition)) может быть распознавания текста всего изображения с помощью, например, библиотеки [Tesseract.js](https://github.com/naptha/tesseract.js). Она принимает изображение на вход и выдает распознанные параграфы, текстовые строки, блоки текста и слова и вместе с габаритами и координатами.
 
 ![Recognized text with bounding boxes](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/07-printed-links-boxes.jpg)
 
-We may try then to extract the links from the recognized text lines or text blocks with a regular expression like [this one](https://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url) (example is on TypeScript):
+Далее мы можем попытаться найти ссылки в распознанном тексте с помощью регулярного выражения [похожего это](https://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url) (пример на TypeScript):
 
 ```typescript
 const URL_REG_EXP = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_+.~#?&/=]*)/gi;
@@ -140,18 +138,18 @@ const extractLinkFromText = (text: string): string | null => {
 };
 ```
 
-💚 Seems like the issue is solved in a pretty straightforward and simple way:
+💚 Похоже, что задача решена довольно прямолинейным и простым способом:
 
-- We know the bounding boxes of the links
-- We also know the text of the links to make them clickable
+- Мы знаем габариты и координаты ссылок.
+- Мы так же знаем текст ссылок и можем сделать их кликабельными.
 
-💔 The thing is that the _recognition + detection_ time may vary from `2` to `20+` seconds depending on the size of the text, on the amount of "something that looks like a text" on the image, on the image quality and on other factors. So it will be really hard to achieve those `0.5-1` frames per second to make the user experience at least _close_ to real-time.
+💔 Проблема в том, что время _обнаружения + распознавания_ может варьироваться от `2` до `20+` секунд в зависимости от размера изображения, его качества и "похожих на текст" объектов в изображении. В итоге будет очень сложно достичь той _близкой_ к реальному времени производительности в `0.5-1` кадров в секунду.
 
-💔 Also if we would think about it, we're asking the library to recognize the **whole** text from the image for us even though it might contain only one or two links in it (i.e. only ~10% of the text might be useful for us), or it may even not contain the links at all. In this case, it sounds like a waste of computational resources. 
+💔 Также, если подумать, то мы просим библиотеку распознать **весь** текст на картинке, даже если в тексте совсем нет ссылок или если в тексте есть одна-две ссылки, которые составляют, пускай, ~10% от всего объема текста. Это звучит как неэффективная трата вычислительных ресурсов.
 
-#### Option 2: Tesseract + TensorFlow based solution
+#### Вариант №2: Решение на основе библиотек Tesseract и TensorFlow
 
-We could make Tesseract work faster if we used some _additional "adviser" algorithm_ prior to the links text recognition. This "adviser" algorithm should detect, but not recognize, _the leftmost position_ of each link on the image if there are any. This will allow us to speed up the recognition part by following these rules:
+Мы могли бы заставить Tesseract работать быстрее используя еще один _дополнительный "алгоритм-советчик"_ перед тем, как приступить к распознаванию ссылок. Этот "алгоритм-советчик" должен обнаруживать (но не распознавать) _начало ссылок (координаты самой левой границы ссылки)_ для каждой ссылки в изображении. Это позволит нам ускорить задачу распознавания текста ссылок, если мы будем следовать следующим правилам:
 
 1. If the image does not contain any link we should not call Tesseract detection/recognition at all.
 2. If the image does have the links then we need to ask Tesseract to recognize only those parts of the image that contains the links. We're not interested in spending the time for recognition of the irrelevant text that does not contain the links.
