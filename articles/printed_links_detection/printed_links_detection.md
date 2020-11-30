@@ -18,19 +18,19 @@ Here is how the final solution will look like:
 
 ![Links Detector Demo](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/03-links-detector-demo.gif)
 
-> ⚠️ Currently the application is in _experimental_ _Alpha_ stage and has [many issues and limitations](https://github.com/trekhleb/links-detector/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement). So don't raise your expectations level too high until these issues are resolved 🤷🏻‍. Also, the purpose of this article is more about learning how to work with TensorFlow 2 Object Detection API rather than coming up with a production ready model.
+> ⚠️ Currently the application is in _experimental_ _Alpha_ stage and has [many issues and limitations](https://github.com/trekhleb/links-detector/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement). So don't raise your expectations level too high until these issues are resolved 🤷🏻‍. Also, the purpose of this article is more about learning how to work with TensorFlow 2 Object Detection API rather than coming up with a production-ready model.
 
 > In case if Python code blocks in this article will lack proper formatting on this platform feel free to [to read the article on GitHub](https://github.com/trekhleb/links-detector/blob/master/articles/printed_links_detection/printed_links_detection.md)
 
 ## 🤷🏻‍️ The Problem
 
-I work as a software engineer and on my own time I learn Machine Learning as a hobby. But this is not the problem yet.
+I work as a software engineer and in my own time, I learn Machine Learning as a hobby. But this is not the problem yet.
 
 I bought a printed book about Machine Learning recently and while I was reading through the first several chapters I've encountered many printed links in the text that looked like `https://tensorflow.org/` or `https://some-url.com/which/may/be/even/longer?and_with_params=true`.
 
 ![Printed Links](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/02-printed-links.jpg)
 
-I saw all these links, but I couldn't click on them since they were printed (thanks, cap!). To visit these links I needed to start typing them character by character in the browser's address bar, which was pretty annoying and error prone.
+I saw all these links, but I couldn't click on them since they were printed (thanks, cap!). To visit these links I needed to start typing them character by character in the browser's address bar, which was pretty annoying and error-prone.
 
 ## 💡 Possible Solution
 
@@ -78,7 +78,7 @@ Let's see how we could approach the problem on a high level.
 
 - 💔 System complexity growth. The application tech stack grew from just `JavaScript` to, let's say, `JavaScript + Python`. We need to take care of the autoscaling.
 - 💔 Offline mode for the app is not possible since it needs an internet connection to work.
-- 💔 Too many HTTP requests between the client, and the server may become a bottleneck at some point. Imagine if we would want to improve the performance of the detection, let's say, from `1` to `10+` frames per second. This means that each client will send `10+` requests per second. For `10` simultaneous clients it is already `100+` requests per second. The `HTTP/2` bidirectional streaming and `gRPC` might be useful in this case, but we're going back to the increased system complexity here.  
+- 💔 Too many HTTP requests between the client and the server may become a bottleneck at some point. Imagine if we would want to improve the performance of the detection, let's say, from `1` to `10+` frames per second. This means that each client will send `10+` requests per second. For `10` simultaneous clients it is already `100+` requests per second. The `HTTP/2` bidirectional streaming and `gRPC` might be useful in this case, but we're going back to the increased system complexity here.  
 - 💔 System becomes more expensive. Almost all points from the Pros section need to be paid for.
 
 #### Option 2: Detection model on the front-end
