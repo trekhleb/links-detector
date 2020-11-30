@@ -4,27 +4,25 @@
 
 ## 📃 TL;DR
 
-_В этой статье мы начнем решать проблему того, как сделать печатные ссылки (в книгах или журналах) кликабельными используя камеру вашего смартфона._
+_В этой статье мы начнем решать проблему того, как сделать печатные ссылки в книгах или журналах кликабельными используя камеру смартфона._
 
-С помощью [TensorFlow 2 Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) мы обучим модель находить позиции и габариты строк `https://` 
+С помощью [TensorFlow 2 Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) мы научим TensorFlow модель находить позиции и габариты строк `https://` в изображениях (например в каждом кадре видео из камеры смартфона).
 
-We will use TensorFlow 2 [Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) to train a custom object detector model to find positions and bounding boxes of the sub-strings like `https://` in the text image (i.e. in smartphone camera stream).
+Текст каждой ссылки, расположенный по правую сторону от `https://`, будет распознан с помощью библиотеки [Tesseract](https://tesseract.projectnaptha.com/). Работа с библиотекой Tesseract не является предметом этой статьи, но вы можете найти полный исходный код приложения в репозитории [links-detector repository](https://github.com/trekhleb/links-detector) на GitHub.
 
-The text of each link (right continuation of `https://` bounding box) will be recognized by using [Tesseract](https://tesseract.projectnaptha.com/) library. The recognition part will not be covered in this article, but you may find the complete code example of the application in [links-detector repository](https://github.com/trekhleb/links-detector).   
+> 🚀 [**Запустить Links Detector**](https://trekhleb.github.io/links-detector/) со смартфона, чтобы увидеть конечный результат.
 
-> 🚀 [**Launch Links Detector demo**](https://trekhleb.github.io/links-detector/) from your smartphone to see the final result.
+> 📝 [**Открыть репозиторий links-detector**](https://github.com/trekhleb/links-detector) на GitHub с полным исходным кодом приложения.
 
-> 📝 [**Open links-detector repository**](https://github.com/trekhleb/links-detector) on GitHub to see the complete source code of the application.
-
-Here is how the final solution will look like:
+Вот так в итоге будет выглядеть процесс распознавания печатных ссылок:
 
 ![Links Detector Demo](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/03-links-detector-demo.gif)
 
-> ⚠️ Currently the application is in _experimental_ _Alpha_ stage and has [many issues and limitations](https://github.com/trekhleb/links-detector/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement). So don't raise your expectations level too high until these issues are resolved 🤷🏻‍. Also, the purpose of this article is more about learning how to work with TensorFlow 2 Object Detection API rather than coming up with a production-ready model.
+> ⚠️ На данный момент приложение находится в _экспериментальной_ стадии и имеет [множество недоработок и ограничений](https://github.com/trekhleb/links-detector/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement). Поэтому, до тех пор, пока вышеуказанные недоработки не будут ликвидированы, не ожидайте от приложения слишком многого 🤷🏻‍. Также стоит отметить, что целью данной статьи является экспериментирование с TensorFlow 2 Object Detection API, а не создание production-ready модели или приложения.
 
-> In case if Python code blocks in this article will lack proper formatting on this platform feel free to [to read the article on GitHub](https://github.com/trekhleb/links-detector/blob/master/articles/printed_links_detection/printed_links_detection.md)
+> В случае, если блоки с исходным кодом в этой статье будут отображаться без подсветки кода вы можете [перейти на GitHub версию этой статьи](https://github.com/trekhleb/links-detector/blob/master/articles/printed_links_detection/printed_links_detection.ru.md)
 
-## 🤷🏻‍️ The Problem
+## 🤷🏻‍️ Проблема
 
 I work as a software engineer and in my own time, I learn Machine Learning as a hobby. But this is not the problem yet.
 
