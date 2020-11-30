@@ -24,7 +24,7 @@ _В этой статье мы начнем решать проблему тог
 
 ## 🤷🏻‍️ Проблема
 
-I work as a software engineer and in my own time, I learn Machine Learning as a hobby. But this is not the problem yet.
+Я работаю программистом и в свободное от работы время учу Machine Learning в качестве хобби. Но проблема пока не в этом.
 
 I bought a printed book about Machine Learning recently and while I was reading through the first several chapters I've encountered many printed links in the text that looked like `https://tensorflow.org/` or `https://some-url.com/which/may/be/even/longer?and_with_params=true`.
 
