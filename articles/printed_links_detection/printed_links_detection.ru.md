@@ -151,31 +151,31 @@ const extractLinkFromText = (text: string): string | null => {
 
 Мы могли бы заставить Tesseract работать быстрее используя еще один _дополнительный "алгоритм-советчик"_ перед тем, как приступить к распознаванию ссылок. Этот "алгоритм-советчик" должен обнаруживать (но не распознавать) _начало ссылок (координаты самой левой границы ссылки)_ для каждой ссылки в изображении. Это позволит нам ускорить задачу распознавания текста ссылок, если мы будем следовать следующим правилам:
 
-1. If the image does not contain any link we should not call Tesseract detection/recognition at all.
-2. If the image does have the links then we need to ask Tesseract to recognize only those parts of the image that contains the links. We're not interested in spending the time for recognition of the irrelevant text that does not contain the links.
+1. Если изображение не содержит ни одной ссылки мы должны полностью избежать распознавания текста библиотекой Tesseract.
+2. Если изображение содержит ссылки, то мы должны "попросить" Tesseract распознать только те части изображения, которые содержат текст ссылок. Мы хотим тратить время на распознавание "полезного" для нашей задачи текста.
 
-The "adviser" algorithm that will take place before the Tesseract should work with a constant time regardless of the image quality, or the presence/absence of the text on the image. It also should be pretty fast and detect the leftmost positions of the links for less than `1s` so that we could satisfy the "close-to-real-time" requirement (i.e. on iPhone X).
+Этот "алгоритм-советчик", который будет срабатывать перед вызовом Tesseract должен выполняться каждый раз за одно и то же время, независимо от качества и содержимого изображения. Он также должен быть достаточно быстрым и должен определять наличие и позиции ссылок быстрее чем за `1` секунду (например, на iPhone X). В таком случае мы сможем попытаться заставить наше приложение работать в режиме близком к реальному времени. 
 
-> 💡 So what if we will use another object detection model to help us find all occurrences of the `https://` substrings (every secure link has this prefix, doesn't it) in the image? Then, having these `https://` bounding boxes in the text we may extract the right-side continuation of them and send them to the Tesseract for text recognition.
+> 💡 Итак, что если мы воспользуемся еще одним алгоритмом обнаружения объектов, который поможет нам найти строки `https://` в изображении (каждая защищенная ссылка начинается с `https://`, не так ли?). Тогда, зная расположение и габариты префиксов `https://` в изображении, мы сможем отправить на распознавание текста с помощью библиотеки Tesseract только те части изображения, которые находятся по правую сторону от префиксов `https://` и являются их продолжением.
 
-Take a look at the picture below:
+Обратите внимание на изображение ниже:
 
 ![Tesseract and TensorFlow based solution](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/08-tesseract-vs-tensorflow.jpg)
 
-You may notice that Tesseract needs to do **much less** work in case if it would have some hints about where are the links might be located (see the number of blue boxes on both pictures).
+На этом изображении можно заметить, что Tesseract будет выполнять **гораздо меньше** работы по распознаванию текста, если мы подскажем ему, где в тексте могут находиться ссылки (обратите внимание на количество голубых прямоугольников).  
 
-So the question now is which object detection model we should choose and how to re-train it to support the detection of the custom `https://` objects.  
+Итак, вопрос, на который нам необходимо ответить теперь, какую же модель обнаружения объектов нам выбрать и как "научить" ее находить на изображении префиксы `https://`.
 
-> Finally! We've got closer to the TensorFlow part of the article 😀
+> Наконец-то мы подобрались ближе к TensorFlow 😀
 
-## 🤖 Selecting the Object Detection Model
+## 🤖 Выбираем подходящую модель обнаружения объектов
 
-Training a new object detection model is not a reasonable option in our context because of the following reasons:
+Тренировка новой модели обнаружения объектов с нуля не является хорошим вариантом в нашем случае по следующим причинам:
 
-- 💔 The training process might take days/weeks and bucks.
-- 💔 We most probably won't be able to collect hundreds of thousands of _labeled_ images of the books that have links in them (we might try to generate them though, but more about that later). 
+- 💔 Тренировка может занять дни/недели и стоить много денег (за аренду тех-же серверов с GPU).
+- 💔 У нас скорее всего не получится собрать набор данных, состоящий из сотен тысяч фотографий книг и журналов со ссылками. Тем-более, что нам нужны не только изображения, но еще и координаты префиксов `https://` для каждого из них. С другой стороны мы можем попытаться сгенерировать такой набор данных, но об этом ниже.
 
-So instead of creating a new model, we should better teach an existing object detection model to do the custom object detection for us (to do the [transfer learning](https://en.wikipedia.org/wiki/Transfer_learning)). In our case, the "custom objects" would be the images with `https://` text drawn in them. This approach has the following benefits:
+Итак, вместо создания новой модели обнаружения объектов, мы будем обучать уже существующую и натренированную модель обнаруживать новый для нее класс объектов (см. [transfer learning](https://en.wikipedia.org/wiki/Transfer_learning)). В нашем случае под "новым классом" объектов мы имеем в виду изображения префикса `https://`. Такой подход имеет следующие преимущества:
 
 - 💚 The dataset might be much smaller. We don't need to collect hundreds of thousands of the labeled images. Instead, we may do `~100` pictures and label them manually. This is because the model is already pre-trained on the general dataset like [COCO dataset](https://cocodataset.org/#home) and already learned how to extract general image features.
 - 💚 The training process will be much faster (minutes/hours on GPU instead of days/weeks). Again, this is because of a smaller dataset (smaller batches) and because of fewer trainable parameters.
