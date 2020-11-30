@@ -2,7 +2,7 @@
 
 > Links Detector makes printed links clickable _via your smartphone camera_. No need to type a link in, just scan and click on it.
 
-🚀 [**Launch Links Detector**](https://trekhleb.github.io/links-detector) from your smartphone
+🚀 [**Launch Links Detector**](https://trekhleb.github.io/links-detector) _(preferably from your smartphone)_
 
 [![Links Detector](./public/images/links-detector-banner-bg-black-2.png)](https://trekhleb.github.io/links-detector)
 
