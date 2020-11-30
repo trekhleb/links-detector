@@ -1,4 +1,4 @@
-# 📖 👆🏻 Printed Links Detection Using TensorFlow 2 Object Detection API
+# 📖 👆🏻 Making the Printed Links Clickable Using TensorFlow 2 Object Detection API
 
 ![Links Detector Cover](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/01-banner.png)
 
