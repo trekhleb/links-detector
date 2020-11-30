@@ -8,7 +8,7 @@ _In this article we will start solving the issue of making the printed links (i.
 
 We will use TensorFlow 2 [Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection) to train a custom object detector model to find positions and bounding boxes of the sub-strings like `https://` in the text image (i.e. in smartphone camera stream).
 
-The text of each link (right continuation of `https://` bounding box) will be recognized by using [Tesseract](https://tesseract.projectnaptha.com/) library. The recognition part will not be covered in this article but you may find the complete code example of the application in [links-detector repository](https://github.com/trekhleb/links-detector).   
+The text of each link (right continuation of `https://` bounding box) will be recognized by using [Tesseract](https://tesseract.projectnaptha.com/) library. The recognition part will not be covered in this article, but you may find the complete code example of the application in [links-detector repository](https://github.com/trekhleb/links-detector).   
 
 > 🚀 [**Launch Links Detector demo**](https://trekhleb.github.io/links-detector/) from your smartphone to see the final result.
 
@@ -30,11 +30,11 @@ I bought a printed book about Machine Learning recently and while I was reading 
 
 ![Printed Links](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/02-printed-links.jpg)
 
-I saw all these links but I couldn't click on them since they were printed (thanks, cap!). To visit these links I needed to start typing them character by character in the browser's address bar, which was pretty annoying and error prone.
+I saw all these links, but I couldn't click on them since they were printed (thanks, cap!). To visit these links I needed to start typing them character by character in the browser's address bar, which was pretty annoying and error prone.
 
 ## 💡 Possible Solution
 
-So, I was thinking, what if, similarly to QR-code detection, we will try to "teach" the smartphone to _(1)_ _detect_ and _(2)_ _recognize_ printed links for us and also to make them _clickable_? This way you would do just one click instead of multiple keystrokes. The operational complexity of "clicking" the printed links goes from `O(N)` to `O(1)`.
+So, I was thinking, what if, similarly to QR-code detection, we will try to "teach" the smartphone to _(1)_ _detect_ and _(2)_ _recognize_ printed links for us and to make them _clickable_? This way you would do just one click instead of multiple keystrokes. The operational complexity of "clicking" the printed links goes from `O(N)` to `O(1)`.
 
 This is how the final workflow will look like:
 
@@ -42,7 +42,7 @@ This is how the final workflow will look like:
 
 ## 📝 Solution Requirements
 
-As I've mentioned earlier I'm just studying Machine Learning as a hobby. Thus the purpose of this article is more about _learning_ how to work with TensorFlow 2 Object Detection API rather than coming up with a production-ready application.
+As I've mentioned earlier I'm just studying Machine Learning as a hobby. Thus, the purpose of this article is more about _learning_ how to work with TensorFlow 2 Object Detection API rather than coming up with a production-ready application.
 
 With that being said, I simplified the solution requirements to the following:
 
@@ -72,13 +72,13 @@ Let's see how we could approach the problem on a high level.
 
 - 💚 The detection performance is not limited by the client's device. We may speed the detection up by scaling the service horizontally (adding more instances) and vertically (adding more cores/GPUs).
 - 💚 The model might be bigger since there is no need to upload it to the client-side. Downloading the `~10Mb` model on the client-side may be ok, but loading the `~100Mb` model might be a big issue for the client's network and application UX (user experience) otherwise.
-- 💚 It is possible to control who is using the model. Model is guarded behind the API so we would have complete control over its callers/clients.
+- 💚 It is possible to control who is using the model. Model is guarded behind the API, so we would have complete control over its callers/clients.
 
 **Cons:**
 
 - 💔 System complexity growth. The application tech stack grew from just `JavaScript` to, let's say, `JavaScript + Python`. We need to take care of the autoscaling.
 - 💔 Offline mode for the app is not possible since it needs an internet connection to work.
-- 💔 Too many HTTP requests between the client and the server may become a bottleneck at some point. Imagine if we would want to improve the performance of the detection, let's say, from `1` to `10+` frames per second. This means that each client will send `10+` requests per second. For `10` simultaneous clients it is already `100+` requests per second. The `HTTP/2` bidirectional streaming and `gRPC` might be useful in this case, but we're going back to the increased system complexity here.  
+- 💔 Too many HTTP requests between the client, and the server may become a bottleneck at some point. Imagine if we would want to improve the performance of the detection, let's say, from `1` to `10+` frames per second. This means that each client will send `10+` requests per second. For `10` simultaneous clients it is already `100+` requests per second. The `HTTP/2` bidirectional streaming and `gRPC` might be useful in this case, but we're going back to the increased system complexity here.  
 - 💔 System becomes more expensive. Almost all points from the Pros section need to be paid for.
 
 #### Option 2: Detection model on the front-end
@@ -107,11 +107,11 @@ Let's see how we could approach the problem on a high level.
 
 #### High-level conclusion
 
-Since the purpose of the project was more about learning and not coming up with a production-ready solution _I decided to go with the second option of serving the model from the client side_. This made the whole project much cheaper (actually with GitHub it was free to host it) and I could focus more on Machine Learning than on the autoscaling back-end infrastructure.
+Since the purpose of the project was more about learning and not coming up with a production-ready solution _I decided to go with the second option of serving the model from the client side_. This made the whole project much cheaper (actually with GitHub it was free to host it), and I could focus more on Machine Learning than on the autoscaling back-end infrastructure.
 
 ### Lower level breakdown
 
-Ok, so we've decided to go with the serverless solution. And now we have an image from the camera stream as an input that looks something like this:
+Ok, so we've decided to go with the serverless solution. Now we have an image from the camera stream as an input that looks something like this:
 
 ![Printed Links Input](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/06-printed-links-clean.jpg)
 
@@ -143,20 +143,20 @@ const extractLinkFromText = (text: string): string | null => {
 💚 Seems like the issue is solved in a pretty straightforward and simple way:
 
 - We know the bounding boxes of the links
-- And we also know the text of the links to make them clickable
+- We also know the text of the links to make them clickable
 
 💔 The thing is that the _recognition + detection_ time may vary from `2` to `20+` seconds depending on the size of the text, on the amount of "something that looks like a text" on the image, on the image quality and on other factors. So it will be really hard to achieve those `0.5-1` frames per second to make the user experience at least _close_ to real-time.
 
-💔 Also if we would think about it, we're asking the library to recognize the **whole** text from the image for us even though it might contain only one or two links in it (i.e. only ~10% of the text might be useful for us) or it may even not contain the links at all. In this case, it sounds like a waste of computational resources. 
+💔 Also if we would think about it, we're asking the library to recognize the **whole** text from the image for us even though it might contain only one or two links in it (i.e. only ~10% of the text might be useful for us), or it may even not contain the links at all. In this case, it sounds like a waste of computational resources. 
 
 #### Option 2: Tesseract + TensorFlow based solution
 
 We could make Tesseract work faster if we used some _additional "adviser" algorithm_ prior to the links text recognition. This "adviser" algorithm should detect, but not recognize, _the leftmost position_ of each link on the image if there are any. This will allow us to speed up the recognition part by following these rules:
 
 1. If the image does not contain any link we should not call Tesseract detection/recognition at all.
-2. If the image does have the links then we need to ask Tesseract to recognize only those parts of the image that contains the links. We're not interested in spending the time for recognition of the irrelevant text that doesn't contain the links.
+2. If the image does have the links then we need to ask Tesseract to recognize only those parts of the image that contains the links. We're not interested in spending the time for recognition of the irrelevant text that does not contain the links.
 
-The "adviser" algorithm that will take place before the Tesseract should work with a constant time regardless of the image quality or the presence/absence of the text on the image. It also should be pretty fast and detect the leftmost positions of the links for less than `1s` so that we could satisfy the "close-to-real-time" requirement (i.e. on iPhone X).
+The "adviser" algorithm that will take place before the Tesseract should work with a constant time regardless of the image quality, or the presence/absence of the text on the image. It also should be pretty fast and detect the leftmost positions of the links for less than `1s` so that we could satisfy the "close-to-real-time" requirement (i.e. on iPhone X).
 
 > 💡 So what if we will use another object detection model to help us find all occurrences of the `https://` substrings (every secure link has this prefix, doesn't it) in the image? Then, having these `https://` bounding boxes in the text we may extract the right-side continuation of them and send them to the Tesseract for text recognition.
 
@@ -282,7 +282,7 @@ cd ./models/research
 protoc object_detection/protos/*.proto --python_out=.
 ```
 
-And finally, let's install the TF2 version of [setup.py](https://github.com/tensorflow/models/blob/master/research/object_detection/packages/tf2/setup.py) via `pip`:
+Finally, let's install the TF2 version of [setup.py](https://github.com/tensorflow/models/blob/master/research/object_detection/packages/tf2/setup.py) via `pip`:
 
 ```bash
 cp ./object_detection/packages/tf2/setup.py .
@@ -311,7 +311,7 @@ The TensorFlow Object Detection API is installed! You may now use the scripts th
 
 ## ⬇️ Downloading the Pre-Trained Model
 
-Let's download our selected `ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8` model from the TensorFlow Model Zoo and check how it does the general objects detection (detection of the objects of classes from COCO dataset like "cat", "dog", "car", etc.).
+Let's download our selected `ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8` model from the TensorFlow Model Zoo and check how it does the general object detection (detection of the objects of classes from COCO dataset like "cat", "dog", "car", etc.).
 
 We will use the [get_file()](https://www.tensorflow.org/api_docs/python/tf/keras/utils/get_file) TensorFlow helper to download the archived model from the URL and unpack it.
 
@@ -425,7 +425,7 @@ coco_label_map_dict:
 
 ### Build a detection function
 
-We need to create a detection function that will use the pre-trained model that we've downloaded to do the object detection.
+We need to create a detection function that will use the pre-trained model we've downloaded to do the object detection.
 
 ```python
 import tensorflow as tf
@@ -479,7 +479,7 @@ To do that let's save the image to the `inference/test/` folder of our project. 
 
 Here is how the folder structure looks so far:
 
-![Folder strcuture](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/14-inference-folders.jpg)
+![Folder structure](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/14-inference-folders.jpg)
 
 ```python
 import matplotlib.pyplot as plt
@@ -538,7 +538,7 @@ classes.shape:  (1, 100)
 num_detections: 100.0
 ```
 
-The model has made a `100` detections for us. It doesn't mean that it found `100` objects on the image though. It means that the model has `100` slots and it can detect `100` objects at max on a single image. Each detection has a score that represents the confidence of the model about it. The bounding boxes for each detection are stored in the `boxes` array. The scores or confidences of the model about each detection are stored in the `scores` array. And finally, the `classes` array stores the labels (classes) for each detection.
+The model has made a `100` detections for us. It doesn't mean that it found `100` objects on the image though. It means that the model has `100` slots, and it can detect `100` objects at max on a single image. Each detection has a score that represents the confidence of the model about it. The bounding boxes for each detection are stored in the `boxes` array. The scores or confidences of the model about each detection are stored in the `scores` array. Finally, the `classes` array stores the labels (classes) for each detection.
 
 Let's check the first 5 detections:
 
@@ -577,7 +577,7 @@ First 5 class names:
 ['traffic light', 'boat', 'boat', 'person', 'boat']
 ```
 
-The model sees the `traffic light`, three `boats`, and a `person` on the image. And we may confirm that indeed these objects are seen on the image.
+The model sees the `traffic light`, three `boats`, and a `person` on the image. We may confirm that indeed these objects are seen on the image.
 
 From the `scores` array may see that the model is most confident (close to 70% of probability) in the `traffic light` object.
 
@@ -656,9 +656,9 @@ There are plenty of the datasets that are shared to be re-used by researches. We
 - [awesome-public-datasets](https://github.com/awesomedata/awesome-public-datasets) repository
 - etc.
 
-💚 If you could find the needed dataset and its license allows you to re-use it, it is probably the fastest way to get streight to the model training.
+💚 If you could find the needed dataset and its license allows you to re-use it, it is probably the fastest way to get straight to the model training.
 
-💔 I couldn't find the dataset with labeled `https://` prefixes thoguh.
+💔 I couldn't find the dataset with labeled `https://` prefixes though.
 
 So we need to skip this option.
 
@@ -701,7 +701,7 @@ I put all these images in the `dataset/printed_links/raw` folder.
 Next, I'm going to preprocess the images by doing the following:
 
 - **Resize** each image to the width of `1024px` (they are too big originally and have a width of `3024px`)
-- **Crop** each image to make them squared (this is optional and we could just resize the image by simply squeezing it, but I want the model to be trained on realistic proportions of `https:` boxes).
+- **Crop** each image to make them squared (this is optional, and we could just resize the image by simply squeezing it, but I want the model to be trained on realistic proportions of `https:` boxes).
 - **Rotate** image if needed by applying the [exif](https://en.wikipedia.org/wiki/Exif) metadata.
 - **Greyscale** the image (we don't need the model to take the colors into consideration).
 - **Increase brightness**
@@ -887,7 +887,7 @@ preview_images('dataset/printed_links/processed', images_num=4, figsize=(16, 16)
 
 ### Labeling the dataset
 
-To do the labeling (to mark the locations of the objects that we're interested in, namly the `https://` prefixes) we may use the [LabelImg](https://github.com/tzutalin/labelImg) graphical image annotation tool.
+To do the labeling (to mark the locations of the objects that we're interested in, namely the `https://` prefixes) we may use the [LabelImg](https://github.com/tzutalin/labelImg) graphical image annotation tool.
 
 > For this step you might want to install the LabelImg tool on your local machine (not in Colab). You may find the detailed installation instructions in [LabelImg README](https://github.com/tzutalin/labelImg).
 
@@ -1023,7 +1023,7 @@ dataset/
 
 The last manipulation we should do with the data is to convert our datasets into [TFRecord](https://www.tensorflow.org/tutorials/load_data/tfrecord) format. The `TFRecord` format is a format that TensorFlow is using for storing a sequence of binary records.
 
-First, let's create two folders: one is for the labels in `CSV` format and the other one is for the final dataset in `TFRecord` format.
+First, let's create two folders: one is for the labels in `CSV` format, and the other one is for the final dataset in `TFRecord` format.
 
 ```bash
 mkdir -p dataset/printed_links/labels/csv
@@ -1231,7 +1231,7 @@ TRAIN_RECORDS_NUM:  100
 TEST_RECORDS_NUM:   25
 ```
 
-So we will train the model on `100` examples and we will check the model accuracy on `25` test images.
+So we will train the model on `100` examples, and we will check the model accuracy on `25` test images.
 
 **Previewing the dataset images with bounding boxes**
 
@@ -1359,7 +1359,7 @@ We need to copy the `pipeline.config` file to the root of the project and adjust
 3. We need to point the model to its **checkpoints** since we don't want to train the model from scratch.
 4. We need to change the `fine_tune_checkpoint_type` to `detection`.
 5. We need to point the model to a proper **labels map**.
-6. And lastly, we need to pint the model to the **train and test datasets**.
+6. Lastly, we need to pint the model to the **train and test datasets**.
 
 All these changes may be done manually directly in `cache/datasets/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/pipeline.config` file. But we may also do them through code:
 
@@ -1683,7 +1683,7 @@ After launching the script you should be able to see several side-by-side images
 
 ## 🗜 Exporting the Model
 
-Once the training process is complete we should save the trained model for further usage. To export the model we will use the [exporter_main_v2.py](https://github.com/tensorflow/models/blob/master/research/object_detection/exporter_main_v2.py) script from Object Detection API. It prepares an object detection TensoFflow graph for inference using model configuration and a trained checkpoint. The script outputs associated checkpoint files, a SavedModel, and a copy of the model config: 
+Once the training process is complete we should save the trained model for further usage. To export the model we will use the [exporter_main_v2.py](https://github.com/tensorflow/models/blob/master/research/object_detection/exporter_main_v2.py) script from Object Detection API. It prepares an object detection TensorFlow graph for inference using model configuration and a trained checkpoint. The script outputs associated checkpoint files, a SavedModel, and a copy of the model config: 
 
 ```bash
 %%bash
@@ -1893,7 +1893,7 @@ exported_web
     └── model.json
 ```
 
-Finally, we have the model that is able to detect `https://` prefixes for us and it is saved in JavaScript-understandable format.
+Finally, we have the model that is able to detect `https://` prefixes for us, and it is saved in JavaScript-understandable format.
 
 Let's check the model size to see if it is light enough to be loaded completely to the client-side:
 
