@@ -26,7 +26,7 @@ Currently, the application is in _experimental_ _Alpha_ stage and has [many issu
 
 The detection model was trained using [TensorFlow 2 Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection).
 
-You may found the details of the training in [📖 👆🏻 Making the Printed Links Clickable Using TensorFlow 2 Object Detection API](https://github.com/trekhleb/links-detector/blob/master/articles/printed_links_detection/printed_links_detection.md) long read article.
+You may found the details of the training in [**📖 👆🏻 Making the Printed Links Clickable Using TensorFlow 2 Object Detection API**](https://github.com/trekhleb/links-detector/blob/master/articles/printed_links_detection/printed_links_detection.md) long read article.
 
 ## ⚙️ Technologies
 
