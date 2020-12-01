@@ -309,9 +309,9 @@ TensorFlow Object Detection API установлена! Теперь мы мож
 
 ## ⬇️ Загружаем заранее обученную модель
 
-Let's download our selected `ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8` model from the TensorFlow Model Zoo and check how it does the general object detection (detection of the objects of classes from COCO dataset like "cat", "dog", "car", etc.).
+Давайте загрузим ранее выбранную нами модель `ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8` из коллекции моделей TensorFlow и посмотрим, как мы можем использовать ее для обнаружения общих объектов, таких как "кот", "собака", "машина" и пр. (объектов с классами, поддерживаемыми набором данных COCO). 
 
-We will use the [get_file()](https://www.tensorflow.org/api_docs/python/tf/keras/utils/get_file) TensorFlow helper to download the archived model from the URL and unpack it.
+Мы воспользуемся утилитой TensorFlow [get_file()](https://www.tensorflow.org/api_docs/python/tf/keras/utils/get_file) для загрузки архивированной модели по URL и для дальнейшей ее распаковки.
 
 ```python
 import tensorflow as tf
@@ -342,27 +342,27 @@ _output →_
 /content/cache/datasets/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8
 ```
 
-Here is how the folder structure looks so far:
+Вот как на данный момент выглядит структура папок:
 
 ![Cache Folder](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/10-cache-folder.jpg)
 
-The `checkpoint` folder contains the snapshot of the pre-trained model.
+Папка `checkpoint` содержит "слепок" параметров обученной модели.
 
-The `pipeline.config` file contains the detection settings of the model. We'll come back to this file later when we will need to fine-tune the model.
+Файл `pipeline.config` содержит настройки обнаружения. Мы еще вернемся к этому файлу ниже, когда будем доучивать нашу модель.
 
-## 🏄🏻‍️ Trying the Model (Doing the Inference)
+## 🏄🏻‍️ Обнаружение объектов с помощью загруженной модели
 
-For now, the model can detect the object of [90 COCO dataset classes](https://cocodataset.org/#explore) like a `car`, `bird`, `hot dog` etc.
+На данный момент модель способна обнаруживать объекты классов, поддерживаемых набором данных COCO ([их всего 90](https://cocodataset.org/#explore)), таких, как `car`, `bird`, `hot dog` и пр. Эти классы еще могут называть ярлыками (labels).
 
 ![COCO classes](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/11-coco-classes.jpg)
 
-_Image source: [COCO dataset](https://cocodataset.org/#explore) website_
+_Источник изображения: [сайт COCO](https://cocodataset.org/#explore)_
 
-Let's see how the model performs on some general images that contain the objects of these classes.
+Попробуем, обнаруживает ли модель объекты этих классов.
 
-### Loading COCO labels
+### Загружаем ярлыки COCO
 
-Object Detection API already has a complete set of COCO labels (classes) defined for us.
+Object Detection API уже содержит файл с полным набор классов (ярлыков) COCO для нашего удобства. 
 
 ```python
 import os
@@ -421,9 +421,9 @@ coco_label_map_dict:
 }
 ```
 
-### Build a detection function
+### Создаем функцию обнаружения
 
-We need to create a detection function that will use the pre-trained model we've downloaded to do the object detection.
+В этом разделе мы создадим так называемую функцию обнаружения, которая будет использовать загруженную нами ранее модель, собственно, для обнаружения объектов в изображении. 
 
 ```python
 import tensorflow as tf
@@ -463,19 +463,17 @@ inference_detect_fn = detection_fn_from_checkpoint(
 )
 ```
 
-This `inference_detect_fn` function will accept an image and will return the detected objects' info.
+Функция `inference_detect_fn` принимает на входе изображение и возвращает информацию об обнаруженных в нем объектах.
 
-### Loading the images for inference
+### Загружаем тестовые изображения
 
-Let's try to detect the object on this image:
+Давайте попробуем обнаружить объекты на следующем изображении:
 
 ![General Object Inference](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/12-inference-01.jpg)
 
-_Image source: [oleksii_trekhleb](https://www.instagram.com/oleksii_trekhleb/?hl=en) Instagram_
+Для этого давайте сохраним это изображение в папку `inference/test/` нашего проекта. Если вы используете Google Colab, вы можете создать эту папку и произвести загрузку файла вручную.
 
-To do that let's save the image to the `inference/test/` folder of our project. If you're using Google Colab you may create this folder and upload the image manually.
-
-Here is how the folder structure looks so far:
+Вот как структура папок должна выглядеть на данный момент:
 
 ![Folder structure](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/14-inference-folders.jpg)
 
@@ -503,9 +501,9 @@ for i, image in enumerate(inference_ds_numpy):
 plt.show()
 ```
 
-### Running the detection on test data
+### Запускаем обнаружение для тестового изображения
 
-Now we're ready to run the detection. The `inference_ds_numpy[0]` array stores the pixel data for the first image in `Numpy` format.
+На данном этапе мы готовы запустить обнаружение. Первый элемент массива `inference_ds_numpy[0]` содержит наше первое тестовое изображение в формате `Numpy` массива.
 
 ```python
 detections, predictions_dict, shapes = inference_detect_fn(
@@ -513,7 +511,7 @@ detections, predictions_dict, shapes = inference_detect_fn(
 )
 ```
 
-Let's see the shapes of the output:
+Проверим размерность массивов, которые нам вернула функция:
 
 ```python
 boxes = detections['detection_boxes'].numpy()
@@ -536,9 +534,9 @@ classes.shape:  (1, 100)
 num_detections: 100.0
 ```
 
-The model has made a `100` detections for us. It doesn't mean that it found `100` objects on the image though. It means that the model has `100` slots, and it can detect `100` objects at max on a single image. Each detection has a score that represents the confidence of the model about it. The bounding boxes for each detection are stored in the `boxes` array. The scores or confidences of the model about each detection are stored in the `scores` array. Finally, the `classes` array stores the labels (classes) for each detection.
+Модель вернула нам массив со `100` "обнаружениями". Это не означает, что модель нашла `100` объектов в изображении. Это скорее говорит нам, что модель имеет `100` ячеек и поддерживает обнаружение максимум `100` объектов одновременно в одном изображении. Каждое "обнаружение" имеет соответствующий рейтинг (вероятность, score), который говорит об уверенности модели в том, что обнаружен именно этот объект. Габариты каждого найденного объекта хранятся в массиве `boxes`. Рейтинг каждого обнаружения хранится в массиве `scores`. Массив `classes` хранит ярлыки для каждого "обнаружения".
 
-Let's check the first 5 detections:
+Давайте проверим первые 5 таких "обнаружений":
 
 ```python
 print('First 5 boxes:')
@@ -575,13 +573,13 @@ First 5 class names:
 ['traffic light', 'boat', 'boat', 'person', 'boat']
 ```
 
-The model sees the `traffic light`, three `boats`, and a `person` on the image. We may confirm that indeed these objects are seen on the image.
+Модель видит светофор (`traffic light`), три лодки (`boats`) и человека (`person`). И мы можем подтвердить, что эти объекты действительно существуют в изображении.
 
-From the `scores` array may see that the model is most confident (close to 70% of probability) in the `traffic light` object.
+В массиве `scores` мы видим, что модель наиболее уверенна (с 70% вероятностью) в найденном объекте класса `traffic light`.
 
-Each entry of `boxes` array is `[y1, x1, y2, x2]`, where `(x1, y1)` and `(x2, y2)` are the top-left and bottom-right corners of the bounding box.
+Каждый элемент массива `boxes` представляет собой координаты `[y1, x1, y2, x2]`, где `(x1, y1)` и `(x2, y2)` соответственно координаты левого верхнего и правого нижнего углов габаритного прямоугольника.
 
-Let's visualize the detection boxes:
+Попробуем визуализировать габаритные прямоугольники:
 
 ```python
 # Importing Object Detection API helpers.
@@ -616,17 +614,17 @@ visualize_detections(
 )
 ```
 
-Here is the output:
+В итоге мы увидим:
 
 ![Inference result](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/14-inference-results-01.jpg)
 
-If we will do the detection for the text image here is what we will see:
+В то же время, если мы попробуем обнаружить объекты на текстовом изображении мы увидим следующее:
 
 ![Inference result for text image](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/15-inference-results-02.jpg)
 
-The model couldn't detect anything on this image. This is what we're going to change, we want to teach the model to "see" the `https://` prefixes on this image.
+Модель не смогла найти ничего в этом изображении. Это как-раз то, что мы собираемся исправить и чему хотим научить нашу модель - видеть приставки `https://` в текстовых изображениях.
 
-## 📝 Preparing the Custom Dataset
+## 📝 Подготавливаем набор данных для тренировки
 
 To "teach" the `ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8` model to detect the custom objects which are _not_ a part of a COCO dataset we need to do the fine-tune training on a new custom dataset.
 
