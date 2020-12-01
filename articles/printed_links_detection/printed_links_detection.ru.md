@@ -687,23 +687,23 @@ visualize_detections(
 
 Поскольку целью этой статьи, как было упомянуто выше, не является создание модели, которая должна выиграть соревнование по обнаружению объектов, мы можем пойти по пути создания модели вручную.
 
-### Preprocessing the data
+### Обрабатываем фото для набора данных
 
-So, I've ended up shooting `125` images of the book pages that contain one or more `https://` links on them.
+Я сфотографировал `125` страничек одной книги, в которых нашел `https://` ссылки.
 
 ![Raw Dataset](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/17-dataset-raw.jpg)
 
-I put all these images in the `dataset/printed_links/raw` folder.
+Все изображения были помещены в папку `dataset/printed_links/raw`.
 
-Next, I'm going to preprocess the images by doing the following:
+Следующим шаг - обработка изображений. Давайте применим следующие преобразования:
 
-- **Resize** each image to the width of `1024px` (they are too big originally and have a width of `3024px`)
-- **Crop** each image to make them squared (this is optional, and we could just resize the image by simply squeezing it, but I want the model to be trained on realistic proportions of `https:` boxes).
-- **Rotate** image if needed by applying the [exif](https://en.wikipedia.org/wiki/Exif) metadata.
-- **Greyscale** the image (we don't need the model to take the colors into consideration).
-- **Increase brightness**
-- **Increase contrast**
-- **Increase sharpness**
+- **Изменим размер** каждого изображения так, чтобы их ширина составила `1024px` (изначально изображения были чересчур большими с шириной в `3024px`)
+- **Обрежем** каждое изображение так, чтобы оно стало квадратным (это делать не обязательно, можно просто сжать изображение до квадратных пропорций, не обрезая его, но я хотел сохранить естественные пропорции префиксов `https:` перед обучением).
+- **Развернем** каждое изображения до правильной ориентации, применив метаданные из тега [exif](https://en.wikipedia.org/wiki/Exif).
+- **Сделаем каждое изображение черно-белым**, поскольку мы не хотим, чтобы модель брала во внимание цвет.
+- **Увеличим яркость**
+- **Увеличим контраст**
+- **Увеличим резкость**
 
 Remember, that once we've decided to apply these transformations and adjustments to the dataset we need to do the same in the future for each image that we will send to the model for detection.
 
