@@ -234,28 +234,28 @@ _Изображение взято с репозитория [TensorFlow Model Z
 
 Модель **`ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8`** выглядит наиболее подходящей в нашем случае:
 
-- 💚 Она относительно небольшая - всего `20Mb` в архиве.
+- 💚 Она относительно небольшая - `20Mb` в архиве.
 - 💚 Она достаточно быстрая - `39ms` на одно обнаружение.
-- 💚 It uses the MobileNet v2 network as a feature extractor which is optimized for usage on mobile devices to reduce energy consumption.
-- 💚 It does the object detection for the whole image and for all objects in it **in one go** regardless of the image content (no [regions proposal](https://en.wikipedia.org/wiki/Region_Based_Convolutional_Neural_Networks) step is involved which makes the detection faster). 
-- 💔 It is not the most accurate model though (everything is a tradeoff ⚖️).
+- 💚 Она использует сеть MobileNet v2 в качестве экстрактора свойств изображения (feature extractor), которая в свою очередь оптимизирована под работу на мобильных устройствах и обеспечивает меньший расход батареи.
+- 💚 Она производит обнаружение всех известных ей объектов в изображении **за один заход** независимо от содержимого изображения (отсутствует шаг [regions proposal](https://en.wikipedia.org/wiki/Region_Based_Convolutional_Neural_Networks), что делает работу сети быстрее).
+- 💔 В то же время это не самая точная модель (все является компромиссом ⚖️)
 
-The model name encodes some several important characteristics that you may read more about if you want:
+Название модели включает в себя ее несколько важных характеристик, с которыми вы при желании можете ознакомиться детальнее:
 
-- The expected image input size is `640x640px`.
-- The model implements [Single Shot MultiBox Detector](https://arxiv.org/abs/1512.02325) (SSD) and [Feature Pyramid Network](https://arxiv.org/abs/1612.03144) (FPN).
-- [MobileNet v2](https://ai.googleblog.com/2018/04/mobilenetv2-next-generation-of-on.html) convolutional neural network ([CNN](https://en.wikipedia.org/wiki/Convolutional_neural_network)) is used as a feature extractor.
-- The model was trained on [COCO dataset](https://cocodataset.org/#home)
+- Ожидаемый размер изображения на входе - `640x640px`.
+- Модель построена на основе [Single Shot MultiBox Detector](https://arxiv.org/abs/1512.02325) (SSD) и [Feature Pyramid Network](https://arxiv.org/abs/1612.03144) (FPN).
+- Сверточная нейронная сеть ([CNN](https://en.wikipedia.org/wiki/Convolutional_neural_network)) [MobileNet v2](https://ai.googleblog.com/2018/04/mobilenetv2-next-generation-of-on.html) используется в качестве экстрактора свойств изображения   (feature extractor).
+- Модель была обучена на наборе данных [COCO](https://cocodataset.org/#home)
 
-## 🛠 Installing Object Detection API 
+## 🛠 Устанавливаем Object Detection API 
 
-In this article, we're going to install the Tensorflow 2 Object Detection API _as a Python package_. It is convenient in case if you're experimenting in [Google Colab](https://colab.research.google.com/) (recommended) or in [Jupyter](https://jupyter.org/try). For both cases no local installation is needed, you may experiment right in your browser.
+В этой статье мы будем устанавливать Tensorflow 2 Object Detection API _в виде пакета Python_. Это достаточно удобно, в случае если вы экспериментируете в [Google Colab](https://colab.research.google.com/) (предпочтительно) или в [Jupyter](https://jupyter.org/try). В обоих случаях вы можете избежать локальной инсталляции пакетов и проводить эксперименты непосредственно в браузере.
 
-You may also follow the [official documentation](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md) if you would prefer to install Object Detection API via Docker.
+Также есть возможность установки Object Detection API используя Docker, о котором вы можете прочитать в [документации](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md).
 
-> If you stuck with something during the API installation or during the dataset, preparation try to read through the [TensorFlow 2 Object Detection API tutorial](https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/index.html) which adds a lot of useful details to this process.
+> Если у вас возникнут трудности во время установки API или во время генерации набора данных (следующие разделы), вы можете обратиться к статье [TensorFlow 2 Object Detection API tutorial](https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/index.html), в которой сможете найти много полезных деталей и советов.
 
-First, let's clone the [API repository](https://github.com/tensorflow/models):
+Для начала давайте клонируем [репозиторий с API](https://github.com/tensorflow/models):
 
 ```bash
 git clone --depth 1 https://github.com/tensorflow/models
@@ -273,29 +273,29 @@ Receiving objects: 100% (2301/2301), 30.60 MiB | 13.90 MiB/s, done.
 Resolving deltas: 100% (561/561), done.
 ```
 
-Now, let's compile the [API proto files](https://github.com/tensorflow/models/tree/master/research/object_detection/protos) into Python files by using [protoc](https://grpc.io/docs/protoc-installation/) tool:
+Теперь можем скомпилировать [файлы-прототипы API](https://github.com/tensorflow/models/tree/master/research/object_detection/protos) в Python формат, используя [protoc](https://grpc.io/docs/protoc-installation/):
 
 ```bash
 cd ./models/research
 protoc object_detection/protos/*.proto --python_out=.
 ```
 
-Finally, let's install the TF2 version of [setup.py](https://github.com/tensorflow/models/blob/master/research/object_detection/packages/tf2/setup.py) via `pip`:
+Следующим шагом будет установка API для версии TensorFlow 2 используя `pip` и файл [setup.py](https://github.com/tensorflow/models/blob/master/research/object_detection/packages/tf2/setup.py)`:
 
 ```bash
 cp ./object_detection/packages/tf2/setup.py .
 pip install . --quiet
 ```
 
-> It is possible that the last step will fail because of some dependency errors. In this case, you might want to run `pip install . --quiet` one more time.
+> Если на этом шаге вы обнаружите ошибки, связанные установкой зависимых пакетов, попробуйте запустить `pip install . --quiet` во второй раз.
 
-We may test that installation went successfully by running the following tests:
+Проверить успешность установки вы можете запустив тесты:
 
 ```bash
 python object_detection/builders/model_builder_tf2_test.py
 ```
 
-You should see the logs that end with something similar to this:
+В итоге вы должны будете увидеть в консоли, что-то вроде этого:
 
 ```
 [       OK ] ModelBuilderTF2Test.test_unknown_ssd_feature_extractor
@@ -305,9 +305,9 @@ Ran 20 tests in 45.072s
 OK (skipped=1)
 ```
 
-The TensorFlow Object Detection API is installed! You may now use the scripts that API provides for doing the model [inference](https://github.com/tensorflow/models/blob/master/research/object_detection/colab_tutorials/inference_tf2_colab.ipynb), [training](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_training_and_evaluation.md) or [fine-tuning](https://github.com/tensorflow/models/blob/master/research/object_detection/colab_tutorials/eager_few_shot_od_training_tf2_colab.ipynb).
+TensorFlow Object Detection API установлена! Теперь мы можем использовать скрипты, предоставляемы этой API, для [обнаружения объектов в изображениях](https://github.com/tensorflow/models/blob/master/research/object_detection/colab_tutorials/inference_tf2_colab.ipynb), [тренировки](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_training_and_evaluation.md) или [доработки](https://github.com/tensorflow/models/blob/master/research/object_detection/colab_tutorials/eager_few_shot_od_training_tf2_colab.ipynb) моделей.
 
-## ⬇️ Downloading the Pre-Trained Model
+## ⬇️ Загружаем заранее обученную модель
 
 Let's download our selected `ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8` model from the TensorFlow Model Zoo and check how it does the general object detection (detection of the objects of classes from COCO dataset like "cat", "dog", "car", etc.).
 

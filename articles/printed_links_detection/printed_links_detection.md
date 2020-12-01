@@ -255,7 +255,7 @@ In this article, we're going to install the Tensorflow 2 Object Detection API _a
 
 You may also follow the [official documentation](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2.md) if you would prefer to install Object Detection API via Docker.
 
-> If you stuck with something during the API installation or during the dataset, preparation try to read through the [TensorFlow 2 Object Detection API tutorial](https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/index.html) which adds a lot of useful details to this process.
+> If you stuck with something during the API installation or during the dataset preparation try to read through the [TensorFlow 2 Object Detection API tutorial](https://tensorflow-object-detection-api-tutorial.readthedocs.io/en/latest/index.html) which adds a lot of useful details to this process.
 
 First, let's clone the [API repository](https://github.com/tensorflow/models):
 
