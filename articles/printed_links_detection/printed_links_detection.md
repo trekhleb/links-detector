@@ -670,7 +670,7 @@ There are tools that exist (i.e. [keras_ocr](https://keras-ocr.readthedocs.io/en
 
 💚 It is also possible to generate a variety of link types like `http://`, `http://`, `ftp://`, `tcp://` etc. Otherwise, it might be hard to find enough real-world examples of this kind of links for training.
 
-💚 Another benefit of this approach is that we could generate as many training examples as we want. We're not limited to the number of pages of the printed book we've found for the dataset.
+💚 Another benefit of this approach is that we could generate as many training examples as we want. We're not limited to the number of pages of the printed book we've found for the dataset. Increasing the number of training examples may also increase the accuracy of the model.
 
 💔 It is possible though to misuse the generator and to generate the training images that will be quite different from real-world examples. Let's say we may use the wrong and unrealistic distortions for the page (i.e. using waves bend instead of the arc one). In this case, the model will not generalize well to real-world examples.
 

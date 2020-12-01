@@ -626,65 +626,66 @@ visualize_detections(
 
 ## 📝 Подготавливаем набор данных для тренировки
 
-To "teach" the `ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8` model to detect the custom objects which are _not_ a part of a COCO dataset we need to do the fine-tune training on a new custom dataset.
+Для того, чтобы научить модель `ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8` обнаруживать объекты, которые _не были_ описаны в наборе данных COCO нам необходимо подготовить свой набор данных и доучить модель на нем.
 
-The datasets for object detection consist of two parts:
+Наборы данных для задачи обнаружения объектов состоят из двух компонентов:
 
-1. The image itself (i.e. the image of the book page)
-2. The boundary boxes that show where exactly on the image the custom objects are located.
+1. Собственно само изображение (например, изображение печатной странички книги или журнала)
+2. Габаритные прямоугольники, которые показывают где именно в изображении расположены объекты.
 
 ![Bounding Boxes](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/16-detection-boxes.jpg)
 
-In the example above each box has `left-top` and `right-bottom` coordinates in _absolute_ values (in pixels). However, there are also different formats of writing the location of the bounding boxes exists. For example, we may locate the bounding box by setting the coordinate of its `center point` and its `width` and `height`. We might also use _relative_ values (percentage of the width and height of the image) for setting up the coordinates. But you've got the idea, the network needs to know what the image is and where on the image the objects are located.
+В примере выше координаты `левого верхнего` и `правого нижнего` углов имеют _абсолютные_ значения (в пикселях). Также существуют альтернативные способы записи параметров таких габаритных прямоугольников. Например, мы можем описать прямоугольник с помощью его `координат центра`, а так же `ширины` и `высоты`. Мы также можем использовать _относительные_ значения координат (процент от ширины или высоты изображения). Но в целом, думаю идея понятна: модель должна знать где именно в изображении находится тот или иной объект.
 
-Now, how can we get the custom dataset for training? We have three options here:
+Вопрос в том, где же нам взять такие данные для тренировки. У нас есть три варианта:
 
-1. _Re-use_ the existing dataset.
-2. _Generate_ a new dataset of fake book images.
-3. _Create_ the dataset manually by taking or downloading the pictures of real book pages which contain `https://` links and labeling all bounding boxes.
+1. _Воспользоваться имеющимся_ набором данных.
+2. _Сгенерировать новый_ искусственный набор данных.
+3. _Создать_ набор данных вручную путем фотографирования или загрузки реальных изображений с текстом и `https://` ссылками и дальнейшей аннотацией (указанием позиций объектов) каждого изображения вручную.
 
-### Option 1: Re-using the existing dataset
+### Вариант №1: Использование существующих наборов данных
 
-There are plenty of the datasets that are shared to be re-used by researches. We could start from the following resources to find a proper dataset:
+Есть множество общедоступных наборов данных. Мы можем воспользоваться следующими ресурсами для поиска подходящего набора:
 
 - [Google Dataset Search](https://datasetsearch.research.google.com/)
 - [Kaggle Datasets](https://www.kaggle.com/datasets)
-- [awesome-public-datasets](https://github.com/awesomedata/awesome-public-datasets) repository
-- etc.
+- репозиторий [awesome-public-datasets](https://github.com/awesomedata/awesome-public-datasets)
+- и пр.
 
-💚 If you could find the needed dataset and its license allows you to re-use it, it is probably the fastest way to get straight to the model training.
+💚 Если у вас получится найти подходящий набор данных с лицензией, позволяющей его использовать, то это, пожалуй, наиболее быстрый способ начать тренировку модели.
 
-💔 I couldn't find the dataset with labeled `https://` prefixes though.
+💔 Но проблема в том, что мне не удалось найти набор данных, содержащий изображения книг со ссылками и их координатами.
 
-So we need to skip this option.
+Этот вариант нам прийдется пропустить.
 
-### Option 2: Generating the synthetic dataset
+### Вариант №2: Генерирование искусственного набора данных
 
-There are tools that exist (i.e. [keras_ocr](https://keras-ocr.readthedocs.io/en/latest/examples/end_to_end_training.html#generating-synthetic-data)) that might help us to generate random text, include the link in it, and draw it on images with some background and distortions.
+Существуют библиотеки (например [keras_ocr](https://keras-ocr.readthedocs.io/en/latest/examples/end_to_end_training.html#generating-synthetic-data)), которые могли бы нам помочь сгенерировать случайный текст, поместить в него ссылку и отрисовать текст на различных фонах и с различными искажениями.
 
-💚 The cool part about this approach is that we have the freedom to generate training examples for different _fonts_, _ligatures_, _text colors_, _background colors_. This is very useful if we want to avoid the [model overfitting](https://en.wikipedia.org/wiki/Overfitting) during the training (so that the model could generalize well to unseen real-world examples instead of failing once the background shade is changed for a bit).
+💚 Преимущество данного подхода заключается в том, что он дает нам возможность сгенерировать экземпляры данных с разными _шрифтами_, _лигатурами_, _цветами текста_ и _фона_. Это помогло бы нам избежать проблемы [переученности модели](https://en.wikipedia.org/wiki/Overfitting). Модель могла-бы легко обобщать свои "знания" в случае с изображениями, которые она не видела ранее.
 
-💚 It is also possible to generate a variety of link types like `http://`, `http://`, `ftp://`, `tcp://` etc. Otherwise, it might be hard to find enough real-world examples of this kind of links for training.
+ 💚 Этот подход дает нам возможность сгенерировать разные типы ссылок, таких как: `http://`, `http://`, `ftp://`, `tcp://` и пр. Ведь найти множество реальных изображений с разными типами ссылок могло бы стать проблемой. 
 
-💚 Another benefit of this approach is that we could generate as many training examples as we want. We're not limited to the number of pages of the printed book we've found for the dataset.
+💚 Еще одним преимуществом этого подхода является то, что мы можем сгенерировать столько изображений сколько хотим. Мы не ограничены количеством страниц со ссылками в книге, которую нам удалось найти. Увеличение набора данных может в итоге улучшить точность модели.
 
-💔 It is possible though to misuse the generator and to generate the training images that will be quite different from real-world examples. Let's say we may use the wrong and unrealistic distortions for the page (i.e. using waves bend instead of the arc one). In this case, the model will not generalize well to real-world examples.
+💔 С другой стороны, существует возможность неправильного использования такого генератора, что в итоге может привести к набору 
+данных, который будет существенно отличаться от реальных изображений. Например, мы можем ошибочно применить неправдоподобные изгибы страниц (волна вместо дуги) или неправдоподобные фоны. Модель в таком может не обобщить свои "знания" на изображения из реального мира.
 
-> I see this approach as a really promising one. It may help to overcome many model issues (more on that below). I didn't try it yet though. But it might be a good candidate for another article.
+> Этот подход мне кажется очень многообещающим. Он может помочь нам преодолеть множество недостатков модели (о них мы упомянем ниже в статье). Я пока еще не пробовал применить этот подход, но, возможно, это будет предметом отдельной статьи.
 
-### Option 3: Creating the dataset manually
+### Вариант №3: Создание набора данных вручную
 
-The most straightforward way though is to get the book (or books) and to make the pictures of the pages with the links and to label all of them manually.
+Наиболее прямолинейный способ - это взять книгу (или книги), сфотографировать странички, содержащие ссылки и обозначить локации префиксов `https://` для каждой странички вручную.
 
-The good news is that the dataset might be pretty small (hundreds of images might be enough) because we're not going to train the model _from scratch_ but instead, we're going to do a [transfer learning](https://en.wikipedia.org/wiki/Transfer_learning) (also see the [few-shot learning](https://paperswithcode.com/task/few-shot-learning).)
+Хорошая новость в том, что набор данных, который нам нужен, может быть достаточно небольшим (сотни изображений будет достаточно). Это обусловлено тем, что мы не собираемся тренировать модель _с нуля_. Вместо этого мы будем "доучивать" уже обученную модель (см. [transfer learning](https://en.wikipedia.org/wiki/Transfer_learning) и [few-shot learning](https://paperswithcode.com/task/few-shot-learning)).
 
-💚 In this case, the training dataset will be really close to real-world data. You will literally take the printed book, take a picture of it with realistic fonts, bends, shades, perspectives, and colors.
+💚 В данном случае набор данных будет максимально приближен к реальному миру. Мы в буквальном смысле возьмем книгу, сфотографируем странички с реальными шрифтами, изгибами, тенями и цветами.
 
-💔 Even though it doesn't require a lot of images it may still be time-consuming.
+💔 С другой стороны, даже с учетом того, что нам нужны всего сотни страничек, работа по сбору таких страничек и их дальнейшей аннотации может занять достаточно много времени.
 
-💔 It is hard to come up with a diverse database where training examples would have different fonts, background colors, and different types of links (we need to find many diverse books and magazines to accomplish that).
+💔 Тяжело найти разные книги и журналы с разными шрифтами, типами ссылок, с разными фонами и лигатурами. В итоге набора данных будет достаточно узконаправленным (у пользователей должны будут быть книги со шрифтами и фонами похожими на ваши).
 
-Since the article has a learning purpose and since we're not trying to win an object detection competition let's go with this option for now and try to create a dataset by ourselves.
+Поскольку целью этой статьи, как было упомянуто выше, не является создание модели, которая должна выиграть соревнование по обнаружению объектов, мы можем пойти по пути создания модели вручную.
 
 ### Preprocessing the data
 
