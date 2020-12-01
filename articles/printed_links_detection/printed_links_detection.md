@@ -1361,7 +1361,7 @@ We need to copy the `pipeline.config` file to the root of the project and adjust
 5. We need to point the model to a proper **labels map**.
 6. Lastly, we need to pint the model to the **train and test datasets**.
 
-All these changes may be done manually directly in `cache/datasets/ssd_mobilenet_v2_fpnlite_640x640_coco17_tpu-8/pipeline.config` file. But we may also do them through code:
+All these changes may be done manually directly in `pipeline.config` file. But we may also do them through code:
 
 ```python
 import tensorflow as tf
@@ -1621,7 +1621,7 @@ eval_input_reader {
 
 We're ready now to launch a training process using the TensorFlow 2 Object Detection API. The API contains a [model_main_tf2.py](https://github.com/tensorflow/models/blob/master/research/object_detection/model_main_tf2.py) script that will run training for us. Feel free to explore the flags that this Python script supports in the source-code (i.e. `num_train_steps`, `model_dir` and others) to see their meanings.
 
-We will be training the model for `1000` iterations. Feel free to train it for a smaller or larger number of iterations depending on the learning progress (see the TensorBoard charts).
+We will be training the model for `1000` iterations (epochs). Feel free to train it for a smaller or larger number of iterations depending on the learning progress (see the TensorBoard charts).
 
 ```bash
 %%bash
@@ -1646,7 +1646,7 @@ While the model is training (it may take around`~10 minutes` for `1000` iteratio
 
 ![Training Process](https://raw.githubusercontent.com/trekhleb/links-detector/master/articles/printed_links_detection/assets/26-tensorboard-training.jpg)
 
-Also during the training, the new model checkpoints (parameters that the model has learned during the training) will be saved to the `logs` folder:
+Also during the training, the new model checkpoints (parameters that the model has learned during the training) will be saved to the `logs` folder.
 
 The `logs` folder structure now looks like this:
 
@@ -1861,7 +1861,7 @@ The fact that the model is able to detect custom objects (in our case the `https
 
 ## 🗜 Converting the Model for Web
 
-As you remember from the beginning of this article, our goal was to use the custom object detection model in the browser. Luckily, there is a [TensorFlow.js](https://www.tensorflow.org/js)JavaScript version of the TensorFlow library exists. In javascript, we can't work with our saved model directly. Instead, we need to convert it to [tfjs_graph_model](https://www.tensorflow.org/js/tutorials/conversion/import_saved_model) format.  
+As you remember from the beginning of this article, our goal was to use the custom object detection model in the browser. Luckily, there is a [TensorFlow.js](https://www.tensorflow.org/js) JavaScript version of the TensorFlow library exists. In JavaScript, we can't work with our saved model directly. Instead, we need to convert it to [tfjs_graph_model](https://www.tensorflow.org/js/tutorials/conversion/import_saved_model) format.  
 
 To do this we need to install the tensorflowjs Python package:
 
