@@ -1,0 +1,66 @@
+html, body {
+  background-color: black;
+  color: white;
+  height: 100%;
+  font-family: Roboto, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.full-height {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.fade-in-1 {
+  animation: fadeIn ease-in-out .1s;
+}
+
+.fade-in-2 {
+  animation: fadeIn ease-in-out .2s;
+}
+
+.fade-in-5 {
+  animation: fadeIn ease-in-out .5s;
+}
+
+.fade-in-10 {
+  animation: fadeIn ease-in-out 1s;
+}
+
+.pulsate-1 {
+  animation: pulsate-1 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.pulsate-2 {
+  animation: pulsate-2 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes pulsate-1 {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  75%, 100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes pulsate-2 {
+  0%, 10% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "files": {
+    "main.css": "/links-detector/static/css/main.ea53cc13.chunk.css",
+    "main.js": "/links-detector/static/js/main.96e9719d.chunk.js",
+    "main.js.map": "/links-detector/static/js/main.96e9719d.chunk.js.map",
+    "runtime-main.js": "/links-detector/static/js/runtime-main.23f4c182.js",
+    "runtime-main.js.map": "/links-detector/static/js/runtime-main.23f4c182.js.map",
+    "static/js/2.d8495109.chunk.js": "/links-detector/static/js/2.d8495109.chunk.js",
+    "static/js/2.d8495109.chunk.js.map": "/links-detector/static/js/2.d8495109.chunk.js.map",
+    "index.html": "/links-detector/index.html",
+    "service-worker.js": "/links-detector/service-worker.js",
+    "service-worker.js.map": "/links-detector/service-worker.js.map",
+    "static/css/main.ea53cc13.chunk.css.map": "/links-detector/static/css/main.ea53cc13.chunk.css.map",
+    "static/js/2.d8495109.chunk.js.LICENSE.txt": "/links-detector/static/js/2.d8495109.chunk.js.LICENSE.txt",
+    "static/media/alert-circle.a171c8af.svg": "/links-detector/static/media/alert-circle.a171c8af.svg",
+    "static/media/book-open.737c88d6.svg": "/links-detector/static/media/book-open.737c88d6.svg",
+    "static/media/edit-3.b7a88aab.svg": "/links-detector/static/media/edit-3.b7a88aab.svg",
+    "static/media/external-link.7b96a65d.svg": "/links-detector/static/media/external-link.7b96a65d.svg",
+    "static/media/eye.e291451a.svg": "/links-detector/static/media/eye.e291451a.svg",
+    "static/media/github.87abaaf9.svg": "/links-detector/static/media/github.87abaaf9.svg",
+    "static/media/link-2.7475cf5c.svg": "/links-detector/static/media/link-2.7475cf5c.svg",
+    "static/media/link.46f9d539.svg": "/links-detector/static/media/link.46f9d539.svg",
+    "static/media/links-detector-logo.166c7725.svg": "/links-detector/static/media/links-detector-logo.166c7725.svg",
+    "static/media/search.d3f9ab5c.svg": "/links-detector/static/media/search.d3f9ab5c.svg",
+    "static/media/smartphone.8318e705.svg": "/links-detector/static/media/smartphone.8318e705.svg",
+    "static/media/x.47f25215.svg": "/links-detector/static/media/x.47f25215.svg",
+    "static/media/youtube.8cd31b11.svg": "/links-detector/static/media/youtube.8cd31b11.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.23f4c182.js",
+    "static/js/2.d8495109.chunk.js",
+    "static/css/main.ea53cc13.chunk.css",
+    "static/js/main.96e9719d.chunk.js"
+  ]
+}
