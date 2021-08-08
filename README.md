@@ -6,6 +6,8 @@
 
 [![Links Detector](./public/images/links-detector-banner-bg-black-2.png)](https://trekhleb.github.io/links-detector)
 
+[📖 Long-read about how the detector works](https://trekhleb.dev/blog/2020/printed-links-detection/)
+
 ## 🤷🏻‍ The Problem
 
 So you read a book or a magazine and see the link like `https://some-url.com/which/may/be/long?and_with_params=true`, but you can't click on it since it is printed. To visit this link you need to start typing it character by character in the browser's address bar, which may be pretty annoying and error-prone.
@@ -26,7 +28,7 @@ Currently, the application is in _experimental_ _Alpha_ stage and has [many issu
 
 The detection model was trained using [TensorFlow 2 Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection).
 
-You may found the details of the training in [**📖 👆🏻 Making the Printed Links Clickable Using TensorFlow 2 Object Detection API**](https://github.com/trekhleb/links-detector/blob/master/articles/printed_links_detection/printed_links_detection.md) long read article.
+You may found the details of the training in [**📖 👆🏻 Making the Printed Links Clickable Using TensorFlow 2 Object Detection API**](https://trekhleb.dev/blog/2020/printed-links-detection/) long read article.
 
 ## ⚙️ Technologies
 
